@@ -41,7 +41,9 @@ import org.jetbrains.compose.resources.ExperimentalResourceApi
 fun App() {
     MaterialTheme {
         Navigator(
-            screen = MainScreen()
+            screen = BottomBarScreen()
+//            screen = BottomBarScreen()
+//            screen = MainScreen()
         ) { navigator ->
             SlideTransition(navigator)
 //            FadeTransition(navigator)

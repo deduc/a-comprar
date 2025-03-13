@@ -2,28 +2,38 @@ package org.ivandev.acomprar.bottombar
 
 import androidx.compose.ui.Modifier
 import org.ivandev.acomprar.bottombar.classes.HomeNavigationButton
-import org.ivandev.acomprar.bottombar.tabs.CategoriasTab
-import org.ivandev.acomprar.bottombar.tabs.MenuTab
+import org.ivandev.acomprar.bottombar.screens.CarritosScreen
+import org.ivandev.acomprar.bottombar.screens.CategoriasScreen
+import org.ivandev.acomprar.bottombar.screens.ComidasYCenasScreen
+import org.ivandev.acomprar.bottombar.screens.ConfigurationScreen
+import org.ivandev.acomprar.bottombar.screens.EstadisticasScreen
+import org.ivandev.acomprar.bottombar.screens.MenuScreen
+import org.ivandev.acomprar.bottombar.screens.ProductosElaboradosScreen
+import org.ivandev.acomprar.bottombar.screens.ProductosScreen
 
 object HomeNavigationButtons {
-    val carritosTitle = "Carritos"
-    val comidasCenasTitle = "Comidas/Cenas"
-    val categoriasTitle = "Categorías"
-    val estadisticasTitle = "Estadísticas"
-    val menuTitle = "Menú"
-    val productosTitle = "Productos"
-    val productosElaboradosTitle = "Productos Elaborados"
+    val homeTitle: String = "Home"
+
+    val carritosTitle: String = "Carritos de la compra"
+    val comidasYCenasTitle: String = "Comidas y cenas"
+    val categoriasTitle: String = "Categorías"
+    val estadisticasTitle: String = "Estadísticas"
+    val menuTitle: String = "Menú"
+    val productosElaboradosTitle: String = "Productos elaborados"
+    val productosTitle: String = "Productos"
+    val configuracionTitle: String = "Configuración"
 
 
     fun getHomeButtons(modifier: Modifier = Modifier): List<HomeNavigationButton> {
         return listOf(
-            HomeNavigationButton(modifier, menuTitle, MenuTab),
-            HomeNavigationButton(modifier, carritosTitle, CategoriasTab),
-            HomeNavigationButton(modifier, comidasCenasTitle, MenuTab),
-            HomeNavigationButton(modifier, categoriasTitle, MenuTab),
-            HomeNavigationButton(modifier, productosTitle, MenuTab),
-            HomeNavigationButton(modifier, estadisticasTitle, MenuTab),
-            HomeNavigationButton(modifier, productosElaboradosTitle, MenuTab),
+            HomeNavigationButton(modifier, carritosTitle, CarritosScreen),
+            HomeNavigationButton(modifier, comidasYCenasTitle, ComidasYCenasScreen),
+            HomeNavigationButton(modifier, categoriasTitle, CategoriasScreen),
+            HomeNavigationButton(modifier, estadisticasTitle, EstadisticasScreen),
+            HomeNavigationButton(modifier, menuTitle, MenuScreen),
+            HomeNavigationButton(modifier, productosElaboradosTitle, ProductosElaboradosScreen),
+            HomeNavigationButton(modifier, productosTitle, ProductosScreen),
+            HomeNavigationButton(modifier, configuracionTitle, ConfigurationScreen),
         )
     }
 }

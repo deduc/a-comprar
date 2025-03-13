@@ -1,4 +1,4 @@
-package org.ivandev.acomprar.bottombar.tabs
+package org.ivandev.acomprar.bottombar.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -13,24 +13,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.VectorPainter
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.unit.sp
-import cafe.adriel.voyager.navigator.tab.Tab
+import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.tab.TabOptions
+import org.ivandev.acomprar.bottombar.HomeNavigationButtons
 
-object  ProductosTab: Tab {
-    override val options: TabOptions
-        @Composable
-        get() {
-            val editIcon: VectorPainter = rememberVectorPainter(Icons.Default.Edit)
-
-            return remember {
-                TabOptions(
-                    index = 0u,
-                    title = "Categorias",
-                    icon = editIcon
-                )
-            }
-        }
-
+object ProductosElaboradosScreen: Screen {
     @Composable
     override fun Content() {
         Box(Modifier.fillMaxSize().background(Color.Green)) {

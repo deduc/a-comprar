@@ -1,15 +1,15 @@
 package org.ivandev.acomprar.bottombar.interfaces
 
 import androidx.compose.ui.Modifier
+import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.Navigator
-import cafe.adriel.voyager.navigator.tab.Tab
 
 interface IHomeNavigationButton {
     val modifier: Modifier
     val text: String
-    val navigationTab: Tab
+    val navigationScreen: Screen
 
     fun navigatorPush(navigator: Navigator) {
-        navigator.push(this.navigationTab)
+        navigator.push(this.navigationScreen)
     }
 }

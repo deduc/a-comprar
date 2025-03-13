@@ -20,8 +20,8 @@ import cafe.adriel.voyager.navigator.tab.CurrentTab
 import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import cafe.adriel.voyager.navigator.tab.TabDisposable
 import cafe.adriel.voyager.navigator.tab.TabNavigator
-import org.ivandev.acomprar.bottombar.tabs.CategoriasTab
-import org.ivandev.acomprar.bottombar.tabs.HomeTab
+import org.ivandev.acomprar.bottombar.screens.CategoriasScreen
+import org.ivandev.acomprar.bottombar.screens.HomeTab
 
 class BottomBarScreen : Screen {
     @Composable
@@ -39,7 +39,7 @@ class BottomBarScreen : Screen {
             tabDisposable = {
                 TabDisposable(
                     it,
-                    listOf(HomeTab, CategoriasTab)
+                    listOf(HomeTab)
                 )
             }
         )
