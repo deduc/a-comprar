@@ -20,8 +20,7 @@ import cafe.adriel.voyager.navigator.tab.CurrentTab
 import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import cafe.adriel.voyager.navigator.tab.TabDisposable
 import cafe.adriel.voyager.navigator.tab.TabNavigator
-import org.ivandev.acomprar.bottombar.screens.CategoriasScreen
-import org.ivandev.acomprar.bottombar.screens.HomeTab
+import org.ivandev.acomprar.bottombar.tabs.HomeTab
 
 class BottomBarScreen : Screen {
     @Composable

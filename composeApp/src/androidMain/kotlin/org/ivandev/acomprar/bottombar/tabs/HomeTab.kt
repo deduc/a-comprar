@@ -1,4 +1,4 @@
-package org.ivandev.acomprar.bottombar.screens
+package org.ivandev.acomprar.bottombar.tabs
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.width
