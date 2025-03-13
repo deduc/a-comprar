@@ -1,0 +1,40 @@
+package org.ivandev.acomprar.bottombar.tabs
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.VectorPainter
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.unit.sp
+import cafe.adriel.voyager.navigator.tab.Tab
+import cafe.adriel.voyager.navigator.tab.TabOptions
+
+object  CarritosTab: Tab {
+    override val options: TabOptions
+        @Composable
+        get() {
+            val editIcon: VectorPainter = rememberVectorPainter(Icons.Default.Edit)
+
+            return remember {
+                TabOptions(
+                    index = 0u,
+                    title = "Categorias",
+                    icon = editIcon
+                )
+            }
+        }
+
+    @Composable
+    override fun Content() {
+        Box(Modifier.fillMaxSize().background(Color.Green)) {
+            Text("Categorías", fontSize = 22.sp, color = Color.Black)
+        }
+    }
+}
