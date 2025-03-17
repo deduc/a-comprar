@@ -1,4 +1,4 @@
-package org.ivandev.acomprar.bottombar.tabs
+package org.ivandev.acomprar.tabs
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -15,7 +15,8 @@ import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
-import org.ivandev.acomprar.bottombar.HomeNavigationButtons
+import org.ivandev.acomprar.Literals
+import org.ivandev.acomprar.classes.HomeNavigationButtons
 
 object MenuTab: Tab {
     override val options: TabOptions
@@ -25,7 +26,7 @@ object MenuTab: Tab {
             return remember {
                 TabOptions(
                     index = 0u,
-                    title = HomeNavigationButtons.menuTitle,
+                    title = Literals.menuTitle,
                     icon = homeIcon
                 )
             }

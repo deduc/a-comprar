@@ -1,8 +1,8 @@
-package org.ivandev.acomprar.bottombar.classes
+package org.ivandev.acomprar.classes
 
 import androidx.compose.ui.Modifier
 import cafe.adriel.voyager.core.screen.Screen
-import org.ivandev.acomprar.bottombar.interfaces.IHomeNavigationButton
+import org.ivandev.acomprar.classes.interfaces.IHomeNavigationButton
 
 class HomeNavigationButton(
     override val modifier: Modifier = Modifier, // Valor por defecto

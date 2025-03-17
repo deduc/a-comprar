@@ -34,6 +34,7 @@ import cafe.adriel.voyager.transitions.FadeTransition
 import cafe.adriel.voyager.transitions.ScaleTransition
 import cafe.adriel.voyager.transitions.SlideTransition
 import org.ivandev.acomprar.bottombar.BottomBarScreen
+import org.ivandev.acomprar.screens.HomeScreen
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 
 @Composable
@@ -41,9 +42,9 @@ import org.jetbrains.compose.resources.ExperimentalResourceApi
 fun App() {
     MaterialTheme {
         Navigator(
-            screen = BottomBarScreen()
 //            screen = BottomBarScreen()
 //            screen = MainScreen()
+            screen = HomeScreen()
         ) { navigator ->
             SlideTransition(navigator)
 //            FadeTransition(navigator)

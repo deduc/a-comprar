@@ -1,4 +1,4 @@
-package org.ivandev.acomprar.bottombar.tabs
+package org.ivandev.acomprar.tabs
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -15,9 +15,10 @@ import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
-import org.ivandev.acomprar.bottombar.HomeNavigationButtons
+import org.ivandev.acomprar.Literals
+import org.ivandev.acomprar.classes.HomeNavigationButtons
 
-object EstadisticasTab: Tab {
+object CarritosTab: Tab {
     override val options: TabOptions
         @Composable
         get() {
@@ -25,16 +26,17 @@ object EstadisticasTab: Tab {
             return remember {
                 TabOptions(
                     index = 0u,
-                    title = HomeNavigationButtons.estadisticasTitle,
+                    title = Literals.carritosTitle,
                     icon = homeIcon
                 )
             }
         }
 
+
     @Composable
     override fun Content() {
         Box(Modifier.fillMaxSize().background(Color.Green)) {
-            Text("Categorías", fontSize = 22.sp, color = Color.Black)
+            Text("Categorías123213213", fontSize = 22.sp, color = Color.Black)
         }
     }
 }

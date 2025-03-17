@@ -1,4 +1,4 @@
-package org.ivandev.acomprar.bottombar.interfaces
+package org.ivandev.acomprar.classes.interfaces
 
 import androidx.compose.ui.Modifier
 import cafe.adriel.voyager.core.screen.Screen
