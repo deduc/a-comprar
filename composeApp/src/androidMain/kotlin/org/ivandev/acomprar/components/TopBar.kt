@@ -12,6 +12,8 @@ import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -33,10 +35,11 @@ class TopBar(
     private val backgroundColor: Color? = null
 ) {
     @Composable
-    fun Content(title: String = Literals.appName) {
+    fun Content(title: String) {
         val backgroundColor: Color = this.backgroundColor ?: MaterialTheme.colors.primary
         val navigator: Navigator = LocalNavigator.currentOrThrow
         val settingsIcon: VectorPainter = rememberVectorPainter(Icons.Default.Settings)
+        val arrowBackIcon: VectorPainter = rememberVectorPainter(Icons.AutoMirrored.Filled.ArrowBack)
 
         Row(
             modifier = Modifier.fillMaxWidth().background(backgroundColor).height(56.dp),
@@ -50,20 +53,36 @@ class TopBar(
                 style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold)
             )
 
-            if (title == Literals.appName) {
-                Button(
-                    onClick = {
-                        navigator.push(ConfigurationScreen())
-                    }
-                ) {
-                    Icon(
-                        painter = settingsIcon,
-                        contentDescription = "Settings",
-                        modifier = Modifier.size(24.dp),
-                        tint = Color.White
-                    )
-                }
+            if (title == Literals.HOME_TITLE) {
+                ConfigButton(navigator, settingsIcon)
             }
+            else {
+                GoBackButton(navigator, arrowBackIcon)
+            }
+        }
+    }
+
+    @Composable
+    fun ConfigButton(navigator: Navigator, settingsIcon: VectorPainter) {
+        Button(onClick = { navigator.push(ConfigurationScreen()) }) {
+            Icon(
+                painter = settingsIcon,
+                contentDescription = "Settings",
+                modifier = Modifier.size(24.dp),
+                tint = Color.White
+            )
+        }
+    }
+
+    @Composable
+    fun GoBackButton(navigator: Navigator, arrowBackIcon: VectorPainter) {
+        Button(onClick = { navigator.pop() }) {
+            Icon(
+                painter = arrowBackIcon,
+                contentDescription = "Go back",
+                modifier = Modifier.size(24.dp),
+                tint = Color.White
+            )
         }
     }
 }
