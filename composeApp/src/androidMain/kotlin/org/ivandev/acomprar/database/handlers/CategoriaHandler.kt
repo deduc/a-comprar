@@ -2,7 +2,7 @@ package org.ivandev.acomprar.database.handlers
 
 import org.ivandev.acomprar.database.interfaces.DatabaseCRUD
 
-class CategoriaHandler: DatabaseCRUD {
+object CategoriaHandler: DatabaseCRUD {
     override fun create() {}
     override fun read() {}
     override fun update() {}
