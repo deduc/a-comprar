@@ -29,17 +29,14 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import org.ivandev.acomprar.Literals
 import org.ivandev.acomprar.screens.ConfigurationScreen
 
-class TopBar(val backgroundColor: Color? = null) {
+class TopBar(
+    private val backgroundColor: Color? = null
+) {
     @Composable
     fun Content(title: String = Literals.appName) {
-        var backgroundColor: Color
+        val backgroundColor: Color = this.backgroundColor ?: MaterialTheme.colors.primary
         val navigator: Navigator = LocalNavigator.currentOrThrow
         val settingsIcon: VectorPainter = rememberVectorPainter(Icons.Default.Settings)
-
-        if (this.backgroundColor == null)
-            backgroundColor = MaterialTheme.colors.primary
-        else
-            backgroundColor = this.backgroundColor
 
         Row(
             modifier = Modifier.fillMaxWidth().background(backgroundColor).height(56.dp),

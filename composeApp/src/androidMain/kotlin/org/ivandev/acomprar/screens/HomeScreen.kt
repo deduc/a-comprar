@@ -21,6 +21,7 @@ import org.ivandev.acomprar.Literals
 import org.ivandev.acomprar.classes.HomeNavigationButton
 import org.ivandev.acomprar.classes.HomeNavigationButtons
 import org.ivandev.acomprar.components.CommonScreen
+import org.ivandev.acomprar.components.InputTextPrueba
 
 class HomeScreen: Screen {
     private val homeButtons: List<HomeNavigationButton> = HomeNavigationButtons.getHomeButtons(Modifier.fillMaxWidth())
@@ -32,6 +33,8 @@ class HomeScreen: Screen {
             title = homeScreenTitle
         ) {
             HomeButtonsContainer()
+
+//            InputTextPrueba().Content()
         }
 
         screen.Render()
