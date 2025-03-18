@@ -15,7 +15,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
-import org.ivandev.acomprar.ComponentsGetter
 import org.ivandev.acomprar.Literals
 import org.ivandev.acomprar.components.CommonScreen
 import org.ivandev.acomprar.components.TopBar
@@ -24,7 +23,7 @@ class ConfigurationScreen: Screen {
     @Composable
     override fun Content() {
         val screen = CommonScreen(
-            title = Literals.configurationScreenTitle
+            title = Literals.CONFIGURATION_SCREEN_TITLE
         ) {
             Column {
                 TextSize()
@@ -43,7 +42,7 @@ class ConfigurationScreen: Screen {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = Literals.sizeText,
+                text = Literals.SIZE_TEXT,
                 modifier = Modifier.weight(1f)
             )
             ModifyButton()
@@ -57,7 +56,7 @@ class ConfigurationScreen: Screen {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = Literals.importJsonText,
+                text = Literals.IMPORT_JSON_TEXT,
                 modifier = Modifier.weight(1f)
             )
             ModifyButton()
@@ -71,7 +70,7 @@ class ConfigurationScreen: Screen {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = Literals.deleteAllDataText,
+                text = Literals.DELETE_ALL_DATA_TEXT,
                 modifier = Modifier.weight(1f)
             )
             ModifyButton()
@@ -82,7 +81,7 @@ class ConfigurationScreen: Screen {
     @Composable
     fun ModifyButton(
         onClickFun: () -> Unit = { println(1) },
-        text: String = Literals.changeText
+        text: String = Literals.CHANGE_TEXT
     ) {
         Button(onClick = onClickFun) {
             Text(text)

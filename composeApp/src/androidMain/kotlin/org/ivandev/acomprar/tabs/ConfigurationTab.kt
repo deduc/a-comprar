@@ -29,7 +29,7 @@ class ConfigurationTab: Tab {
             return remember {
                 TabOptions(
                     index = 0u,
-                    title = Literals.carritosTitle,
+                    title = Literals.CARRITOS_TITLE,
                     icon = homeIcon
                 )
             }
@@ -51,7 +51,7 @@ class ConfigurationTab: Tab {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = Literals.sizeText,
+                text = Literals.SIZE_TEXT,
                 modifier = Modifier.weight(1f)
             )
             ModifyButton()
@@ -65,7 +65,7 @@ class ConfigurationTab: Tab {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = Literals.importJsonText,
+                text = Literals.IMPORT_JSON_TEXT,
                 modifier = Modifier.weight(1f)
             )
             ModifyButton()
@@ -79,7 +79,7 @@ class ConfigurationTab: Tab {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = Literals.deleteAllDataText,
+                text = Literals.DELETE_ALL_DATA_TEXT,
                 modifier = Modifier.weight(1f)
             )
             ModifyButton()
@@ -90,7 +90,7 @@ class ConfigurationTab: Tab {
     @Composable
     fun ModifyButton(
         onClickFun: () -> Unit = { println(1) },
-        text: String = Literals.changeText
+        text: String = Literals.CHANGE_TEXT
     ) {
         Button(onClick = onClickFun) {
             Text(text)

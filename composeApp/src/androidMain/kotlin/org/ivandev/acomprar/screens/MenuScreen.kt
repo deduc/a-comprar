@@ -13,7 +13,7 @@ object MenuScreen: Screen {
     @Composable
     override fun Content() {
         val screen = CommonScreen(
-            title = Literals.menuTitle
+            title = Literals.MENU_TITLE
         ) {
             Column {
                 Text("Menús --123-", fontSize = 22.sp, color = Color.Black)

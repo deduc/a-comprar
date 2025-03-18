@@ -26,7 +26,7 @@ object EstadisticasTab: Tab {
             return remember {
                 TabOptions(
                     index = 0u,
-                    title = Literals.estadisticasTitle,
+                    title = Literals.ESTADISTICAS_TITLE,
                     icon = homeIcon
                 )
             }

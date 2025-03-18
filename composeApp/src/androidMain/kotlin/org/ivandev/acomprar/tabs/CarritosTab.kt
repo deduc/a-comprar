@@ -26,7 +26,7 @@ object CarritosTab: Tab {
             return remember {
                 TabOptions(
                     index = 0u,
-                    title = Literals.carritosTitle,
+                    title = Literals.CARRITOS_TITLE,
                     icon = homeIcon
                 )
             }

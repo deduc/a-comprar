@@ -26,7 +26,7 @@ object MenuTab: Tab {
             return remember {
                 TabOptions(
                     index = 0u,
-                    title = Literals.menuTitle,
+                    title = Literals.MENU_TITLE,
                     icon = homeIcon
                 )
             }

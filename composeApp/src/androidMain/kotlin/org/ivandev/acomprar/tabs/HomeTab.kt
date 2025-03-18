@@ -35,7 +35,7 @@ object HomeTab: Tab {
         return remember {
             TabOptions(
                 index = 0u,
-                title = Literals.homeTitle,
+                title = Literals.HOME_TITLE,
                 icon = homeIcon,
             )
         }

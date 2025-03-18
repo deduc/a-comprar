@@ -26,7 +26,7 @@ object ProductosElaboradosTab: Tab {
             return remember {
                 TabOptions(
                     index = 0u,
-                    title = Literals.productosElaboradosTitle,
+                    title = Literals.PRODUCTOS_ELABORADOS_TITLE,
                     icon = homeIcon
                 )
             }

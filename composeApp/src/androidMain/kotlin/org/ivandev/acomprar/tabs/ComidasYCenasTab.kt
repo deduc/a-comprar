@@ -26,7 +26,7 @@ object ComidasYCenasTab: Tab {
             return remember {
                 TabOptions(
                     index = 0u,
-                    title = Literals.comidasYCenasTitle,
+                    title = Literals.COMIDAS_Y_CENAS_TITLE,
                     icon = homeIcon
                 )
             }

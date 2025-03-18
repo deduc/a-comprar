@@ -26,7 +26,7 @@ object CategoriasTab: Tab {
             return remember {
                 TabOptions(
                     index = 0u,
-                    title = Literals.categoriasTitle,
+                    title = Literals.CATEGORIAS_TITLE,
                     icon = homeIcon
                 )
             }
