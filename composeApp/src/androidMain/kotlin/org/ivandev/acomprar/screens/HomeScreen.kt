@@ -3,58 +3,84 @@ package org.ivandev.acomprar.screens
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.height
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import org.ivandev.acomprar.Tools
-import org.ivandev.acomprar.ComponentsGetter
 import org.ivandev.acomprar.Literals
-import org.ivandev.acomprar.classes.HomeNavigationButton
-import org.ivandev.acomprar.classes.HomeNavigationButtons
 import org.ivandev.acomprar.components.CommonScreen
-import org.ivandev.acomprar.components.InputTextPrueba
 
 class HomeScreen: Screen {
-    private val homeButtons: List<HomeNavigationButton> = HomeNavigationButtons.getHomeButtons(Modifier.fillMaxWidth())
-    private val homeScreenTitle: String = Literals.appName
+    private val homeScreenTitle: String = Literals.HOME_TITLE
+    private val appTitle: String = Literals.APP_NAME
+
+    private val categoriasScreen = CategoriasScreen()
 
     @Composable
     override fun Content() {
         val screen = CommonScreen(
             title = homeScreenTitle
         ) {
-            HomeButtonsContainer()
-
-//            InputTextPrueba().Content()
+            MainContent(appTitle)
         }
 
         screen.Render()
     }
 
-
+    @Composable
+    fun MainContent(title: String) {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+        ) {
+            AppTitle(title, false)
+            MyNavigationButtons()
+        }
+    }
 
     @Composable
-    fun HomeButtonsContainer() {
+    fun AppTitle(title: String, hideSpacers: Boolean) {
+        if (hideSpacers) Spacer(Modifier.height(32.dp))
+
+        Row (
+            Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Text(
+                text = title,
+                fontSize = 24.sp,
+                textDecoration = TextDecoration.Underline,
+            )
+        }
+
+        if (hideSpacers) Spacer(Modifier.height(32.dp))
+    }
+
+    @Composable
+    fun MyNavigationButtons() {
+        Column {
+            MyNavButton(Literals.MENU_TITLE, MenuScreen)
+            MyNavButton(Literals.CATEGORIAS_TITLE, categoriasScreen)
+        }
+    }
+
+    @Composable
+    fun MyNavButton(title: String, screen: Screen) {
         val navigator: Navigator = LocalNavigator.currentOrThrow
 
-        Column {
-            homeButtons.forEach { button ->
-                Button(
-                    modifier = button.modifier,
-                    onClick = { button.navigatorPush(navigator) }
-                ) {
-                    Text(text = button.text, style = TextStyle(fontSize = 15.sp))
-                }
-            }
+        Button(onClick = { navigator.push(screen) }, Modifier.fillMaxWidth()) {
+            Text(text = title, style = TextStyle(fontSize = 15.sp))
         }
     }
 }

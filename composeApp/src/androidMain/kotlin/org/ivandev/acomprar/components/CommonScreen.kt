@@ -9,7 +9,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import org.ivandev.acomprar.Tools
-import org.ivandev.acomprar.ComponentsGetter
 
 // Clase composable que incluye TopBar y BottomBar, y acepta contenido dinámico en el medio
 class CommonScreen(
@@ -18,8 +17,8 @@ class CommonScreen(
 ) {
     @Composable
     fun Render() {
-        val topBar = ComponentsGetter.topBar
-        val bottomBar = ComponentsGetter.bottomBar
+        val topBar = TopBar()
+        val bottomBar = BottomBar()
 
         Column(modifier = Modifier.fillMaxSize()) {
             topBar.Content(title = title)
