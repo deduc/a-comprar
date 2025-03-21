@@ -7,7 +7,7 @@ interface DatabaseCRUD<T> {
     fun read()
     fun update()
     fun delete()
-    fun insert(db: SQLiteDatabase, obj: T)
+    fun insert(db: SQLiteDatabase, obj: T): Boolean
 
-    fun getAll(): List<T>
+    fun getAll(db: SQLiteDatabase): MutableList<T>
 }

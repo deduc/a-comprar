@@ -21,6 +21,7 @@ import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import org.ivandev.acomprar.Literals
 import org.ivandev.acomprar.components.CommonScreen
+import org.ivandev.acomprar.screens.categoria.CategoriasScreen
 
 class HomeScreen: Screen {
     private val homeScreenTitle: String = Literals.HOME_TITLE

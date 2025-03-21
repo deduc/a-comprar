@@ -1,17 +1,14 @@
 package org.ivandev.acomprar.database.handlers
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
-import org.ivandev.acomprar.Literals
+import org.ivandev.acomprar.database.commands.categoria.GetAllCategoria
+import org.ivandev.acomprar.database.commands.categoria.InsertIntoCategoria
 import org.ivandev.acomprar.database.entities.Categoria
 import org.ivandev.acomprar.database.interfaces.DatabaseCRUD
 
-@SuppressLint("StaticFieldLeak")
-object CategoriaHandler: DatabaseCRUD<Categoria> {
-    private const val FILE_NAME: String = Literals.Database.CATEGORIA_FILE
-
-    @SuppressLint("StaticFieldLeak")
+class CategoriaHandler: DatabaseCRUD<Categoria>
+{
     private lateinit var context: Context
 
     fun setContext(context: Context) {
@@ -25,12 +22,32 @@ object CategoriaHandler: DatabaseCRUD<Categoria> {
     override fun update() {}
     override fun delete() {}
 
-    override fun insert(db: SQLiteDatabase, obj: Categoria) {
-        TODO("Not yet implemented")
+    override fun insert(db: SQLiteDatabase, obj: Categoria): Boolean {
+        // Llamamos a la función de inserción
+        InsertIntoCategoria(db, obj)
+
+        // Verificamos si la fila fue insertada correctamente mediante la obtención del último ID
+        val cursor = db.rawQuery("SELECT * FROM categoria ORDER BY id DESC LIMIT 1;", null)
+        val inserted: Boolean
+
+        if (cursor.moveToFirst()) {
+            val id = cursor.getInt(cursor.getColumnIndexOrThrow("id"))
+            val nombre = cursor.getString(cursor.getColumnIndexOrThrow("nombre"))
+
+            // Comparamos si el nombre coincide, lo cual indica que el objeto fue insertado correctamente
+            inserted = nombre == obj.nombre
+        } else {
+            inserted = false
+        }
+
+        // No olvides cerrar el cursor
+        cursor.close()
+
+        // Retornamos el resultado de la inserción
+        return inserted
     }
 
-    override fun getAll(): List<Categoria> {
-        var categorias: List<Categoria> = listOf()
-        return categorias
+    override fun getAll(db: SQLiteDatabase): MutableList<Categoria> {
+        return GetAllCategoria(db)
     }
 }

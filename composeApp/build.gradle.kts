@@ -36,6 +36,12 @@ kotlin {
             implementation(libs.voyager.navigator)
             implementation(libs.voyager.transitions)
             implementation(libs.voyager.tabNavigator)
+
+            // Agregar estas líneas para Material Icons
+            implementation("androidx.compose.material:material-icons-core:1.4.0")
+            implementation("androidx.compose.material:material-icons-extended:1.4.0")
+
+
         }
     }
 }

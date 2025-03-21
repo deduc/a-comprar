@@ -5,7 +5,6 @@ import org.ivandev.acomprar.database.entities.Carrito
 import org.ivandev.acomprar.database.entities.Categoria
 import org.ivandev.acomprar.database.entities.Menu
 import org.ivandev.acomprar.database.entities.Producto
-import org.ivandev.acomprar.database.handlers.CategoriaHandler
 import org.ivandev.acomprar.database.interfaces.DatabaseMethods
 
 object Database : DatabaseMethods {
@@ -25,7 +24,7 @@ object Database : DatabaseMethods {
     }
 
     override fun getAllCategoria(): List<Categoria> {
-        return CategoriaHandler.getAll()
+        return mySQLiteDatabase.getAllCategoria()
     }
 
     override fun getAllMenu(): List<Menu> {
@@ -34,6 +33,11 @@ object Database : DatabaseMethods {
 
     override fun getAllProducto(): List<Producto> {
         TODO("Not yet implemented")
+    }
+
+
+    fun addCategoria(categoria: Categoria): Boolean {
+        return mySQLiteDatabase.addCategoria(categoria)
     }
 
     override fun deleteAll() {}

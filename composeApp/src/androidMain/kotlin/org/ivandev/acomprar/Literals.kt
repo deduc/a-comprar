@@ -3,14 +3,16 @@ package org.ivandev.acomprar
 object Literals {
     const val APP_NAME: String = "A Comprar!"
 
+    // Configuration texts
     const val CHANGE_TEXT: String = "Cambiar"
     const val DELETE_ALL_DATA_TEXT: String = "Borrar todos los datos."
     const val IMPORT_JSON_TEXT: String = "Importar datos."
     const val SIZE_TEXT: String = "Tamaño del texto."
 
-    const val CONFIGURATION_SCREEN_TITLE: String = "Configuración"
+    // Buttons texts
+    const val ADD_TEXT: String = "Añadir"
 
-    // HomeNavigationButtons
+    // Home navigation buttons
     const val HOME_TITLE: String = "Home"
     const val MENU_TITLE: String = "Menús"
     const val PRODUCTOS_TITLE: String = "Productos"
@@ -19,6 +21,7 @@ object Literals {
     const val COMIDAS_Y_CENAS_TITLE: String = "Comidas y cenas"
     const val CARRITOS_TITLE: String = "Carritos de la compra"
     const val PRODUCTOS_ELABORADOS_TITLE: String = "Productos elaborados"
+    const val CONFIGURATION_TITLE: String = "Configuración"
 
     object Database {
         // DATABASE
@@ -45,11 +48,17 @@ object Literals {
         const val ID_CARRITO_COLUMN: String = "id_carrito"
         const val ID_PRODUCTO_COLUMN: String = "id_producto"
 
-
         // File names
         const val CARRITO_FILE: String = "carrito.json"
         const val CATEGORIA_FILE: String = "categoria.json"
         const val MENU_FILE: String = "menu.json"
         const val PRODUCTO_FILE: String = "producto.json"
+    }
+
+    // No SQL tables, just for UI tables
+    object Table {
+        const val NOMBRE_COLUMN: String = "Nombre"
+        const val CANTIDAD_COLUMN: String = "Cantidad"
+        const val OPCIONES_COLUMN: String = "Opciones"
     }
 }
