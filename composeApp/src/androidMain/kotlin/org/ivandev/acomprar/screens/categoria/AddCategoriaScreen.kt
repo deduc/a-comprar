@@ -2,7 +2,6 @@ package org.ivandev.acomprar.screens.categoria
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.Button
-import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
@@ -19,8 +18,8 @@ import org.ivandev.acomprar.database.entities.Categoria
 class AddCategoriaScreen: Screen {
     @Composable
     override fun Content() {
-        val text = remember { mutableStateOf("") }
         val navigator: Navigator = LocalNavigator.currentOrThrow
+        val text = remember { mutableStateOf("") }
 
         Column {
             TextField(

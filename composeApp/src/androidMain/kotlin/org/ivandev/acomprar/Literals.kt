@@ -12,10 +12,13 @@ object Literals {
     // Buttons texts
     const val ADD_TEXT: String = "Añadir"
 
+    const val NO_CATEGORY_TEXT: String = "Sin categoría"
+
     // Home navigation buttons
     const val HOME_TITLE: String = "Home"
     const val MENU_TITLE: String = "Menús"
     const val PRODUCTOS_TITLE: String = "Productos"
+    const val ADD_PRODUCTO_TITLE: String = "Añadir producto"
     const val CATEGORIAS_TITLE: String = "Categorías"
     const val ESTADISTICAS_TITLE: String = "Estadísticas"
     const val COMIDAS_Y_CENAS_TITLE: String = "Comidas y cenas"

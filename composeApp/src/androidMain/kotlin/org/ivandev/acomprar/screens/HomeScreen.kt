@@ -22,12 +22,11 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import org.ivandev.acomprar.Literals
 import org.ivandev.acomprar.components.CommonScreen
 import org.ivandev.acomprar.screens.categoria.CategoriasScreen
+import org.ivandev.acomprar.screens.producto.SeeProductosScreen
 
 class HomeScreen: Screen {
     private val homeScreenTitle: String = Literals.HOME_TITLE
     private val appTitle: String = Literals.APP_NAME
-
-    private val categoriasScreen = CategoriasScreen()
 
     @Composable
     override fun Content() {
@@ -72,7 +71,8 @@ class HomeScreen: Screen {
     fun MyNavigationButtons() {
         Column {
             MyNavButton(Literals.MENU_TITLE, MenuScreen)
-            MyNavButton(Literals.CATEGORIAS_TITLE, categoriasScreen)
+            MyNavButton(Literals.CATEGORIAS_TITLE, CategoriasScreen())
+            MyNavButton(Literals.PRODUCTOS_TITLE, SeeProductosScreen())
         }
     }
 

@@ -1,6 +1,7 @@
 package org.ivandev.acomprar.screens.categoria
 
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
 import androidx.compose.material.Text
@@ -73,26 +74,36 @@ class CategoriasScreen : Screen {
     @Composable
     fun CategoriasContainer(myCategorias: List<Categoria>, onDeleteCategoria: (Int) -> Unit) {
         val columnas = listOf(Literals.Table.NOMBRE_COLUMN, Literals.Table.OPCIONES_COLUMN)
+        val navigator: Navigator = LocalNavigator.currentOrThrow
 
         DynamicTable(
             columnHeaders = columnas,
-            rowData = myCategorias
-        ) { categoria, column ->
+            rowData = myCategorias,
+        ) { categoria: Categoria, column: String ->
             when (column) {
-                Literals.Table.NOMBRE_COLUMN -> Text("${categoria.id} - ${categoria.nombre}")
+                Literals.Table.NOMBRE_COLUMN -> Text(
+                    "${categoria.id} - ${categoria.nombre}",
+                    Modifier.clickable { seeCategoriaById(categoria, navigator) }
+                )
+
                 Literals.Table.OPCIONES_COLUMN -> Row(
                     Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    MyIcons.ViewIcon { println(1) }
+                    MyIcons.ViewIcon { seeCategoriaById(categoria, navigator) }
                     MyIcons.EditIcon { println(1) }
-                    MyIcons.TrashIcon { onDeleteCategoria(categoria.id) }
+                    MyIcons.TrashIcon { onDeleteCategoria(categoria.id!!) }
                 }
             }
         }
     }
 
+    private fun seeCategoriaById(categoria: Categoria, navigator: Navigator) {
+        navigator.push(SeeCategoriaScreen(categoria))
+    }
+
     private fun deleteCategoriaById(removingId: Int, categorias: List<Categoria>): List<Categoria> {
+        Database.deleteCategoriaById(removingId)
         return categorias.filter { it.id != removingId }
     }
 }
