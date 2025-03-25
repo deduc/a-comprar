@@ -1,25 +1,28 @@
 package org.ivandev.acomprar.database
 
+import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import org.ivandev.acomprar.Literals
 import org.ivandev.acomprar.database.Database.mySQLiteDatabase
 import org.ivandev.acomprar.database.entities.Categoria
+import org.ivandev.acomprar.database.entities.Producto
+import org.ivandev.acomprar.database.entities.ProductosWithCategoria
 import org.ivandev.acomprar.database.handlers.CategoriaHandler
+import org.ivandev.acomprar.database.handlers.ProductoHandler
 import org.ivandev.acomprar.database.scripts.CreateTables
 import org.ivandev.acomprar.database.scripts.DropTables
 
 class MySQLiteDatabase(context: Context) : SQLiteOpenHelper(
     context, Literals.Database.DATABASE_NAME, null, 1
 ) {
-    var categoriaHandler: CategoriaHandler = CategoriaHandler()
-
     // Se ejecuta este método la primera vez que usas
     // las lineas db.writableDatabase o db.readableDatabase
     override fun onCreate(db: SQLiteDatabase?) {
-        db?.let {
+        db?.let { it: SQLiteDatabase ->
             createTables(it)
+            initializeData(it)
         }
     }
 
@@ -31,41 +34,55 @@ class MySQLiteDatabase(context: Context) : SQLiteOpenHelper(
         }
     }
 
-    fun getAllCategoria(): List<Categoria> {
-        readableDatabase.use { db ->
-            return categoriaHandler.getAll(db)
-        }
-    }
 
     fun addCategoria(categoria: Categoria): Boolean {
-        writableDatabase.use { db ->
-            return categoriaHandler.insert(db, categoria)
-        }
+        val db = writableDatabase
+        val result = CategoriaHandler.insert(db, categoria)
+
+        db.close()
+        return result
+    }
+
+    fun addProducto(producto: Producto): Boolean {
+        val db = writableDatabase
+        val result = ProductoHandler.insert(db, producto)
+
+        db.close()
+        return result
     }
 
 
+    fun getAllCategoria(): List<Categoria> {
+        val db = readableDatabase
+        val result = CategoriaHandler.getAll(db)
 
-    //    fun insertIntoCarrito(carrito: Carrito) {
-//        writableDatabase.use { db ->
-//            CarritoHandler.insert(db, carrito)
-//        }
-//    }
-    fun insertIntoCategoria(categoria: Categoria) {
-        writableDatabase.use { db ->
-            categoriaHandler.insert(db, categoria)
-        }
+        db.close()
+        return result
     }
-//    fun insertIntoMenu(menu: Menu) {
-//        writableDatabase.use { db ->
-//            MenuHandler.insert(db, menu)
-//        }
-//    }
-//    fun insertIntoProducto(producto: Producto) {
-//        writableDatabase.use { db ->
-//            ProductoHandler.insert(db, producto)
-//        }
-//    }
 
+    fun deleteCategoriaById(id: Int) {
+        val db = writableDatabase
+        CategoriaHandler.deleteById(db, id)
+        db.close()
+    }
+
+    fun getProductosByCategoriaId(id: Int): List<Producto> {
+        val db = readableDatabase
+        val result = ProductoHandler.getProductosByCategoriaId(db, id)
+
+        db.close()
+        return result
+    }
+
+    fun getAllProductosByCategoria(): List<ProductosWithCategoria> {
+        val db = readableDatabase
+
+        val categorias: List<Categoria> = CategoriaHandler.getAll(db)
+        val result = ProductoHandler.getAllProductosByCategoria(db, categorias)
+
+        db.close()
+        return result
+    }
 
     private fun createTables(db: SQLiteDatabase) {
         db.execSQL(CreateTables.CREATE_TABLE_CARRITO)
@@ -73,6 +90,19 @@ class MySQLiteDatabase(context: Context) : SQLiteOpenHelper(
         db.execSQL(CreateTables.CREATE_TABLE_MENU)
         db.execSQL(CreateTables.CREATE_TABLE_PRODUCTO)
         db.execSQL(CreateTables.CREATE_TABLE_CARRITO_PRODUCTO)
+    }
+
+    private fun initializeData(db: SQLiteDatabase) {
+        val categoria = ContentValues().apply {
+            put(Literals.Database.ID_COLUMN, 0)
+            put(Literals.Database.NOMBRE_COLUMN, Literals.NO_CATEGORY_TEXT)
+        }
+
+        db.insert(
+            Literals.Database.CATEGORIA_TABLE,
+            null,
+            categoria
+        )
     }
 
     private fun dropTables(db: SQLiteDatabase){
