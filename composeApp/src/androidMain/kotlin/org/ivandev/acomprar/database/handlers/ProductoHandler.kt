@@ -15,7 +15,7 @@ object ProductoHandler: DatabaseCRUD<Producto> {
             put(Literals.Database.NOMBRE_COLUMN, producto.nombre)
             put(Literals.Database.CANTIDAD_COLUMN, producto.cantidad)
             put(Literals.Database.UNIDAD_CANTIDAD_COLUMN, producto.unidadCantidad)
-            put(Literals.Database.MARCA_COLUMN, producto.Marca)
+            put(Literals.Database.MARCA_COLUMN, producto.marca)
         }
 
         val rowId = db.insert(Literals.Database.PRODUCTO_TABLE, null, values)
@@ -47,7 +47,7 @@ object ProductoHandler: DatabaseCRUD<Producto> {
                     nombre = cursor.getString(cursor.getColumnIndexOrThrow(Literals.Database.NOMBRE_COLUMN)),
                     cantidad = cursor.getFloat(cursor.getColumnIndexOrThrow(Literals.Database.CANTIDAD_COLUMN)),
                     unidadCantidad = cursor.getString(cursor.getColumnIndexOrThrow(Literals.Database.UNIDAD_CANTIDAD_COLUMN)),
-                    Marca = cursor.getString(cursor.getColumnIndexOrThrow(Literals.Database.MARCA_COLUMN))
+                    marca = cursor.getString(cursor.getColumnIndexOrThrow(Literals.Database.MARCA_COLUMN))
                 )
                 productos.add(producto)
             }
@@ -78,7 +78,13 @@ object ProductoHandler: DatabaseCRUD<Producto> {
     }
 
     override fun deleteById(db: SQLiteDatabase, id: Int): Boolean {
-        TODO("Not yet implemented")
+        val deletedRows: Int = db.delete(
+            Literals.Database.PRODUCTO_TABLE,
+            "${Literals.Database.ID_COLUMN} = ?",
+            arrayOf("${id}")
+        )
+
+        return deletedRows == 1
     }
 
     override fun getAll(db: SQLiteDatabase): MutableList<Producto> {

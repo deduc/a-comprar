@@ -3,15 +3,15 @@ package org.ivandev.acomprar.screens.producto
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Button
-import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ExposedDropdownMenuBox
-import androidx.compose.material.Icon
-import androidx.compose.material.Text
-import androidx.compose.material.TextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material3.Button
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
@@ -28,31 +28,31 @@ import org.ivandev.acomprar.components.CommonScreen
 import org.ivandev.acomprar.database.Database
 import org.ivandev.acomprar.database.entities.Categoria
 import org.ivandev.acomprar.database.entities.Producto
-import org.ivandev.acomprar.screens.producto.classes.ProductoCheckedMessage
 
-class AddProductoScreen(
-    val id: Int
+
+class EditProductoScreen(
+    private val producto: Producto
 ): Screen {
     @Composable
     override fun Content() {
         val screen = CommonScreen(
-            title = Literals.ADD_PRODUCTO_TITLE
+            title = Literals.EDIT_PRODUCTO_TITLE
         ) {
-            MainContent(id)
+            MainContent(producto)
         }
 
         screen.Render()
     }
 
     @Composable
-    fun MainContent(id: Int) {
-        AddProductoForm(id)
+    fun MainContent(producto: Producto) {
+        EditProductoForm(producto)
     }
-
 
     @OptIn(ExperimentalMaterialApi::class)
     @Composable
-    fun AddProductoForm(id: Int) {
+    fun EditProductoForm(producto: Producto) {
+        val id: Int = producto.idCategoria!!
         val navigator: Navigator = LocalNavigator.currentOrThrow
         val categorias = Database.getAllCategoria()
 
@@ -66,10 +66,10 @@ class AddProductoScreen(
             categoriaSeleccionada.value = categoriaPorDefecto
         }
 
-        val nombre = remember { mutableStateOf("") }
-        val cantidad = remember { mutableStateOf("") }
-        val unidadCantidad = remember { mutableStateOf("") }
-        val marca = remember { mutableStateOf("") }
+        val nombre = remember { mutableStateOf(producto.nombre) }
+        val cantidad = remember { mutableStateOf(producto.cantidad.toString()) }
+        val unidadCantidad = remember { mutableStateOf(producto.unidadCantidad) }
+        val marca = remember { mutableStateOf(producto.marca) }
 
         Column(
             modifier = Modifier.fillMaxWidth(),
@@ -113,13 +113,20 @@ class AddProductoScreen(
                     expanded = expanded.value,
                     onDismissRequest = { expanded.value = false }
                 ) {
-                    categorias.forEach { categoria ->
-                        DropdownMenuItem(onClick = {
-                            categoriaSeleccionada.value = categoria
-                            expanded.value = false
-                        }) {
-                            Text(categoria.nombre)
-                        }
+                    categorias.forEach { categoria: Categoria ->
+//                        DropdownMenuItem(onClick = {
+//                            categoriaSeleccionada.value = categoria
+//                            expanded.value = false
+//                        }) {
+//                            Text(categoria.nombre)
+//                        }
+                        DropdownMenuItem(
+                            onClick = {
+                                categoriaSeleccionada.value = categoria
+                                expanded.value = false
+                            },
+                            text = { categoria.nombre }
+                        )
                     }
                 }
             }
@@ -134,7 +141,7 @@ class AddProductoScreen(
                         unidadCantidad = unidadCantidad.value,
                         marca = marca.value
                     )
-                    addProducto(navigator, producto)
+//                    addProducto(navigator, producto)
                 }
             ) {
                 Text(Literals.ADD_TEXT)
@@ -142,39 +149,4 @@ class AddProductoScreen(
         }
     }
 
-    private fun addProducto(navigator: Navigator, producto: Producto){
-        var checking: ProductoCheckedMessage = isProductoOk(producto)
-
-        if (! checking.checkedPassedTest) {
-            println(checking.message)
-        }
-
-        if (! Database.addProducto(producto)) {
-            println("ERROR - No se ha podido añadir la fila por un error desconocido")
-            navigator.pop()
-            return
-        }
-
-        println("Fila añadida en la BDD")
-        navigator.pop()
-    }
-
-    private fun isProductoOk(producto: Producto): ProductoCheckedMessage {
-        var result: ProductoCheckedMessage
-
-        if (
-            producto.idCategoria != null &&
-            ! producto.nombre.isNullOrEmpty() &&
-            producto.cantidad != null &&
-            producto.cantidad > 0
-        )
-        {
-            result = ProductoCheckedMessage(true, "")
-        }
-        else {
-            result = ProductoCheckedMessage(false, "ERROR: Revisa los datos insertados.")
-        }
-
-        return result
-    }
 }

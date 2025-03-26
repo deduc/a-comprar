@@ -6,5 +6,5 @@ class Producto(
     val nombre: String,
     val cantidad: Float,
     val unidadCantidad: String,
-    val Marca: String?,
+    val marca: String,
 )

@@ -31,5 +31,6 @@ class SeeCategoriaScreen(
     @Composable
     private fun MainContent() {
         Text("${categoria.id} + ${categoria.nombre}")
+        Text(productsByCategoria.toString())
     }
 }

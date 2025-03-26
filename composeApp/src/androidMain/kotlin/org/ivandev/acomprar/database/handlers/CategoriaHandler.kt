@@ -42,7 +42,7 @@ object CategoriaHandler: DatabaseCRUD<Categoria> {
             arrayOf("${id}")
         )
 
-        return deletedRows > 0
+        return deletedRows == 1
     }
 
     private fun checkIfCategoriaWasInserted(db: SQLiteDatabase, categoria: Categoria): Boolean {

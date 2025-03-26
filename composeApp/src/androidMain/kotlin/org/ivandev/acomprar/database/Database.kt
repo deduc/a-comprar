@@ -21,6 +21,16 @@ object Database {
     fun deleteAllProducto() {}
 
 
+    fun addCategoria(categoria: Categoria): Boolean {
+        return mySQLiteDatabase.addCategoria(categoria)
+    }
+
+    fun addProducto(producto: Producto): Boolean {
+        return mySQLiteDatabase.addProducto(producto)
+    }
+
+
+
     fun getAllCarrito(): List<Carrito> {
         TODO("Not yet implemented")
     }
@@ -37,6 +47,8 @@ object Database {
         TODO("Not yet implemented")
     }
 
+
+
     fun getProductosByCategoriaId(id: Int): List<Producto> {
         return mySQLiteDatabase.getProductosByCategoriaId(id)
     }
@@ -45,15 +57,13 @@ object Database {
         return mySQLiteDatabase.getAllProductosByCategoria()
     }
 
-    fun addCategoria(categoria: Categoria): Boolean {
-        return mySQLiteDatabase.addCategoria(categoria)
-    }
 
-    fun addProducto(producto: Producto): Boolean {
-        return mySQLiteDatabase.addProducto(producto)
-    }
 
     fun deleteCategoriaById(id: Int) {
         mySQLiteDatabase.deleteCategoriaById(id)
+    }
+
+    fun deleteProductoById(id: Int): Boolean {
+        return mySQLiteDatabase.deleteProductoById(id)
     }
 }

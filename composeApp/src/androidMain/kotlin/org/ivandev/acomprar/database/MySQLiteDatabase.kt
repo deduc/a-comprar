@@ -52,23 +52,10 @@ class MySQLiteDatabase(context: Context) : SQLiteOpenHelper(
     }
 
 
+
     fun getAllCategoria(): List<Categoria> {
         val db = readableDatabase
         val result = CategoriaHandler.getAll(db)
-
-        db.close()
-        return result
-    }
-
-    fun deleteCategoriaById(id: Int) {
-        val db = writableDatabase
-        CategoriaHandler.deleteById(db, id)
-        db.close()
-    }
-
-    fun getProductosByCategoriaId(id: Int): List<Producto> {
-        val db = readableDatabase
-        val result = ProductoHandler.getProductosByCategoriaId(db, id)
 
         db.close()
         return result
@@ -83,6 +70,31 @@ class MySQLiteDatabase(context: Context) : SQLiteOpenHelper(
         db.close()
         return result
     }
+
+    fun getProductosByCategoriaId(id: Int): List<Producto> {
+        val db = readableDatabase
+        val result = ProductoHandler.getProductosByCategoriaId(db, id)
+
+        db.close()
+        return result
+    }
+
+
+
+    fun deleteCategoriaById(id: Int) {
+        val db = writableDatabase
+        CategoriaHandler.deleteById(db, id)
+        db.close()
+    }
+
+    fun deleteProductoById(id: Int): Boolean {
+        val db = writableDatabase
+        val result = ProductoHandler.deleteById(db, id)
+
+        db.close()
+        return result
+    }
+
 
     private fun createTables(db: SQLiteDatabase) {
         db.execSQL(CreateTables.CREATE_TABLE_CARRITO)
