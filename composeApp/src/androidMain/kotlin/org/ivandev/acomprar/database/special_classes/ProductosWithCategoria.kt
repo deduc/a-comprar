@@ -1,4 +1,6 @@
-package org.ivandev.acomprar.database.entities
+package org.ivandev.acomprar.database.special_classes
+
+import org.ivandev.acomprar.database.entities.Producto
 
 class ProductosWithCategoria(
     val categoriaName: String,

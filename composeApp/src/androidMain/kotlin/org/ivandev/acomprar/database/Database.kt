@@ -3,9 +3,10 @@ package org.ivandev.acomprar.database
 import android.content.Context
 import org.ivandev.acomprar.database.entities.Carrito
 import org.ivandev.acomprar.database.entities.Categoria
+import org.ivandev.acomprar.database.entities.Comida
 import org.ivandev.acomprar.database.entities.Menu
 import org.ivandev.acomprar.database.entities.Producto
-import org.ivandev.acomprar.database.entities.ProductosWithCategoria
+import org.ivandev.acomprar.database.special_classes.ProductosWithCategoria
 
 object Database {
     lateinit var mySQLiteDatabase: MySQLiteDatabase
@@ -29,10 +30,14 @@ object Database {
         return mySQLiteDatabase.addProducto(producto)
     }
 
+    fun addMenu(menu: Menu): Boolean {
+        return mySQLiteDatabase.addMenu(menu)
+    }
+
 
 
     fun getAllCarrito(): List<Carrito> {
-        TODO("Not yet implemented")
+        return listOf()
     }
 
     fun getAllCategoria(): List<Categoria> {
@@ -40,19 +45,23 @@ object Database {
     }
 
     fun getAllMenu(): List<Menu> {
-        TODO("Not yet implemented")
+        return mySQLiteDatabase.getAllMenu()
     }
 
     fun getAllProducto(): List<Producto> {
-        TODO("Not yet implemented")
+        return listOf()
+    }
+
+    fun getAllProductosByCategoria(): List<ProductosWithCategoria> {
+        return mySQLiteDatabase.getAllProductosByCategoria()
     }
 
     fun getProductosByCategoriaId(id: Int): List<Producto> {
         return mySQLiteDatabase.getProductosByCategoriaId(id)
     }
 
-    fun getAllProductosByCategoria(): List<ProductosWithCategoria> {
-        return mySQLiteDatabase.getAllProductosByCategoria()
+    fun getComidasYCenasByMenuId(id: Int): List<Comida> {
+        return mySQLiteDatabase.getComidasYCenasByMenuId(id)
     }
 
 
@@ -77,5 +86,9 @@ object Database {
 
     fun deleteProductoById(id: Int): Boolean {
         return mySQLiteDatabase.deleteProductoById(id)
+    }
+
+    fun deleteMenu(menu: Menu): Boolean {
+        return mySQLiteDatabase.deleteMenu(menu)
     }
 }

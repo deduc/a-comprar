@@ -5,14 +5,17 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import org.ivandev.acomprar.Literals
-import org.ivandev.acomprar.database.Database.mySQLiteDatabase
 import org.ivandev.acomprar.database.entities.Categoria
+import org.ivandev.acomprar.database.entities.Comida
+import org.ivandev.acomprar.database.entities.Menu
 import org.ivandev.acomprar.database.entities.Producto
-import org.ivandev.acomprar.database.entities.ProductosWithCategoria
 import org.ivandev.acomprar.database.handlers.CategoriaHandler
+import org.ivandev.acomprar.database.handlers.ComidasHandler
+import org.ivandev.acomprar.database.handlers.MenuHandler
 import org.ivandev.acomprar.database.handlers.ProductoHandler
 import org.ivandev.acomprar.database.scripts.CreateTables
 import org.ivandev.acomprar.database.scripts.DropTables
+import org.ivandev.acomprar.database.special_classes.ProductosWithCategoria
 
 class MySQLiteDatabase(context: Context) : SQLiteOpenHelper(
     context, Literals.Database.DATABASE_NAME, null, 1
@@ -51,6 +54,15 @@ class MySQLiteDatabase(context: Context) : SQLiteOpenHelper(
         return result
     }
 
+    fun addMenu(menu: Menu): Boolean {
+        val db = writableDatabase
+        val result = MenuHandler.insert(db, menu)
+
+        db.close()
+        return result
+    }
+
+
 
 
     fun getAllCategoria(): List<Categoria> {
@@ -71,6 +83,15 @@ class MySQLiteDatabase(context: Context) : SQLiteOpenHelper(
         return result
     }
 
+    fun getAllMenu(): List<Menu> {
+        val db = readableDatabase
+        val result = MenuHandler.getAll(db)
+
+        db.close()
+        return result
+    }
+
+
     fun getProductosByCategoriaId(id: Int): List<Producto> {
         val db = readableDatabase
         val result = ProductoHandler.getProductosByCategoriaId(db, id)
@@ -78,6 +99,16 @@ class MySQLiteDatabase(context: Context) : SQLiteOpenHelper(
         db.close()
         return result
     }
+
+    fun getComidasYCenasByMenuId(id: Int): List<Comida> {
+        val db = readableDatabase
+        val result = ComidasHandler.getComidasByMenuId(db, id)
+
+        db.close()
+        return result
+
+    }
+
 
 
     fun updateCategoriaById(categoria: Categoria): Boolean {
@@ -122,10 +153,24 @@ class MySQLiteDatabase(context: Context) : SQLiteOpenHelper(
     }
 
 
+    fun deleteMenu(menu: Menu): Boolean {
+        val db = writableDatabase
+        val result = MenuHandler.delete(db, menu)
+
+        db.close()
+        return result
+    }
+
+    // METODOS ESPECIALES
+    // METODOS ESPECIALES
+    // METODOS ESPECIALES
     private fun createTables(db: SQLiteDatabase) {
         db.execSQL(CreateTables.CREATE_TABLE_CARRITO)
         db.execSQL(CreateTables.CREATE_TABLE_CATEGORIA)
+        db.execSQL(CreateTables.CREATE_TABLE_COMIDA)
+        db.execSQL(CreateTables.CREATE_TABLE_COMIDA_PRODUCTO)
         db.execSQL(CreateTables.CREATE_TABLE_MENU)
+        db.execSQL(CreateTables.CREATE_TABLE_MENU_COMIDA)
         db.execSQL(CreateTables.CREATE_TABLE_PRODUCTO)
         db.execSQL(CreateTables.CREATE_TABLE_CARRITO_PRODUCTO)
     }
@@ -146,7 +191,10 @@ class MySQLiteDatabase(context: Context) : SQLiteOpenHelper(
     private fun dropTables(db: SQLiteDatabase){
         db.execSQL(DropTables.DROP_TABLE_CARRITO)
         db.execSQL(DropTables.DROP_TABLE_CATEGORIA)
+        db.execSQL(DropTables.DROP_TABLE_COMIDA)
+        db.execSQL(DropTables.DROP_TABLE_COMIDA_PRODUCTO)
         db.execSQL(DropTables.DROP_TABLE_MENU)
+        db.execSQL(DropTables.DROP_TABLE_MENU_COMIDA)
         db.execSQL(DropTables.DROP_TABLE_PRODUCTO)
         db.execSQL(DropTables.DROP_TABLE_CARRITO_PRODUCTO)
     }

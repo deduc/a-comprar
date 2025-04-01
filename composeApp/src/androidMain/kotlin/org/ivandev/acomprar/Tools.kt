@@ -1,6 +1,11 @@
 package org.ivandev.acomprar
 
+import androidx.compose.foundation.border
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
@@ -11,4 +16,8 @@ object Tools {
     var primaryColor = Color(0x6200EE)
     var titleFontSize = 20.sp
     var buttonsSpacer8dp = 8.dp
+
+    var styleTitle = TextStyle(fontSize = this.titleFontSize, textDecoration = TextDecoration.Underline, fontWeight = FontWeight.Black)
+    var styleTableHeader = TextStyle(fontSize = this.titleFontSize, fontWeight = FontWeight.Medium)
+    var styleBorderBlack = Modifier.border(1.dp, Color.Black)
 }

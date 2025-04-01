@@ -5,7 +5,7 @@ import android.database.sqlite.SQLiteDatabase
 import org.ivandev.acomprar.Literals
 import org.ivandev.acomprar.database.entities.Categoria
 import org.ivandev.acomprar.database.entities.Producto
-import org.ivandev.acomprar.database.entities.ProductosWithCategoria
+import org.ivandev.acomprar.database.special_classes.ProductosWithCategoria
 import org.ivandev.acomprar.database.interfaces.DatabaseCRUD
 
 object ProductoHandler: DatabaseCRUD<Producto> {
@@ -37,6 +37,7 @@ object ProductoHandler: DatabaseCRUD<Producto> {
     }
 
     override fun getAll(db: SQLiteDatabase): MutableList<Producto> {
+        println("******** NO IMPLEMENTADO ***********")
         TODO("Not yet implemented")
     }
 
@@ -70,10 +71,7 @@ object ProductoHandler: DatabaseCRUD<Producto> {
         return productos
     }
 
-    fun getAllProductosByCategoria(
-        db: SQLiteDatabase,
-        categorias: List<Categoria>
-    ): List<ProductosWithCategoria> {
+    fun getAllProductosByCategoria(db: SQLiteDatabase,categorias: List<Categoria>): List<ProductosWithCategoria> {
         val productsByCategoria: MutableList<ProductosWithCategoria> = mutableListOf()
 
         categorias?.forEach { categoria: Categoria ->

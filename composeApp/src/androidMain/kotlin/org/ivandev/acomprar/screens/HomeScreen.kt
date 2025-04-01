@@ -71,7 +71,7 @@ class HomeScreen: Screen {
     @Composable
     fun MyNavigationButtons() {
         Column {
-            MyNavButton(Literals.MENU_TITLE, MenuScreen)
+            MyNavButton(Literals.MENU_TITLE, MenuScreen())
             MyNavButton(Literals.CATEGORIAS_TITLE, CategoriasScreen())
             MyNavButton(Literals.PRODUCTOS_TITLE, ProductosScreen())
         }

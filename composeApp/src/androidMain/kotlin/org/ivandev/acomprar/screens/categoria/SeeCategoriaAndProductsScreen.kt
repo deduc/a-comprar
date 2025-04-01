@@ -71,15 +71,17 @@ class SeeCategoriaAndProductsScreen(
 
         Column {
             MyScrollableColumn {
-                if (productos.value.size > 0) {
-                    Column {
-                        productos.value.forEach { producto: Producto? ->
-                            ProductInfo(producto!!, selectedProduct)
+                Column(Modifier.weight(1f)) {
+                    if (productos.value.size > 0) {
+                        Column {
+                            productos.value.forEach { producto: Producto? ->
+                                ProductInfo(producto!!, selectedProduct)
+                            }
                         }
                     }
-                }
-                else {
-                    Text(Literals.NO_DATA_TEXT)
+                    else {
+                        Text(Literals.NO_DATA_TEXT)
+                    }
                 }
 
                 ButtonsPanel(categoria, navigator)

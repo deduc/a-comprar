@@ -39,7 +39,7 @@ import org.ivandev.acomprar.components.MyIcons
 import org.ivandev.acomprar.components.MyScrollableColumn
 import org.ivandev.acomprar.database.Database
 import org.ivandev.acomprar.database.entities.Producto
-import org.ivandev.acomprar.database.entities.ProductosWithCategoria
+import org.ivandev.acomprar.database.special_classes.ProductosWithCategoria
 
 class ProductosScreen: Screen {
     @Composable
