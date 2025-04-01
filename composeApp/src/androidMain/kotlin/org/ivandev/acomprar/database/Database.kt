@@ -47,8 +47,6 @@ object Database {
         TODO("Not yet implemented")
     }
 
-
-
     fun getProductosByCategoriaId(id: Int): List<Producto> {
         return mySQLiteDatabase.getProductosByCategoriaId(id)
     }
@@ -58,9 +56,23 @@ object Database {
     }
 
 
+    fun updateCategoriaById(categoria: Categoria): Boolean {
+        return mySQLiteDatabase.updateCategoriaById(categoria)
+    }
 
-    fun deleteCategoriaById(id: Int) {
-        mySQLiteDatabase.deleteCategoriaById(id)
+    fun updateProductoById(producto: Producto): Boolean {
+        return mySQLiteDatabase.updateProductoById(producto)
+    }
+
+
+    fun deleteCategoriaById(idCategoria: Int): Boolean {
+        var result = mySQLiteDatabase.deleteCategoriaById(idCategoria)
+
+        if (result) {
+            result = mySQLiteDatabase.updateProductosToSinCategoria(idCategoria)
+        }
+
+        return result
     }
 
     fun deleteProductoById(id: Int): Boolean {

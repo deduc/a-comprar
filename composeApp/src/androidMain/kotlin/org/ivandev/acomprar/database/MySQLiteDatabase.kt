@@ -80,11 +80,37 @@ class MySQLiteDatabase(context: Context) : SQLiteOpenHelper(
     }
 
 
-
-    fun deleteCategoriaById(id: Int) {
+    fun updateCategoriaById(categoria: Categoria): Boolean {
         val db = writableDatabase
-        CategoriaHandler.deleteById(db, id)
+        val result = CategoriaHandler.updateCategoriaById(db, categoria)
+
         db.close()
+        return result
+    }
+
+    fun updateProductoById(producto: Producto): Boolean {
+        val db = writableDatabase
+        val result = ProductoHandler.updateById(db, producto)
+
+        db.close()
+        return result
+    }
+
+    fun updateProductosToSinCategoria(idCategoria: Int): Boolean {
+        val db = writableDatabase
+        val result = ProductoHandler.updateProductosToSinCategoria(db, idCategoria)
+
+        db.close()
+        return result
+    }
+
+
+
+    fun deleteCategoriaById(id: Int): Boolean {
+        val db = writableDatabase
+        val result = CategoriaHandler.deleteById(db, id)
+        db.close()
+        return result
     }
 
     fun deleteProductoById(id: Int): Boolean {

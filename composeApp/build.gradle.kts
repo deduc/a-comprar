@@ -32,7 +32,8 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
-            // Librerías para Routing o Navegacion
+
+            // Librerías para Routing/Navegacion
             implementation(libs.voyager.navigator)
             implementation(libs.voyager.transitions)
             implementation(libs.voyager.tabNavigator)
@@ -41,7 +42,8 @@ kotlin {
             implementation("androidx.compose.material:material-icons-core:1.4.0")
             implementation("androidx.compose.material:material-icons-extended:1.4.0")
 
-
+            // Implementación de ViewModel para tener Stores como los de vue
+            implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.4.0")
         }
     }
 }

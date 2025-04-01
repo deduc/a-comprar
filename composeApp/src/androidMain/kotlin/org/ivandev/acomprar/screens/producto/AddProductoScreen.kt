@@ -165,7 +165,6 @@ class AddProductoScreen(
         if (
             producto.idCategoria != null &&
             ! producto.nombre.isNullOrEmpty() &&
-            producto.cantidad != null &&
             producto.cantidad > 0
         )
         {

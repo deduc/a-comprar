@@ -22,7 +22,8 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import org.ivandev.acomprar.Literals
 import org.ivandev.acomprar.components.CommonScreen
 import org.ivandev.acomprar.screens.categoria.CategoriasScreen
-import org.ivandev.acomprar.screens.producto.SeeProductosScreen
+import org.ivandev.acomprar.screens.menu.MenuScreen
+import org.ivandev.acomprar.screens.producto.ProductosScreen
 
 class HomeScreen: Screen {
     private val homeScreenTitle: String = Literals.HOME_TITLE
@@ -72,7 +73,7 @@ class HomeScreen: Screen {
         Column {
             MyNavButton(Literals.MENU_TITLE, MenuScreen)
             MyNavButton(Literals.CATEGORIAS_TITLE, CategoriasScreen())
-            MyNavButton(Literals.PRODUCTOS_TITLE, SeeProductosScreen())
+            MyNavButton(Literals.PRODUCTOS_TITLE, ProductosScreen())
         }
     }
 

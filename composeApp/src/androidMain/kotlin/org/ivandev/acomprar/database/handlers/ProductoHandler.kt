@@ -26,6 +26,20 @@ object ProductoHandler: DatabaseCRUD<Producto> {
             return true
     }
 
+    override fun deleteById(db: SQLiteDatabase, id: Int): Boolean {
+        val deletedRows: Int = db.delete(
+            Literals.Database.PRODUCTO_TABLE,
+            "${Literals.Database.ID_COLUMN} = ?",
+            arrayOf("${id}")
+        )
+
+        return deletedRows == 1
+    }
+
+    override fun getAll(db: SQLiteDatabase): MutableList<Producto> {
+        TODO("Not yet implemented")
+    }
+
     fun getProductosByCategoriaId(db: SQLiteDatabase, id: Int): List<Producto> {
         val productos = mutableListOf<Producto>()
 
@@ -68,7 +82,7 @@ object ProductoHandler: DatabaseCRUD<Producto> {
             productsByCategoria.add(
                 ProductosWithCategoria(
                     categoriaName = categoria.nombre,
-                    categoriaId = categoria.id,
+                    categoriaId = categoria.id!!,
                     productos
                 )
             )
@@ -77,17 +91,36 @@ object ProductoHandler: DatabaseCRUD<Producto> {
         return productsByCategoria
     }
 
-    override fun deleteById(db: SQLiteDatabase, id: Int): Boolean {
-        val deletedRows: Int = db.delete(
+    fun updateById(db: SQLiteDatabase, producto: Producto): Boolean {
+        var productKeyValueColumn = ContentValues()
+        productKeyValueColumn.put(Literals.Database.ID_COLUMN, producto.id)
+        productKeyValueColumn.put(Literals.Database.ID_CATEGORIA_COLUMN, producto.idCategoria)
+        productKeyValueColumn.put(Literals.Database.NOMBRE_COLUMN, producto.nombre)
+        productKeyValueColumn.put(Literals.Database.CANTIDAD_COLUMN, producto.cantidad)
+        productKeyValueColumn.put(Literals.Database.UNIDAD_CANTIDAD_COLUMN, producto.unidadCantidad)
+        productKeyValueColumn.put(Literals.Database.MARCA_COLUMN, producto.marca)
+
+        var productosUpdated: Int = db.update(
             Literals.Database.PRODUCTO_TABLE,
+            productKeyValueColumn,
             "${Literals.Database.ID_COLUMN} = ?",
-            arrayOf("${id}")
+            arrayOf("${producto.id}")
         )
 
-        return deletedRows == 1
+        return productosUpdated == 1
     }
 
-    override fun getAll(db: SQLiteDatabase): MutableList<Producto> {
-        TODO("Not yet implemented")
+    fun updateProductosToSinCategoria(db: SQLiteDatabase, idCategoria: Int): Boolean {
+        val values = ContentValues().apply {
+            put(Literals.Database.ID_CATEGORIA_COLUMN, Literals.Database.ID_SIN_CATEGORIA_VALUE)
+        }
+
+        val rowsAffected = db.update(
+            Literals.Database.PRODUCTO_TABLE,
+            values,
+            "${Literals.Database.ID_CATEGORIA_COLUMN} = ?",
+            arrayOf(idCategoria.toString()))
+
+        return rowsAffected > 0
     }
 }

@@ -13,6 +13,7 @@ object Literals {
     const val ADD_TEXT: String = "Añadir"
 
     const val NO_CATEGORY_TEXT: String = "Sin categoría"
+    const val NO_DATA_TEXT: String = "Sin datos."
 
     // Home navigation buttons
     const val HOME_TITLE: String = "Home"
@@ -52,6 +53,9 @@ object Literals {
         const val ID_CARRITO_COLUMN: String = "id_carrito"
         const val ID_PRODUCTO_COLUMN: String = "id_producto"
 
+        // special values to columns
+        const val ID_SIN_CATEGORIA_VALUE: Int = 0
+
         // File names
         const val CARRITO_FILE: String = "carrito.json"
         const val CATEGORIA_FILE: String = "categoria.json"
@@ -64,5 +68,6 @@ object Literals {
         const val NOMBRE_COLUMN: String = "Nombre"
         const val CANTIDAD_COLUMN: String = "Cantidad"
         const val OPCIONES_COLUMN: String = "Opciones"
+        const val MARCA_COLUMN: String = "Marca"
     }
 }

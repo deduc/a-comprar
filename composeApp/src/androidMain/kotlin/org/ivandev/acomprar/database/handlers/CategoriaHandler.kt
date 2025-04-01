@@ -1,7 +1,6 @@
 package org.ivandev.acomprar.database.handlers
 
 import android.content.ContentValues
-import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import org.ivandev.acomprar.Literals
 import org.ivandev.acomprar.database.entities.Categoria
@@ -43,6 +42,20 @@ object CategoriaHandler: DatabaseCRUD<Categoria> {
         )
 
         return deletedRows == 1
+    }
+
+    fun updateCategoriaById(db: SQLiteDatabase, categoria: Categoria): Boolean {
+        var categoriaNameColumn = ContentValues()
+        categoriaNameColumn.put(Literals.Database.NOMBRE_COLUMN, categoria.nombre)
+
+        val updatedRows: Int = db.update(
+            Literals.Database.CATEGORIA_TABLE,
+            categoriaNameColumn,
+            "${Literals.Database.ID_COLUMN} = ?",
+            arrayOf("${categoria.id}"),
+        )
+
+        return updatedRows == 1
     }
 
     private fun checkIfCategoriaWasInserted(db: SQLiteDatabase, categoria: Categoria): Boolean {

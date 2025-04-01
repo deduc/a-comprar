@@ -14,6 +14,7 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import org.ivandev.acomprar.Literals
 import org.ivandev.acomprar.database.Database
 import org.ivandev.acomprar.database.entities.Categoria
+import org.ivandev.acomprar.screens.categoria.classes.CategoriaInputResult
 
 class AddCategoriaScreen: Screen {
     @Composable
@@ -31,7 +32,7 @@ class AddCategoriaScreen: Screen {
 
             Button(
                 onClick = {
-                    AddCategoria(navigator, Categoria(null, text.value))
+                    addCategoria(navigator, Categoria(null, text.value))
                 }
             ) {
                 Text(Literals.ADD_TEXT)
@@ -39,8 +40,14 @@ class AddCategoriaScreen: Screen {
         }
     }
 
-    fun AddCategoria(navigator: Navigator, categoria: Categoria){
+    fun addCategoria(navigator: Navigator, categoria: Categoria){
+        val categoriaInput: CategoriaInputResult = isCategoriaOk(categoria)
         var added: Boolean = Database.addCategoria(categoria)
+
+        if (! categoriaInput.isOk) {
+            println("ERROR: ${categoriaInput.errorMessage}")
+            return
+        }
 
         if (added) {
             println("Fila añadida en la BDD")
@@ -50,5 +57,16 @@ class AddCategoriaScreen: Screen {
             println("ERROR - No se ha podido añadir la fila")
             navigator.pop()
         }
+    }
+
+    fun isCategoriaOk(categoria: Categoria): CategoriaInputResult {
+        var result = CategoriaInputResult(true, "")
+
+        if (categoria.nombre.length > 64) {
+            result.errorMessage = "64 caracteres como máximo."
+            result.isOk = false
+        }
+
+        return result
     }
 }

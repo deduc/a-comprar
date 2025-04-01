@@ -52,8 +52,8 @@ class EditProductoScreen(
     @OptIn(ExperimentalMaterialApi::class)
     @Composable
     fun EditProductoForm(producto: Producto) {
-        val id: Int = producto.idCategoria!!
         val navigator: Navigator = LocalNavigator.currentOrThrow
+        val idCategoria: Int = producto.idCategoria!!
         val categorias = Database.getAllCategoria()
 
         // Preseleccionar la categoría con el ID especificado
@@ -61,8 +61,8 @@ class EditProductoScreen(
         // Expansión del desplegable
         val expanded = remember { mutableStateOf(false) }
 
-        LaunchedEffect(id) {
-            val categoriaPorDefecto = categorias.find { it.id == id }
+        LaunchedEffect(idCategoria) {
+            val categoriaPorDefecto = categorias.find { it.id == idCategoria }
             categoriaSeleccionada.value = categoriaPorDefecto
         }
 
@@ -114,12 +114,6 @@ class EditProductoScreen(
                     onDismissRequest = { expanded.value = false }
                 ) {
                     categorias.forEach { categoria: Categoria ->
-//                        DropdownMenuItem(onClick = {
-//                            categoriaSeleccionada.value = categoria
-//                            expanded.value = false
-//                        }) {
-//                            Text(categoria.nombre)
-//                        }
                         DropdownMenuItem(
                             onClick = {
                                 categoriaSeleccionada.value = categoria
@@ -133,15 +127,15 @@ class EditProductoScreen(
 
             Button(
                 onClick = {
-                    val producto = Producto(
-                        id = null,
+                    val newProducto = Producto(
+                        id = producto.id,
                         idCategoria = categoriaSeleccionada.value?.id,
                         nombre = nombre.value,
                         cantidad = cantidad.value.toFloatOrNull() ?: 0f,
                         unidadCantidad = unidadCantidad.value,
                         marca = marca.value
                     )
-//                    addProducto(navigator, producto)
+                    updateProducto(newProducto, navigator)
                 }
             ) {
                 Text(Literals.ADD_TEXT)
@@ -149,4 +143,16 @@ class EditProductoScreen(
         }
     }
 
+    private fun updateProducto(producto: Producto, navigator: Navigator) {
+        val updated = Database.updateProductoById(producto)
+
+        if (updated) {
+            println("Binchilin se ha actualizado 1 producto")
+        }
+        else {
+            println("ERROR inesperado, se han actualizado más de 1")
+        }
+
+        navigator.pop()
+    }
 }

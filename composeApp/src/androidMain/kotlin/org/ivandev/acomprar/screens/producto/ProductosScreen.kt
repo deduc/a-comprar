@@ -1,6 +1,7 @@
 package org.ivandev.acomprar.screens.producto
 
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,7 +12,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -41,7 +41,7 @@ import org.ivandev.acomprar.database.Database
 import org.ivandev.acomprar.database.entities.Producto
 import org.ivandev.acomprar.database.entities.ProductosWithCategoria
 
-class SeeProductosScreen: Screen {
+class ProductosScreen: Screen {
     @Composable
     override fun Content() {
         val screen = CommonScreen(
@@ -63,21 +63,23 @@ class SeeProductosScreen: Screen {
         }
 
         MyScrollableColumn {
-            Column(Modifier.fillMaxSize().border(color = Color.Black, width = 1.dp)) {
+            Column(Modifier.fillMaxSize()) {
                 productosWithCategoria.let { productos ->
                     productos.forEach { it: ProductosWithCategoria ->
-                        Header(it, navigator)
+                        Column(Modifier.border(1.dp, Color.Black)) {
+                            Header(it, navigator)
 
-                        Column(Modifier.padding(8.dp)) {
-                            ProductsList(
-                                it.productos,
-                                navigator,
-                                productosWithCategoria,
-                                setProductosWithCategoria = { productosWithCategoria = it }
-                            )
+                            Column(Modifier.padding(8.dp)) {
+                                ProductsAndButtonsList(
+                                    it.productos,
+                                    navigator,
+                                    productosWithCategoria,
+                                    setProductosWithCategoria = { productosWithCategoria = it }
+                                )
+                            }
+
                         }
-
-                        Spacer(Modifier.height(16.dp))
+                        Spacer(Modifier.height(24.dp))
                     }
                 }
             }
@@ -87,37 +89,24 @@ class SeeProductosScreen: Screen {
     @Composable
     private fun Header(it: ProductosWithCategoria, navigator: Navigator) {
         Row(
-            modifier = Modifier.fillMaxWidth().border(color = Color.Black, width = 1.dp),
+            modifier = Modifier.fillMaxWidth().border(1.dp, Color.Black).padding(4.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            MyTitle(it)
+            Text(
+                it.categoriaName,
+                style = TextStyle(fontSize = 20.sp, textDecoration = TextDecoration.Underline, fontWeight = FontWeight.Black),
+                modifier = Modifier.weight(1f)
+            )
 
-            Button(
-                modifier = Modifier,
-                onClick = { navigator.push(AddProductoScreen(it.categoriaId)) }
-            ) {
-                MyIcons.AddIcon(
-                    Modifier.size(24.dp)
-                )
-            }
+            MyIcons.AddIcon(
+                Modifier.size(24.dp).clickable { navigator.push(AddProductoScreen(it.categoriaId)) }
+            )
         }
     }
 
     @Composable
-    private fun MyTitle(it: ProductosWithCategoria) {
-        Text(
-            it.categoriaName,
-            style = TextStyle(
-                fontSize = 20.sp,
-                textDecoration = TextDecoration.Underline,
-                fontWeight = FontWeight.Black
-            )
-        )
-    }
-
-    @Composable
-    private fun ProductsList(
+    private fun ProductsAndButtonsList(
         productosList: List<Producto>?,
         navigator: Navigator,
         productosWithCategoria: List<ProductosWithCategoria>,
@@ -126,18 +115,21 @@ class SeeProductosScreen: Screen {
         if (!productosList.isNullOrEmpty()) {
             productosList.forEach { producto: Producto ->
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                    Row {
-                        Text(producto.nombre)
+                    Row(Modifier.weight(0.8f)) {
+                        var cantidad = "${producto.cantidad}${producto.unidadCantidad}"
+
+                        Text(producto.nombre )
                         Spacer(Modifier.width(8.dp))
-                        Text("${producto.cantidad}${producto.unidadCantidad}")
+                        Text(cantidad)
                     }
 
-                    Row {
+                    Row(Modifier.weight(0.2f)) {
                         MyIcons.EditIcon { editProducto(productosList, producto, navigator) }
-
+                        Spacer(Modifier.width(8.dp))
                         MyIcons.TrashIcon { deleteProductoById(producto.id!!, productosWithCategoria, setProductosWithCategoria) }
                     }
                 }
+                Spacer(Modifier.height(4.dp))
             }
         } else {
             Row {
