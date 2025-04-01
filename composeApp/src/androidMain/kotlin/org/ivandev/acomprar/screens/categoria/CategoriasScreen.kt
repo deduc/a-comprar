@@ -2,7 +2,6 @@ package org.ivandev.acomprar.screens.categoria
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,6 +13,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import cafe.adriel.voyager.core.screen.Screen
@@ -21,7 +21,6 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import org.ivandev.acomprar.Literals
-import org.ivandev.acomprar.components.BottomButtonsBar
 import org.ivandev.acomprar.components.CommonScreen
 import org.ivandev.acomprar.components.DynamicTable
 import org.ivandev.acomprar.components.MyIcons
@@ -50,22 +49,15 @@ class CategoriasScreen : Screen {
                 }
             }
 
-            Box(Modifier.weight(0.125f)) {
-                BottomButtonsBar{
-                    Button(onClick = { showPopup = true }) {
-                        Text("Añadir")
-                    }
+            // *** Barra inferior de botones ***
+            Row(Modifier.fillMaxWidth().weight(0.125f),
+                horizontalArrangement = Arrangement.End,
+                verticalAlignment = Alignment.Bottom
+            ) {
+                Button(onClick = { showPopup = true }) {
+                    Text("Añadir")
                 }
             }
-
-//            Row(Modifier.fillMaxWidth().weight(0.125f),
-//                horizontalArrangement = Arrangement.End,
-//                verticalAlignment = Alignment.Bottom
-//            ) {
-//                Button(onClick = { showPopup = true }) {
-//                    Text("Añadir")
-//                }
-//            }
         }
 
         if (showPopup) {
