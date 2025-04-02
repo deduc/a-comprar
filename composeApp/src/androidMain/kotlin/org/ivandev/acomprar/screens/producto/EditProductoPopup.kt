@@ -46,7 +46,6 @@ fun EditProductoPopup(producto: Producto, myProducto: MutableState<List<Producto
 
     val nombre = remember { mutableStateOf(producto.nombre) }
     val cantidad = remember { mutableStateOf(producto.cantidad.toString()) }
-    val unidadCantidad = remember { mutableStateOf(producto.unidadCantidad) }
     val marca = remember { mutableStateOf(producto.marca) }
 
     if (showPopup) {
@@ -59,8 +58,7 @@ fun EditProductoPopup(producto: Producto, myProducto: MutableState<List<Producto
                             id = producto.id,
                             idCategoria = categoriaSeleccionada.value?.id,
                             nombre = nombre.value,
-                            cantidad = cantidad.value.toFloatOrNull() ?: 0f,
-                            unidadCantidad = unidadCantidad.value,
+                            cantidad = cantidad.value,
                             marca = marca.value
                         )
                         updateProducto(newProducto)
@@ -89,12 +87,7 @@ fun EditProductoPopup(producto: Producto, myProducto: MutableState<List<Producto
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                     )
                     androidx.compose.material3.TextField(
-                        value = unidadCantidad.value,
-                        onValueChange = { unidadCantidad.value = it },
-                        label = { androidx.compose.material3.Text("Unidad de cantidad") }
-                    )
-                    androidx.compose.material3.TextField(
-                        value = marca.value,
+                        value = marca.value!!,
                         onValueChange = { marca.value = it },
                         label = { androidx.compose.material3.Text("Marca") }
                     )

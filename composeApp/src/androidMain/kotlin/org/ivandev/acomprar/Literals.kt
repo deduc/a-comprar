@@ -7,6 +7,8 @@ object Literals {
     const val ADD_MENU_TITLE: String = "Añadir menú"
     const val NO_CATEGORY_TEXT: String = "Sin categoría"
     const val NO_DATA_TEXT: String = "Sin datos."
+    const val SIN_CANTIDAD_TEXT: String = "Sin cantidad."
+    const val SIN_MARCA_TEXT: String = "Sin marca."
 
     // Configuration texts
     const val CHANGE_TEXT: String = "Cambiar"
@@ -60,6 +62,23 @@ object Literals {
 
         // special values to columns
         const val ID_SIN_CATEGORIA_VALUE: Int = 0
+        const val VOID_STR: String = ""
+
+        object Categorias {
+            const val SIN_CATEGORIA: String = "Sin categoría"
+            const val CARNE: String = "Carne"
+            const val LACTEOS: String = "Lácteos"
+            const val FRUTA: String = "Fruta"
+            const val VERDURA: String = "Verdura"
+            const val LIMPIEZA: String = "Limpieza"
+            const val COMIDAS: String = "Comidas"
+            const val CENAS: String = "Cenas"
+            const val POSTRES: String = "Postres"
+
+            fun getPreSelectedCategorias(): List<String> {
+                return listOf(SIN_CATEGORIA, CARNE, LACTEOS, FRUTA, VERDURA, LIMPIEZA, COMIDAS, CENAS, POSTRES)
+            }
+        }
     }
 
     // No SQL tables, just for UI "tables"
@@ -73,7 +92,7 @@ object Literals {
         const val CENA_COLUMN: String = "Cena"
     }
 
-    object DiasSemana {
+    object DaysOfWeek {
         const val LUNES: String = "Lunes"
         const val MARTES: String = "Martes"
         const val MIERCOLES: String = "Miércoles"

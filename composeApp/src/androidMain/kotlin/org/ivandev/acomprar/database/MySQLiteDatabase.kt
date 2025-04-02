@@ -1,6 +1,5 @@
 package org.ivandev.acomprar.database
 
-import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
@@ -10,16 +9,20 @@ import org.ivandev.acomprar.database.entities.Comida
 import org.ivandev.acomprar.database.entities.Menu
 import org.ivandev.acomprar.database.entities.Producto
 import org.ivandev.acomprar.database.handlers.CategoriaHandler
-import org.ivandev.acomprar.database.handlers.ComidasHandler
+import org.ivandev.acomprar.database.handlers.ComidaHandler
 import org.ivandev.acomprar.database.handlers.MenuHandler
 import org.ivandev.acomprar.database.handlers.ProductoHandler
 import org.ivandev.acomprar.database.scripts.CreateTables
 import org.ivandev.acomprar.database.scripts.DropTables
 import org.ivandev.acomprar.database.special_classes.ProductosWithCategoria
 
-class MySQLiteDatabase(context: Context) : SQLiteOpenHelper(
-    context, Literals.Database.DATABASE_NAME, null, 1
-) {
+class MySQLiteDatabase(context: Context, version: Int) : SQLiteOpenHelper(
+    context,
+    Literals.Database.DATABASE_NAME,
+    null,
+    version
+)
+{
     // Se ejecuta este método la primera vez que usas
     // las lineas db.writableDatabase o db.readableDatabase
     override fun onCreate(db: SQLiteDatabase?) {
@@ -54,11 +57,28 @@ class MySQLiteDatabase(context: Context) : SQLiteOpenHelper(
         return result
     }
 
-    fun addMenu(menu: Menu): Boolean {
+    fun addMenuAndComidasYCenas(menu: Menu): Boolean {
         val db = writableDatabase
-        val result = MenuHandler.insert(db, menu)
+        var result = false // Se inicializa con un valor predeterminado
 
-        db.close()
+        try {
+            db.beginTransaction() // Inicia una transacción para garantizar atomicidad
+
+            val inserted = MenuHandler.insert(db, menu)
+            if (!inserted) { return false }
+
+            val lastMenu = MenuHandler.getLast(db) ?: return false
+            result = ComidaHandler.insertComidasYCenasByMenuId(db, lastMenu.id!!)
+
+            // Confirma la transacción si todo va bien
+            if (result) { db.setTransactionSuccessful() }
+        } catch (e: Exception) {
+            e.printStackTrace() // Maneja excepciones para depuración
+        } finally {
+            db.endTransaction() // Finaliza la transacción (commit o rollback)
+            db.close()
+        }
+
         return result
     }
 
@@ -100,13 +120,19 @@ class MySQLiteDatabase(context: Context) : SQLiteOpenHelper(
         return result
     }
 
-    fun getComidasYCenasByMenuId(id: Int): List<Comida> {
+    fun getComidasByMenuId(id: Int): List<Comida> {
         val db = readableDatabase
-        val result = ComidasHandler.getComidasByMenuId(db, id)
+        val result = ComidaHandler.getComidasByMenuId(db, id)
 
         db.close()
         return result
+    }
 
+    fun getLastMenu(): Menu {
+        val db = readableDatabase
+        val result = MenuHandler.getLast(db)!!
+        db.close()
+        return result
     }
 
 
@@ -165,6 +191,7 @@ class MySQLiteDatabase(context: Context) : SQLiteOpenHelper(
     // METODOS ESPECIALES
     // METODOS ESPECIALES
     private fun createTables(db: SQLiteDatabase) {
+        println("Creando tablas")
         db.execSQL(CreateTables.CREATE_TABLE_CARRITO)
         db.execSQL(CreateTables.CREATE_TABLE_CATEGORIA)
         db.execSQL(CreateTables.CREATE_TABLE_COMIDA)
@@ -176,19 +203,13 @@ class MySQLiteDatabase(context: Context) : SQLiteOpenHelper(
     }
 
     private fun initializeData(db: SQLiteDatabase) {
-        val categoria = ContentValues().apply {
-            put(Literals.Database.ID_COLUMN, 0)
-            put(Literals.Database.NOMBRE_COLUMN, Literals.NO_CATEGORY_TEXT)
-        }
+        println("Inicializando base de datos")
 
-        db.insert(
-            Literals.Database.CATEGORIA_TABLE,
-            null,
-            categoria
-        )
+        CategoriaHandler.initialize(db)
     }
 
     private fun dropTables(db: SQLiteDatabase){
+        println("Borrando tablas")
         db.execSQL(DropTables.DROP_TABLE_CARRITO)
         db.execSQL(DropTables.DROP_TABLE_CATEGORIA)
         db.execSQL(DropTables.DROP_TABLE_COMIDA)

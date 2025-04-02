@@ -30,7 +30,7 @@ fun <T> DynamicTable(
             columnHeaders.forEachIndexed { index, header ->
                 Column(
                     Modifier
-                        .weight(if (index == columnHeaders.lastIndex) 0.35f else 0.65f / (columnHeaders.size - 1)) // 30% para la última columna
+                        .weight(if (index == columnHeaders.lastIndex) 0.40f else 0.60f / (columnHeaders.size - 1)) // 30% para la última columna
                         .border(1.dp, Color.Black)
                         .fillMaxHeight()
                         .padding(8.dp),
@@ -47,7 +47,7 @@ fun <T> DynamicTable(
                 columnHeaders.forEachIndexed { index, column ->
                     Column(
                         Modifier
-                            .weight(if (index == columnHeaders.lastIndex) 0.35f else 0.65f / (columnHeaders.size - 1))
+                            .weight(if (index == columnHeaders.lastIndex) 0.40f else 0.60f / (columnHeaders.size - 1)) // 30% para la última columna
                             .border(1.dp, Color.Black)
                             .fillMaxHeight()
                             .padding(8.dp),

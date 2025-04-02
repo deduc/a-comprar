@@ -125,8 +125,8 @@ class SeeCategoriaAndProductsScreen(
             }
             Row {
                 Column(Modifier.padding(Tools.padding8dp)) {
-                    val cantidad: String = if(producto.cantidad > 0) "${producto.cantidad} ${producto.unidadCantidad}" else Literals.NO_DATA_TEXT
-                    val marca: String = if(producto.marca.isNotEmpty()) producto.marca else Literals.NO_DATA_TEXT
+                    val cantidad: String = if(! producto.cantidad.isNullOrEmpty()) producto.cantidad else Literals.SIN_CANTIDAD_TEXT
+                    val marca: String = if(! producto.marca.isNullOrEmpty()) producto.marca else Literals.SIN_MARCA_TEXT
 
                     Text("- $cantidad")
                     Text("- ${marca}")

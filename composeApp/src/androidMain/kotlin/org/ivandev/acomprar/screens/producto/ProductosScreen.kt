@@ -116,7 +116,7 @@ class ProductosScreen: Screen {
             productosList.forEach { producto: Producto ->
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                     Row(Modifier.weight(0.8f)) {
-                        var cantidad = "${producto.cantidad}${producto.unidadCantidad}"
+                        var cantidad = producto.cantidad ?: Literals.SIN_CANTIDAD_TEXT
 
                         Text(producto.nombre )
                         Spacer(Modifier.width(8.dp))

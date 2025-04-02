@@ -68,7 +68,6 @@ class EditProductoScreen(
 
         val nombre = remember { mutableStateOf(producto.nombre) }
         val cantidad = remember { mutableStateOf(producto.cantidad.toString()) }
-        val unidadCantidad = remember { mutableStateOf(producto.unidadCantidad) }
         val marca = remember { mutableStateOf(producto.marca) }
 
         Column(
@@ -87,12 +86,7 @@ class EditProductoScreen(
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
             )
             TextField(
-                value = unidadCantidad.value,
-                onValueChange = { unidadCantidad.value = it },
-                label = { Text("Unidad de cantidad") }
-            )
-            TextField(
-                value = marca.value,
+                value = marca.value!!,
                 onValueChange = { marca.value = it },
                 label = { Text("Marca") }
             )
@@ -131,8 +125,7 @@ class EditProductoScreen(
                         id = producto.id,
                         idCategoria = categoriaSeleccionada.value?.id,
                         nombre = nombre.value,
-                        cantidad = cantidad.value.toFloatOrNull() ?: 0f,
-                        unidadCantidad = unidadCantidad.value,
+                        cantidad = cantidad.value,
                         marca = marca.value
                     )
                     updateProducto(newProducto, navigator)

@@ -7,7 +7,7 @@ import org.ivandev.acomprar.database.entities.Menu
 
 object MenuHandler  {
     fun getAll(db: SQLiteDatabase): List<Menu> {
-        val command: String = "SELECT * FROM ${Literals.Database.MENU_TABLE}"
+        val command = "SELECT * FROM ${Literals.Database.MENU_TABLE}"
         val result = mutableListOf<Menu>()
 
         db.rawQuery(command, null).use { cursor ->
@@ -20,6 +20,22 @@ object MenuHandler  {
                         )
                     )
                 } while (cursor.moveToNext())
+            }
+        }
+
+        return result
+    }
+
+    fun getLast(db: SQLiteDatabase): Menu? {
+        val command = "SELECT * FROM ${Literals.Database.MENU_TABLE} ORDER BY ${Literals.Database.ID_COLUMN} DESC LIMIT 1"
+        var result: Menu? = null
+
+        db.rawQuery(command, null).use { cursor ->
+            if (cursor.moveToFirst()) {
+                result = Menu(
+                    cursor.getInt(cursor.getColumnIndexOrThrow(Literals.Database.ID_COLUMN)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(Literals.Database.NOMBRE_COLUMN)),
+                )
             }
         }
 

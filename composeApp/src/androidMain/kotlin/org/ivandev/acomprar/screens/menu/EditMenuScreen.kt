@@ -1,9 +1,11 @@
 package org.ivandev.acomprar.screens.menu
 
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.TextField
@@ -60,8 +62,10 @@ class EditMenuScreen(
             Literals.Table.COMIDA_COLUMN,
             Literals.Table.CENA_COLUMN
         )
-        val diasSemana: List<String> = Literals.DiasSemana.getDaysOfWeek()
-        val comidasYCenas: MyComidasYCenas = menuStore.getComidasYCenasByMenuId(menu)
+        val diasSemana: List<String> = Literals.DaysOfWeek.getDaysOfWeek()
+        var comidasYCenas: MyComidasYCenas = menuStore.getComidasYCenasByMenuId(menu)
+        comidasYCenas.comidas[0]?.nombre = "lalalala"
+
 
         MyScrollableColumn {
             Column(Tools.styleBorderBlack) {
@@ -73,13 +77,13 @@ class EditMenuScreen(
                 Column {
                     diasSemana.forEachIndexed { index: Int, dia: String ->
                         Row(Tools.styleBorderBlack) {
-                            Column(Modifier.weight(1f).border(1.dp, Color.Black).padding(8.dp)) {
+                            Column(Modifier.weight(1f).border(1.dp, Color.Black).padding(8.dp).fillMaxSize()) {
                                 Text(dia)
                             }
-                            Column(Modifier.weight(1f).border(1.dp, Color.Black).padding(8.dp)) {
+                            Column(Modifier.weight(1f).border(1.dp, Color.Black).padding(8.dp).fillMaxSize()) {
                                 EditableComida(comidasYCenas, index)
                             }
-                            Column(Modifier.weight(1f).border(1.dp, Color.Black).padding(8.dp)) {
+                            Column(Modifier.weight(1f).border(1.dp, Color.Black).padding(8.dp).fillMaxSize()) {
                                 EditableCena(comidasYCenas, index)
                             }
                         }
@@ -91,31 +95,37 @@ class EditMenuScreen(
 
     @Composable
     fun EditableComida(comidasYCenas: MyComidasYCenas, index: Int) {
-        if (comidasYCenas.comidas[index] == null) {
-            MyIcons.AddIcon()
+        if (comidasYCenas.comidas.size <= index) {
+            Row {
+                MyIcons.AddIcon()
+                Text("HOLA")
+            }
         }
-//        else {
-//            Row {
-//                Text(
-//                    comidasYCenas[index].comidas.toString(),
-//                    Modifier.clickable {  }
-//                )
-//            }
-//        }
+        else {
+            Row {
+                Text(
+                    comidasYCenas.comidas[index].toString(),
+                    Modifier.clickable {  }
+                )
+            }
+        }
     }
 
     @Composable
     private fun EditableCena(comidasYCenas: MyComidasYCenas, index: Int) {
-        if (comidasYCenas.cenas[index] == null) {
-            MyIcons.AddIcon()
+        if (comidasYCenas.cenas.size <= index) {
+            Row {
+                MyIcons.AddIcon()
+                Text("CHAOPESCAO")
+            }
         }
-//        else {
-//            Row {
-//                Text(
-//                    comidasYCenas[index].cenas.toString(),
-//                    Modifier.clickable {  }
-//                )
-//            }
-//        }
+        else {
+            Row {
+                Text(
+                    comidasYCenas.cenas[index].toString(),
+                    Modifier.clickable { }
+                )
+            }
+        }
     }
 }

@@ -14,10 +14,10 @@ object Tools {
     var padding16dp = 16.dp
     var padding8dp = 8.dp
     var primaryColor = Color(0x6200EE)
-    var titleFontSize = 20.sp
+    var titleFontSize = 18.sp
     var buttonsSpacer8dp = 8.dp
 
     var styleTitle = TextStyle(fontSize = this.titleFontSize, textDecoration = TextDecoration.Underline, fontWeight = FontWeight.Black)
-    var styleTableHeader = TextStyle(fontSize = this.titleFontSize, fontWeight = FontWeight.Medium)
+    var styleTableHeader = TextStyle(fontSize = this.titleFontSize, fontWeight = FontWeight.Bold, textDecoration = TextDecoration.Underline)
     var styleBorderBlack = Modifier.border(1.dp, Color.Black)
 }

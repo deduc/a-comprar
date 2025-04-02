@@ -44,6 +44,28 @@ object CategoriaHandler: DatabaseCRUD<Categoria> {
         return deletedRows == 1
     }
 
+
+    fun initialize(db: SQLiteDatabase) {
+        val categoriasList: List<String> = Literals.Database.Categorias.getPreSelectedCategorias()
+
+        categoriasList.forEach { categoria: String ->
+            val categoriaAux = ContentValues().apply {
+                if (categoria == Literals.Database.Categorias.SIN_CATEGORIA) {
+                    put(Literals.Database.ID_COLUMN, 0)
+                }
+                put(Literals.Database.NOMBRE_COLUMN, categoria)
+            }
+
+            db.insert(
+                Literals.Database.CATEGORIA_TABLE,
+                null,
+                categoriaAux
+            )
+        }
+    }
+
+
+
     fun updateCategoriaById(db: SQLiteDatabase, categoria: Categoria): Boolean {
         var categoriaNameColumn = ContentValues()
         categoriaNameColumn.put(Literals.Database.NOMBRE_COLUMN, categoria.nombre)

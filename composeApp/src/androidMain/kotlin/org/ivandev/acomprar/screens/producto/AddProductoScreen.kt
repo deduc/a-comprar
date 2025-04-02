@@ -87,11 +87,6 @@ class AddProductoScreen(
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
             )
             TextField(
-                value = unidadCantidad.value,
-                onValueChange = { unidadCantidad.value = it },
-                label = { Text("Unidad de cantidad") }
-            )
-            TextField(
                 value = marca.value,
                 onValueChange = { marca.value = it },
                 label = { Text("Marca") }
@@ -130,8 +125,7 @@ class AddProductoScreen(
                         id = null,
                         idCategoria = categoriaSeleccionada.value?.id,
                         nombre = nombre.value,
-                        cantidad = cantidad.value.toFloatOrNull() ?: 0f,
-                        unidadCantidad = unidadCantidad.value,
+                        cantidad = cantidad.value,
                         marca = marca.value
                     )
                     addProducto(navigator, producto)
@@ -164,8 +158,7 @@ class AddProductoScreen(
 
         if (
             producto.idCategoria != null &&
-            ! producto.nombre.isNullOrEmpty() &&
-            producto.cantidad > 0
+            ! producto.nombre.isNullOrEmpty()
         )
         {
             result = ProductoCheckedMessage(true, "")

@@ -15,6 +15,12 @@ class CategoriaStore : ViewModel() {
     // valor para obtener
     val categorias: State<List<Categoria>> = _categorias
 
+    private val _showPopupDelete = mutableStateOf<Boolean>(false)
+    val showPopupDelete: State<Boolean> = _showPopupDelete
+
+    private val _categoriaToDelete = mutableStateOf<Categoria?>(null)
+    val categoriaToDelete: State<Categoria?> = _categoriaToDelete
+
     init {
         viewModelScope.launch(Dispatchers.IO) {
             _categorias.value = Database.getAllCategoria()
@@ -22,7 +28,6 @@ class CategoriaStore : ViewModel() {
     }
 
     fun updateCategoria(updatedCategoria: Categoria) {
-
         _categorias.value = _categorias.value.map {
             if (it.id == updatedCategoria.id) updatedCategoria else it
         }
@@ -38,5 +43,9 @@ class CategoriaStore : ViewModel() {
         Database.deleteCategoriaById(deleteCategoria.id!!)
         _categorias.value = _categorias.value.filter { it.id != deleteCategoria.id }
 
+    }
+
+    fun updateShowPopupDelete(newState: Boolean) {
+        _showPopupDelete.value = newState
     }
 }

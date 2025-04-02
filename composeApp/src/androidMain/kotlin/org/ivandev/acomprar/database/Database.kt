@@ -10,10 +10,12 @@ import org.ivandev.acomprar.database.special_classes.ProductosWithCategoria
 
 object Database {
     lateinit var mySQLiteDatabase: MySQLiteDatabase
+    private val dbVersion: Int = 4
 
     fun initializeDatabase(context: Context) {
-        mySQLiteDatabase = MySQLiteDatabase(context)
+        mySQLiteDatabase = MySQLiteDatabase(context, dbVersion)
     }
+
     fun importJsonData() {}
     fun deleteAll() {}
     fun deleteAllCarrito() {}
@@ -31,7 +33,11 @@ object Database {
     }
 
     fun addMenu(menu: Menu): Boolean {
-        return mySQLiteDatabase.addMenu(menu)
+        return mySQLiteDatabase.addMenuAndComidasYCenas(menu)
+    }
+
+    fun getLastMenu(): Menu {
+        return mySQLiteDatabase.getLastMenu()
     }
 
 
@@ -60,8 +66,8 @@ object Database {
         return mySQLiteDatabase.getProductosByCategoriaId(id)
     }
 
-    fun getComidasYCenasByMenuId(id: Int): List<Comida> {
-        return mySQLiteDatabase.getComidasYCenasByMenuId(id)
+    fun getComidasByMenuId(id: Int): List<Comida> {
+        return mySQLiteDatabase.getComidasByMenuId(id)
     }
 
 

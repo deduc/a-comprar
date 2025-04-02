@@ -5,8 +5,8 @@ import android.database.sqlite.SQLiteDatabase
 import org.ivandev.acomprar.Literals
 import org.ivandev.acomprar.database.entities.Categoria
 import org.ivandev.acomprar.database.entities.Producto
-import org.ivandev.acomprar.database.special_classes.ProductosWithCategoria
 import org.ivandev.acomprar.database.interfaces.DatabaseCRUD
+import org.ivandev.acomprar.database.special_classes.ProductosWithCategoria
 
 object ProductoHandler: DatabaseCRUD<Producto> {
     override fun insert(db: SQLiteDatabase, producto: Producto): Boolean {
@@ -14,7 +14,6 @@ object ProductoHandler: DatabaseCRUD<Producto> {
             put(Literals.Database.ID_CATEGORIA_COLUMN, producto.idCategoria)
             put(Literals.Database.NOMBRE_COLUMN, producto.nombre)
             put(Literals.Database.CANTIDAD_COLUMN, producto.cantidad)
-            put(Literals.Database.UNIDAD_CANTIDAD_COLUMN, producto.unidadCantidad)
             put(Literals.Database.MARCA_COLUMN, producto.marca)
         }
 
@@ -60,8 +59,7 @@ object ProductoHandler: DatabaseCRUD<Producto> {
                     id = cursor.getInt(cursor.getColumnIndexOrThrow(Literals.Database.ID_COLUMN)),
                     idCategoria = cursor.getInt(cursor.getColumnIndexOrThrow(Literals.Database.ID_CATEGORIA_COLUMN)),
                     nombre = cursor.getString(cursor.getColumnIndexOrThrow(Literals.Database.NOMBRE_COLUMN)),
-                    cantidad = cursor.getFloat(cursor.getColumnIndexOrThrow(Literals.Database.CANTIDAD_COLUMN)),
-                    unidadCantidad = cursor.getString(cursor.getColumnIndexOrThrow(Literals.Database.UNIDAD_CANTIDAD_COLUMN)),
+                    cantidad = cursor.getString(cursor.getColumnIndexOrThrow(Literals.Database.CANTIDAD_COLUMN)),
                     marca = cursor.getString(cursor.getColumnIndexOrThrow(Literals.Database.MARCA_COLUMN))
                 )
                 productos.add(producto)
@@ -95,7 +93,6 @@ object ProductoHandler: DatabaseCRUD<Producto> {
         productKeyValueColumn.put(Literals.Database.ID_CATEGORIA_COLUMN, producto.idCategoria)
         productKeyValueColumn.put(Literals.Database.NOMBRE_COLUMN, producto.nombre)
         productKeyValueColumn.put(Literals.Database.CANTIDAD_COLUMN, producto.cantidad)
-        productKeyValueColumn.put(Literals.Database.UNIDAD_CANTIDAD_COLUMN, producto.unidadCantidad)
         productKeyValueColumn.put(Literals.Database.MARCA_COLUMN, producto.marca)
 
         var productosUpdated: Int = db.update(

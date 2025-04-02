@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.ivandev.acomprar.Literals
 import org.ivandev.acomprar.database.Database
 import org.ivandev.acomprar.database.entities.Comida
 import org.ivandev.acomprar.database.entities.Menu
@@ -26,8 +27,10 @@ class MenuStore : ViewModel() {
 
     fun addMenu(menu: Menu) {
         val added = Database.addMenu(menu)
+
         if (added) {
-            _menus.value += menu
+            val newMenu = Database.getLastMenu()
+            _menus.value += newMenu
         }
     }
 
@@ -36,7 +39,7 @@ class MenuStore : ViewModel() {
     }
 
     fun getComidasYCenasByMenuId(menu: Menu): MyComidasYCenas {
-        val comidas = Database.getComidasYCenasByMenuId(menu.id!!)
+        val comidas: List<Comida> = Database.getComidasByMenuId(menu.id!!)
         val myComidasYCenas: MyComidasYCenas = transformComidas(menu, comidas)
 
         return myComidasYCenas
@@ -51,13 +54,22 @@ class MenuStore : ViewModel() {
 
     private fun transformComidas(menu: Menu, comidas: List<Comida>): MyComidasYCenas {
         val result = MyComidasYCenas(menu.id, menu.nombre, mutableListOf(), mutableListOf())
+        val dias = Literals.DaysOfWeek.getDaysOfWeek()
 
-        comidas.forEach { comida: Comida ->
-            if (comida.tipo == TipoComidaEnum.COMIDA) {
-                result.comidas += comida
+        dias.forEachIndexed { index: Int, day: String ->
+            if (comidas[index] != null) {
+                var comida = comidas[index]
+
+                if (comida.tipo == TipoComidaEnum.COMIDA) {
+                    result.comidas += comida
+                }
+                else if (comida.tipo == TipoComidaEnum.CENA) {
+                    result.cenas += comida
+                }
             }
-            else if (comida.tipo == TipoComidaEnum.CENA) {
-                result.cenas += comida
+            else {
+                result.comidas += null
+                result.cenas += null
             }
         }
 
