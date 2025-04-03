@@ -54,8 +54,7 @@ object CreateTables {
             ${Literals.Database.ID_COLUMN} INTEGER PRIMARY KEY AUTOINCREMENT,
             ${Literals.Database.ID_CATEGORIA_COLUMN} INTEGER,
             ${Literals.Database.NOMBRE_COLUMN} TEXT NOT NULL,
-            ${Literals.Database.CANTIDAD_COLUMN} FLOAT,
-            ${Literals.Database.UNIDAD_CANTIDAD_COLUMN} TEXT,
+            ${Literals.Database.CANTIDAD_COLUMN} TEXT,
             ${Literals.Database.MARCA_COLUMN} TEXT,
             FOREIGN KEY (${Literals.Database.ID_CATEGORIA_COLUMN}) 
                 REFERENCES ${Literals.Database.CATEGORIA_TABLE}(${Literals.Database.ID_COLUMN}) 

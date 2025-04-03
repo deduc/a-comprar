@@ -59,8 +59,7 @@ object ComidaHandler {
                     put(Literals.Database.DIA_COLUMN, dia)
                     put(Literals.Database.TIPO_COLUMN, TipoComidaEnum.CENA)
                 }
-                var a = db.insert(Literals.Database.COMIDA_TABLE, null, values)
-                var b = 2
+                db.insert(Literals.Database.COMIDA_TABLE, null, values)
             }
 
             db.setTransactionSuccessful() // Confirmar la transacción
@@ -72,5 +71,15 @@ object ComidaHandler {
         }
 
         return result
+    }
+
+    fun deleteAllComidasByMenuId(db: SQLiteDatabase, menuId: Int): Boolean {
+        val result = db.delete(
+            Literals.Database.COMIDA_TABLE,
+            "${Literals.Database.ID_MENU_COLUMN} = ?",
+            arrayOf(menuId.toString())
+        )
+
+        return result > 0
     }
 }

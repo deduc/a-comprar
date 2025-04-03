@@ -5,36 +5,30 @@ import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewmodel.compose.viewModel
-import org.ivandev.acomprar.database.Database
 import org.ivandev.acomprar.database.entities.Categoria
 import org.ivandev.acomprar.viewModels.CategoriaStore
 
 @Composable
-fun EditCategoriaPopup(categoria: Categoria) {
+fun EditCategoriaPopup(categoriaToEdit: State<Categoria?>) {
     val categoriaStore: CategoriaStore = viewModel()
 
-    var showPopup by remember { mutableStateOf(true) }
-    var newCategoriaName by remember { mutableStateOf(categoria.nombre) }
+    var newCategoriaName by remember { mutableStateOf(categoriaToEdit.value!!.nombre) }
 
-    if (showPopup) {
+    if (categoriaToEdit.value != null) {
         AlertDialog(
-            onDismissRequest = { showPopup = false },
+            onDismissRequest = { categoriaStore.updateCategoriaToEdit(null) },
             confirmButton = {
                 TextButton(
                     onClick = {
-                        showPopup = false
-
-                        val updatedCategoria = categoria.apply {
-                            this.nombre = newCategoriaName  // Modificamos el nombre directamente
-                        }
-
-                        categoriaStore.updateCategoria(updatedCategoria)
-                        Database.updateCategoriaById(categoria)
+                        categoriaToEdit.value!!.nombre = newCategoriaName
+                        categoriaStore.updateCategoria(categoriaToEdit.value!!)
+                        categoriaStore.updateCategoriaToEdit(null)
                     }
                 ) {
                     Text("Aceptar")

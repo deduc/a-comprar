@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -65,12 +66,12 @@ class CategoriasScreen : Screen {
 
     @Composable
     fun CategoriasContainer() {
-        val categoriaStore: CategoriaStore = viewModel()
-        val categorias = categoriaStore.categorias
-
         val navigator: Navigator = LocalNavigator.currentOrThrow
-        var categoriaToEdit by remember { mutableStateOf<Categoria?>(null) }
-        var categoriaToDelete by remember { mutableStateOf<Categoria?>(null) }
+        val categoriaStore: CategoriaStore = viewModel()
+
+        val categorias = categoriaStore.categorias
+        var categoriaToEdit: State<Categoria?> = categoriaStore.categoriaToEdit
+        var categoriaToDelete: State<Categoria?> = categoriaStore.categoriaToDelete
 
         Column(Tools.styleBorderBlack) {
             TableHeaders()
@@ -88,8 +89,8 @@ class CategoriasScreen : Screen {
                             MyIcons.ViewIcon { seeCategoriaById(categoria, navigator) }
 
                             if(categoria.id != Literals.Database.ID_SIN_CATEGORIA_VALUE) {
-                                MyIcons.EditIcon { categoriaToEdit = categoria }
-                                MyIcons.TrashIcon { categoriaToDelete = categoria }
+                                MyIcons.EditIcon { categoriaStore.updateCategoriaToEdit(categoria) }
+                                MyIcons.TrashIcon { categoriaStore.updateCategoriaToDelete(categoria) }
                             }
                         }
                     }
@@ -98,13 +99,14 @@ class CategoriasScreen : Screen {
         }
 
         // Mostrar el popup si hay una categoría seleccionada
-        categoriaToEdit?.let { categoria ->
-            EditCategoriaPopup(categoria)
+        if (categoriaToEdit.value != null) {
+            EditCategoriaPopup(categoriaToEdit)
         }
 
+
         // Mostrar el popup si hay una categoría seleccionada
-        categoriaToDelete?.let { categoria ->
-            DeleteCategoriaPopup(categoria)
+        if (categoriaToDelete.value != null) {
+            DeleteCategoriaPopup(categoriaToDelete)
         }
     }
 

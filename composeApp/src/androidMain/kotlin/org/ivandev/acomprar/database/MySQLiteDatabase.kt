@@ -59,7 +59,7 @@ class MySQLiteDatabase(context: Context, version: Int) : SQLiteOpenHelper(
 
     fun addMenuAndComidasYCenas(menu: Menu): Boolean {
         val db = writableDatabase
-        var result = false // Se inicializa con un valor predeterminado
+        var result = false
 
         try {
             db.beginTransaction() // Inicia una transacción para garantizar atomicidad
@@ -81,8 +81,6 @@ class MySQLiteDatabase(context: Context, version: Int) : SQLiteOpenHelper(
 
         return result
     }
-
-
 
 
     fun getAllCategoria(): List<Categoria> {
@@ -181,7 +179,12 @@ class MySQLiteDatabase(context: Context, version: Int) : SQLiteOpenHelper(
 
     fun deleteMenu(menu: Menu): Boolean {
         val db = writableDatabase
-        val result = MenuHandler.delete(db, menu)
+        val deletedMenu = MenuHandler.delete(db, menu)
+        var result = false
+
+        if (deletedMenu) {
+            result = ComidaHandler.deleteAllComidasByMenuId(db, menu.id!!)
+        }
 
         db.close()
         return result

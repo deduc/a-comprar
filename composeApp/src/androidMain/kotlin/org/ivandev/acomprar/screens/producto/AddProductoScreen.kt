@@ -2,7 +2,6 @@ package org.ivandev.acomprar.screens.producto
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.ExperimentalMaterialApi
@@ -18,7 +17,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.input.KeyboardType
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.Navigator
@@ -68,7 +66,6 @@ class AddProductoScreen(
 
         val nombre = remember { mutableStateOf("") }
         val cantidad = remember { mutableStateOf("") }
-        val unidadCantidad = remember { mutableStateOf("") }
         val marca = remember { mutableStateOf("") }
 
         Column(
@@ -84,7 +81,6 @@ class AddProductoScreen(
                 value = cantidad.value,
                 onValueChange = { cantidad.value = it },
                 label = { Text("Cantidad") },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
             )
             TextField(
                 value = marca.value,
@@ -154,17 +150,13 @@ class AddProductoScreen(
     }
 
     private fun isProductoOk(producto: Producto): ProductoCheckedMessage {
-        var result: ProductoCheckedMessage
-
-        if (
+        var result: ProductoCheckedMessage = if (
             producto.idCategoria != null &&
             ! producto.nombre.isNullOrEmpty()
-        )
-        {
-            result = ProductoCheckedMessage(true, "")
-        }
-        else {
-            result = ProductoCheckedMessage(false, "ERROR: Revisa los datos insertados.")
+        ) {
+            ProductoCheckedMessage(true, "")
+        } else {
+            ProductoCheckedMessage(false, "ERROR: Revisa los datos insertados.")
         }
 
         return result

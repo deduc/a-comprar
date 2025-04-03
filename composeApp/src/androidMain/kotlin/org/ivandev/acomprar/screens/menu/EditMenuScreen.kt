@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.TextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -24,7 +25,7 @@ import org.ivandev.acomprar.components.CommonScreen
 import org.ivandev.acomprar.components.MyIcons
 import org.ivandev.acomprar.components.MyScrollableColumn
 import org.ivandev.acomprar.database.entities.Menu
-import org.ivandev.acomprar.screens.menu.classes.MyComidasYCenas
+import org.ivandev.acomprar.screens.menu.classes.MyMenuComidas
 import org.ivandev.acomprar.stores.MenuStore
 
 class EditMenuScreen(
@@ -52,39 +53,45 @@ class EditMenuScreen(
 
         Spacer(Modifier.height(Tools.height16dp))
 
-        MenuFormulary(menuStore)
+        MenuFormulary(menuStore, menu)
     }
 
     @Composable
-    fun MenuFormulary(menuStore: MenuStore) {
-        val HEADERS: List<String> = listOf(
-            Literals.Table.DIA_COLUMN,
-            Literals.Table.COMIDA_COLUMN,
-            Literals.Table.CENA_COLUMN
-        )
+    fun MenuFormulary(menuStore: MenuStore, menu: Menu) {
+        val headers: List<String> = listOf(Literals.Table.DIA_COLUMN, Literals.Table.COMIDA_COLUMN, Literals.Table.CENA_COLUMN)
         val diasSemana: List<String> = Literals.DaysOfWeek.getDaysOfWeek()
-        var comidasYCenas: MyComidasYCenas = menuStore.getComidasYCenasByMenuId(menu)
-        comidasYCenas.comidas[0]?.nombre = "lalalala"
+        val comidasYCenas = remember { mutableStateOf<MyMenuComidas?>(null) }
+        var indexAux: Int = 0
 
+        // LaunchedEffect carga datos de manera reactiva y la UI se refresca (y depende de) cuando menu.id cambia
+        LaunchedEffect(menu.id) {
+            comidasYCenas.value = menuStore.getComidasYCenasByMenuId(menu)
+        }
 
-        MyScrollableColumn {
-            Column(Tools.styleBorderBlack) {
-                Row(Tools.styleBorderBlack) {
-                    HEADERS.forEach { header: String ->
-                        Text(header, Modifier.weight(1f).border(1.dp, Color.Black).padding(8.dp), style = Tools.styleTableHeader)
-                    }
-                }
-                Column {
-                    diasSemana.forEachIndexed { index: Int, dia: String ->
-                        Row(Tools.styleBorderBlack) {
-                            Column(Modifier.weight(1f).border(1.dp, Color.Black).padding(8.dp).fillMaxSize()) {
-                                Text(dia)
-                            }
-                            Column(Modifier.weight(1f).border(1.dp, Color.Black).padding(8.dp).fillMaxSize()) {
-                                EditableComida(comidasYCenas, index)
-                            }
-                            Column(Modifier.weight(1f).border(1.dp, Color.Black).padding(8.dp).fillMaxSize()) {
-                                EditableCena(comidasYCenas, index)
+        if (comidasYCenas.value != null) {
+            MyScrollableColumn {
+                Column(Tools.styleBorderBlack) {
+                    TableHeaders(headers)
+
+                    // Mostrar las comidas y cenas por cada día de la semana
+                    Column {
+                        diasSemana.forEachIndexed { index: Int, dia: String ->
+                            Row(Tools.styleBorderBlack) {
+                                Column(Modifier.weight(1f).border(1.dp, Color.Black).padding(8.dp).fillMaxSize()) {
+                                    Text(dia)
+                                }
+
+                                Column(Modifier.weight(1f).border(1.dp, Color.Black).padding(8.dp).fillMaxSize()) {
+                                    EditableComida(comidasYCenas.value!!, indexAux)
+                                }
+
+                                indexAux++
+
+                                Column(Modifier.weight(1f).border(1.dp, Color.Black).padding(8.dp).fillMaxSize()) {
+                                    EditableComida(comidasYCenas.value!!, indexAux)
+                                }
+
+                                indexAux++
                             }
                         }
                     }
@@ -94,7 +101,16 @@ class EditMenuScreen(
     }
 
     @Composable
-    fun EditableComida(comidasYCenas: MyComidasYCenas, index: Int) {
+    fun TableHeaders(headers: List<String>) {
+        Row(Tools.styleBorderBlack) {
+            headers.forEach { header ->
+                Text(header, Modifier.weight(1f).border(1.dp, Color.Black).padding(8.dp), style = Tools.styleTableHeader)
+            }
+        }
+    }
+
+    @Composable
+    fun EditableComida(comidasYCenas: MyMenuComidas, index: Int) {
         if (comidasYCenas.comidas.size <= index) {
             Row {
                 MyIcons.AddIcon()
@@ -104,26 +120,8 @@ class EditMenuScreen(
         else {
             Row {
                 Text(
-                    comidasYCenas.comidas[index].toString(),
+                    comidasYCenas.comidas[index]?.nombre ?: "aaa",
                     Modifier.clickable {  }
-                )
-            }
-        }
-    }
-
-    @Composable
-    private fun EditableCena(comidasYCenas: MyComidasYCenas, index: Int) {
-        if (comidasYCenas.cenas.size <= index) {
-            Row {
-                MyIcons.AddIcon()
-                Text("CHAOPESCAO")
-            }
-        }
-        else {
-            Row {
-                Text(
-                    comidasYCenas.cenas[index].toString(),
-                    Modifier.clickable { }
                 )
             }
         }
