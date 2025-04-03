@@ -18,7 +18,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import cafe.adriel.voyager.core.screen.Screen
@@ -63,13 +62,13 @@ class MenuScreen: Screen {
                 }
             }
 
-            Row(
-                modifier = Modifier.fillMaxWidth().weight(0.125f),
-                verticalAlignment = Alignment.Bottom,
-                horizontalArrangement = Arrangement.End
+            // *** Barra inferior de botones ***
+            Row(Modifier.fillMaxWidth().weight(0.125f),
+                horizontalArrangement = Arrangement.End,
+                verticalAlignment = Alignment.Bottom
             ) {
                 Button(onClick = { showPopup.value = true }) {
-                    Text("Añadir", style = TextStyle(color = Color.White))
+                    Text(Literals.ButtonsText.ADD_MENU)
                 }
             }
         }

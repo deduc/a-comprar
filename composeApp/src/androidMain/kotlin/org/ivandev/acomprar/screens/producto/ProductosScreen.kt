@@ -74,9 +74,14 @@ class ProductosScreen: Screen {
                     }
                 }
             }
-        } else {
+        }
+        else {
             Text("No hay categorías disponibles", Modifier.fillMaxSize(), textAlign = TextAlign.Center)
         }
+
+//        PopupAddProducto()
+//        PopupEditProducto(producto)
+//        PopupDeleteProducto(producto)
     }
 
     @Composable
@@ -134,7 +139,7 @@ class ProductosScreen: Screen {
                 }
             }
 
-            Spacer(Modifier.height(Tools.height4dp))
+            Spacer(Modifier.height(Tools.height8dp))
         }
     }
 
@@ -155,4 +160,15 @@ class ProductosScreen: Screen {
 
         setProductosWithCategoria(updatedList)
     }
+
+    @Composable
+    fun PopupAddProducto() {
+
+    }
+
+    @Composable
+    fun PopupEditProducto(producto: Producto) {}
+
+    @Composable
+    fun PopupDeleteProducto(producto: Producto) {}
 }

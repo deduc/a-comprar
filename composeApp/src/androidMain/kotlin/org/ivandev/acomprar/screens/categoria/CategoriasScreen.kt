@@ -54,7 +54,7 @@ class CategoriasScreen : Screen {
                 verticalAlignment = Alignment.Bottom
             ) {
                 Button(onClick = { showPopup = true }) {
-                    Text("Añadir")
+                    Text(Literals.ButtonsText.ADD_CATEGORIA)
                 }
             }
         }

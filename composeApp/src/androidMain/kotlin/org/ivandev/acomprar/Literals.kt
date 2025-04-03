@@ -105,4 +105,10 @@ object Literals {
             return listOf(LUNES, MARTES, MIERCOLES, JUEVES, VIERNES, SABADO, DOMINGO)
         }
     }
+
+    object ButtonsText {
+        const val ADD_CATEGORIA: String = "Añadir categoría"
+        const val ADD_PRODUCTO: String = "Añadir producto"
+        const val ADD_MENU: String = "Añadir menú"
+    }
 }
