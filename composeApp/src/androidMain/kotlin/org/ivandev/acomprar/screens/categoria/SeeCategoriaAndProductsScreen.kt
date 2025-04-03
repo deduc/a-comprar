@@ -89,7 +89,7 @@ class SeeCategoriaAndProductsScreen(
 
             // Mostrar el popup si hay una categoría seleccionada
             selectedProduct.value?.let { producto: Producto ->
-                if (producto != null) EditProductoPopup(producto, productos)
+                if (producto != null) EditProductoPopup(producto)
             }
         }
     }

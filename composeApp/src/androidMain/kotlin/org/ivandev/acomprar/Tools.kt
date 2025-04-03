@@ -11,6 +11,7 @@ import androidx.compose.ui.unit.sp
 
 object Tools {
     var height16dp = 16.dp
+    var height4dp = 4.dp
     var padding16dp = 16.dp
     var padding8dp = 8.dp
     var primaryColor = Color(0x6200EE)

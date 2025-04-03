@@ -14,7 +14,7 @@ import org.ivandev.acomprar.database.handlers.MenuHandler
 import org.ivandev.acomprar.database.handlers.ProductoHandler
 import org.ivandev.acomprar.database.scripts.CreateTables
 import org.ivandev.acomprar.database.scripts.DropTables
-import org.ivandev.acomprar.database.special_classes.ProductosWithCategoria
+import org.ivandev.acomprar.database.special_classes.CategoriaWithProductos
 
 class MySQLiteDatabase(context: Context, version: Int) : SQLiteOpenHelper(
     context,
@@ -91,7 +91,7 @@ class MySQLiteDatabase(context: Context, version: Int) : SQLiteOpenHelper(
         return result
     }
 
-    fun getAllProductosByCategoria(): List<ProductosWithCategoria> {
+    fun getAllProductosByCategoria(): List<CategoriaWithProductos> {
         val db = readableDatabase
 
         val categorias: List<Categoria> = CategoriaHandler.getAll(db)

@@ -6,7 +6,7 @@ import org.ivandev.acomprar.database.entities.Categoria
 import org.ivandev.acomprar.database.entities.Comida
 import org.ivandev.acomprar.database.entities.Menu
 import org.ivandev.acomprar.database.entities.Producto
-import org.ivandev.acomprar.database.special_classes.ProductosWithCategoria
+import org.ivandev.acomprar.database.special_classes.CategoriaWithProductos
 
 object Database {
     lateinit var mySQLiteDatabase: MySQLiteDatabase
@@ -58,7 +58,7 @@ object Database {
         return listOf()
     }
 
-    fun getAllProductosByCategoria(): List<ProductosWithCategoria> {
+    fun getAllProductosByCategoria(): List<CategoriaWithProductos> {
         return mySQLiteDatabase.getAllProductosByCategoria()
     }
 

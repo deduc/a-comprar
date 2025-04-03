@@ -14,7 +14,6 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -28,7 +27,7 @@ import org.ivandev.acomprar.database.entities.Producto
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun EditProductoPopup(producto: Producto, myProducto: MutableState<List<Producto?>>) {
+fun EditProductoPopup(producto: Producto) {
     var showPopup by remember { mutableStateOf(true) }
 
     val idCategoria: Int = producto.idCategoria!!

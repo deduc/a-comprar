@@ -14,32 +14,27 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.Navigator
-import cafe.adriel.voyager.navigator.currentOrThrow
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import org.ivandev.acomprar.Literals
+import org.ivandev.acomprar.Tools
 import org.ivandev.acomprar.components.CommonScreen
 import org.ivandev.acomprar.components.MyIcons
 import org.ivandev.acomprar.components.MyScrollableColumn
 import org.ivandev.acomprar.database.Database
 import org.ivandev.acomprar.database.entities.Producto
-import org.ivandev.acomprar.database.special_classes.ProductosWithCategoria
+import org.ivandev.acomprar.database.special_classes.CategoriaWithProductos
+import org.ivandev.acomprar.stores.ProductoStore
 
 class ProductosScreen: Screen {
     @Composable
@@ -55,103 +50,103 @@ class ProductosScreen: Screen {
 
     @Composable
     fun MainContent() {
-        val navigator: Navigator = LocalNavigator.currentOrThrow
-        var productosWithCategoria by remember { mutableStateOf(emptyList<ProductosWithCategoria>()) }
+        val productoStore: ProductoStore = viewModel()
+        val categoriaWithProductosList: State<List<CategoriaWithProductos>?> = productoStore.categoriaWithProductos
 
-        LaunchedEffect(Unit) {
-            productosWithCategoria = withContext(Dispatchers.IO) { Database.getAllProductosByCategoria() }
-        }
+        val productoToAdd: State<Boolean> = productoStore.productoToAdd
+        val productoToEdit: State<Producto?> = productoStore.productoToEdit
+        val productoToDelete: State<Producto?> = productoStore.productoToDelete
 
-        MyScrollableColumn {
-            Column(Modifier.fillMaxSize()) {
-                productosWithCategoria.let { productos ->
-                    productos.forEach { it: ProductosWithCategoria ->
+        if (categoriaWithProductosList.value?.isNotEmpty() == true) {
+            MyScrollableColumn {
+                Column(Modifier.fillMaxSize()) {
+                    // Categorías
+                    categoriaWithProductosList.value?.forEach { categoriaWithProductos: CategoriaWithProductos ->
                         Column(Modifier.border(1.dp, Color.Black)) {
-                            Header(it, navigator)
+                            CategoriaHeader(categoriaWithProductos.categoriaName, productoStore)
 
-                            Column(Modifier.padding(8.dp)) {
-                                ProductsAndButtonsList(
-                                    it.productos,
-                                    navigator,
-                                    productosWithCategoria,
-                                    setProductosWithCategoria = { productosWithCategoria = it }
-                                )
+                            Column(Modifier.padding(Tools.padding8dp)) {
+                                ProductsContainer(categoriaWithProductos.productos, productoStore)
                             }
-
                         }
-                        Spacer(Modifier.height(24.dp))
+
+                        Spacer(Modifier.height(Tools.height16dp))
                     }
                 }
             }
+        } else {
+            Text("No hay categorías disponibles", Modifier.fillMaxSize(), textAlign = TextAlign.Center)
         }
     }
 
     @Composable
-    private fun Header(it: ProductosWithCategoria, navigator: Navigator) {
+    fun CategoriaHeader(categoriaName: String, productoStore: ProductoStore) {
         Row(
             modifier = Modifier.fillMaxWidth().border(1.dp, Color.Black).padding(4.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                it.categoriaName,
+                categoriaName,
                 style = TextStyle(fontSize = 20.sp, textDecoration = TextDecoration.Underline, fontWeight = FontWeight.Black),
                 modifier = Modifier.weight(1f)
             )
 
             MyIcons.AddIcon(
-                Modifier.size(24.dp).clickable { navigator.push(AddProductoScreen(it.categoriaId)) }
+                Modifier.size(24.dp).clickable { productoStore.updateProductoToAdd(true) }
             )
         }
     }
 
     @Composable
-    private fun ProductsAndButtonsList(
-        productosList: List<Producto>?,
-        navigator: Navigator,
-        productosWithCategoria: List<ProductosWithCategoria>,
-        setProductosWithCategoria: (List<ProductosWithCategoria>) -> Unit
-    ) {
-        if (!productosList.isNullOrEmpty()) {
-            productosList.forEach { producto: Producto ->
-                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                    Row(Modifier.weight(0.8f)) {
-                        var cantidad = producto.cantidad ?: Literals.SIN_CANTIDAD_TEXT
-
-                        Text(producto.nombre )
-                        Spacer(Modifier.width(8.dp))
-                        Text(cantidad)
-                    }
-
-                    Row(Modifier.weight(0.2f)) {
-                        MyIcons.EditIcon { editProducto(productosList, producto, navigator) }
-                        Spacer(Modifier.width(8.dp))
-                        MyIcons.TrashIcon { deleteProductoById(producto.id!!, productosWithCategoria, setProductosWithCategoria) }
-                    }
-                }
-                Spacer(Modifier.height(4.dp))
-            }
-        } else {
-            Row {
-                Text("Sin productos")
+    fun ProductsContainer(productos: List<Producto>?, productoStore: ProductoStore) {
+        if (productos.isNullOrEmpty()) {
+            Text("Sin productos.")
+        }
+        else {
+            productos.forEach { producto: Producto ->
+                ProductsAndButtonsList(producto, productoStore)
             }
         }
     }
 
-    private fun editProducto(productosList: List<Producto>, producto: Producto, navigator: Navigator) {
-        val productoFiltrado = productosList.find { it.id == producto.id!! }!!
-        navigator.push(EditProductoScreen(productoFiltrado))
+    @Composable
+    fun ProductsAndButtonsList(
+        producto: Producto,
+        productoStore: ProductoStore
+    ) {
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+            Row(Modifier.weight(0.8f)) {
+                val cantidad = producto.cantidad ?: ""
+
+                Text("${producto.nombre} - $cantidad")
+            }
+
+            Row(Modifier.weight(0.2f)) {
+                MyIcons.EditIcon {
+                    productoStore.updateProductoToEdit(producto)
+                }
+
+                Spacer(Modifier.width(8.dp))
+
+                MyIcons.TrashIcon {
+                    productoStore.updateProductoToDelete(producto)
+                }
+            }
+
+            Spacer(Modifier.height(Tools.height4dp))
+        }
     }
 
     private fun deleteProductoById(
         removingId: Int,
-        productosWithCategoria: List<ProductosWithCategoria>,
-        setProductosWithCategoria: (List<ProductosWithCategoria>) -> Unit
+        categoriaWithProductos: List<CategoriaWithProductos>,
+        setProductosWithCategoria: (List<CategoriaWithProductos>) -> Unit
     ) {
         Database.deleteProductoById(removingId)
 
-        val updatedList = productosWithCategoria.map { categoria ->
-            ProductosWithCategoria(
+        val updatedList = categoriaWithProductos.map { categoria ->
+            CategoriaWithProductos(
                 categoriaName = categoria.categoriaName,
                 categoriaId = categoria.categoriaId,
                 productos = categoria.productos?.filter { it.id != removingId }

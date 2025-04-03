@@ -6,7 +6,7 @@ import org.ivandev.acomprar.Literals
 import org.ivandev.acomprar.database.entities.Categoria
 import org.ivandev.acomprar.database.entities.Producto
 import org.ivandev.acomprar.database.interfaces.DatabaseCRUD
-import org.ivandev.acomprar.database.special_classes.ProductosWithCategoria
+import org.ivandev.acomprar.database.special_classes.CategoriaWithProductos
 
 object ProductoHandler: DatabaseCRUD<Producto> {
     override fun insert(db: SQLiteDatabase, producto: Producto): Boolean {
@@ -69,14 +69,14 @@ object ProductoHandler: DatabaseCRUD<Producto> {
         return productos
     }
 
-    fun getAllProductosByCategoria(db: SQLiteDatabase,categorias: List<Categoria>): List<ProductosWithCategoria> {
-        val productsByCategoria: MutableList<ProductosWithCategoria> = mutableListOf()
+    fun getAllProductosByCategoria(db: SQLiteDatabase,categorias: List<Categoria>): List<CategoriaWithProductos> {
+        val productsByCategoria: MutableList<CategoriaWithProductos> = mutableListOf()
 
         categorias?.forEach { categoria: Categoria ->
             var productos: List<Producto>? = getProductosByCategoriaId(db, categoria.id!!)
 
             productsByCategoria.add(
-                ProductosWithCategoria(
+                CategoriaWithProductos(
                     categoriaName = categoria.nombre,
                     categoriaId = categoria.id!!,
                     productos
