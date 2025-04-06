@@ -70,18 +70,18 @@ class HomeScreen: Screen {
 
     @Composable
     fun MyNavigationButtons() {
+        val navigator: Navigator = LocalNavigator.currentOrThrow
+
         Column {
-            MyNavButton(Literals.MENU_TITLE, MenuScreen())
-            MyNavButton(Literals.CATEGORIAS_TITLE, CategoriasScreen())
-            MyNavButton(Literals.PRODUCTOS_TITLE, ProductosScreen())
+            MyNavButton(title = Literals.MENU_TITLE) { navigator.push(MenuScreen()) }
+            MyNavButton(title = Literals.CATEGORIAS_TITLE) { navigator.push(CategoriasScreen()) }
+            MyNavButton(title = Literals.PRODUCTOS_TITLE) { navigator.push(ProductosScreen()) }
         }
     }
 
     @Composable
-    fun MyNavButton(title: String, screen: Screen) {
-        val navigator: Navigator = LocalNavigator.currentOrThrow
-
-        Button(onClick = { navigator.push(screen) }, Modifier.fillMaxWidth()) {
+    fun MyNavButton(title: String, onClickAction: () -> Unit) {
+        Button(onClick = onClickAction, Modifier.fillMaxWidth()) {
             Text(text = title, style = TextStyle(fontSize = 15.sp))
         }
     }
