@@ -1,8 +1,17 @@
 package org.ivandev.acomprar
 
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.material.MaterialTheme
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
+import cafe.adriel.voyager.navigator.Navigator
+import cafe.adriel.voyager.transitions.SlideTransition
+import org.ivandev.acomprar.database.Database
+import org.ivandev.acomprar.screens.HomeScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -10,6 +19,21 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             App(context = this)
+        }
+    }
+
+    @Composable
+    fun App(context: Context) {
+        LaunchedEffect(Unit) {
+            Database.initializeDatabase(context)
+        }
+
+        val homeScreen = remember { HomeScreen() }
+
+        MaterialTheme {
+            Navigator(screen = homeScreen) { navigator ->
+                SlideTransition(navigator)
+            }
         }
     }
 }
