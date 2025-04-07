@@ -10,6 +10,9 @@ import org.ivandev.acomprar.database.entities.ComidaEntity
 import org.ivandev.acomprar.database.entities.MenuEntity
 import org.ivandev.acomprar.database.entities.ProductoEntity
 import org.ivandev.acomprar.database.special_classes.CategoriaWithProductos
+import org.ivandev.acomprar.models.Categoria
+import org.ivandev.acomprar.models.Menu
+import org.ivandev.acomprar.models.Producto
 
 object Database {
     lateinit var mySQLiteDatabase: MySQLiteDatabase
@@ -27,16 +30,16 @@ object Database {
     fun deleteAllProducto() {}
 
 
-    fun addCategoria(categoriaEntity: CategoriaEntity): Boolean {
+    fun addCategoria(categoriaEntity: Categoria): Boolean {
         return mySQLiteDatabase.addCategoria(categoriaEntity)
     }
 
-    fun addProducto(productoEntity: ProductoEntity): Boolean {
-        return mySQLiteDatabase.addProducto(productoEntity)
+    fun addProducto(producto: Producto): Boolean {
+        return mySQLiteDatabase.addProducto(producto)
     }
 
-    fun addMenu(menuEntity: MenuEntity): Boolean {
-        return mySQLiteDatabase.addMenuAndComidasYCenas(menuEntity)
+    fun addMenu(menu: Menu): Boolean {
+        return mySQLiteDatabase.addMenuAndComidasYCenas(menu)
     }
 
     fun getLastMenu(): MenuEntity {

@@ -12,7 +12,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewmodel.compose.viewModel
 import org.ivandev.acomprar.database.entities.CategoriaEntity
-import org.ivandev.acomprar.viewModels.CategoriaStore
+import org.ivandev.acomprar.stores.CategoriaStore
 
 @Composable
 fun EditCategoriaPopup(categoriaEntityToEdit: State<CategoriaEntity?>) {

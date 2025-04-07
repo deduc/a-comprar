@@ -15,6 +15,9 @@ import org.ivandev.acomprar.database.handlers.ProductoHandler
 import org.ivandev.acomprar.database.scripts.CreateTables
 import org.ivandev.acomprar.database.scripts.DropTables
 import org.ivandev.acomprar.database.special_classes.CategoriaWithProductos
+import org.ivandev.acomprar.models.Categoria
+import org.ivandev.acomprar.models.Menu
+import org.ivandev.acomprar.models.Producto
 
 class MySQLiteDatabase(context: Context, version: Int) : SQLiteOpenHelper(
     context,
@@ -41,30 +44,30 @@ class MySQLiteDatabase(context: Context, version: Int) : SQLiteOpenHelper(
     }
 
 
-    fun addCategoria(categoriaEntity: CategoriaEntity): Boolean {
+    fun addCategoria(categoria: Categoria): Boolean {
         val db = writableDatabase
-        val result = CategoriaHandler.insert(db, categoriaEntity)
+        val result = CategoriaHandler.insert(db, categoria)
 
         db.close()
         return result
     }
 
-    fun addProducto(productoEntity: ProductoEntity): Boolean {
+    fun addProducto(producto: Producto): Boolean {
         val db = writableDatabase
-        val result = ProductoHandler.insert(db, productoEntity)
+        val result = ProductoHandler.insert(db, producto)
 
         db.close()
         return result
     }
 
-    fun addMenuAndComidasYCenas(menuEntity: MenuEntity): Boolean {
+    fun addMenuAndComidasYCenas(menu: Menu): Boolean {
         val db = writableDatabase
         var result = false
 
         try {
             db.beginTransaction() // Inicia una transacción para garantizar atomicidad
 
-            val inserted = MenuHandler.insert(db, menuEntity)
+            val inserted = MenuHandler.insert(db, menu)
             if (!inserted) { return false }
 
             val lastMenu = MenuHandler.getLast(db) ?: return false
@@ -72,9 +75,11 @@ class MySQLiteDatabase(context: Context, version: Int) : SQLiteOpenHelper(
 
             // Confirma la transacción si todo va bien
             if (result) { db.setTransactionSuccessful() }
-        } catch (e: Exception) {
+        }
+        catch (e: Exception) {
             e.printStackTrace() // Maneja excepciones para depuración
-        } finally {
+        }
+        finally {
             db.endTransaction() // Finaliza la transacción (commit o rollback)
             db.close()
         }

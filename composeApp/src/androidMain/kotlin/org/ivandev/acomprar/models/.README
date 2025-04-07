@@ -1,0 +1,2 @@
+Fichero distinto a database/entities.
+Aqui se usarán las clases Producto, Categoria, etc para la creacion de obj temporales que permitan null donde me convenga.

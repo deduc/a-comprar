@@ -10,6 +10,7 @@ import kotlinx.coroutines.runBlocking
 import org.ivandev.acomprar.database.Database
 import org.ivandev.acomprar.database.entities.ComidaEntity
 import org.ivandev.acomprar.database.entities.MenuEntity
+import org.ivandev.acomprar.models.Menu
 import org.ivandev.acomprar.screens.menu.classes.MyMenuComidas
 
 class MenuStore : ViewModel() {
@@ -24,8 +25,8 @@ class MenuStore : ViewModel() {
         }
     }
 
-    fun addMenu(menuEntity: MenuEntity) {
-        val added = Database.addMenu(menuEntity)
+    fun addMenu(menu: Menu) {
+        val added = Database.addMenu(menu)
 
         if (added) {
             val newMenu = Database.getLastMenu()

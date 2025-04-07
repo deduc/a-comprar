@@ -5,16 +5,16 @@ import android.database.sqlite.SQLiteDatabase
 import org.ivandev.acomprar.Literals
 import org.ivandev.acomprar.database.entities.CategoriaEntity
 import org.ivandev.acomprar.database.entities.ProductoEntity
-import org.ivandev.acomprar.database.interfaces.DatabaseCRUD
 import org.ivandev.acomprar.database.special_classes.CategoriaWithProductos
+import org.ivandev.acomprar.models.Producto
 
-object ProductoHandler: DatabaseCRUD<ProductoEntity> {
-    override fun insert(db: SQLiteDatabase, productoEntity: ProductoEntity): Boolean {
+object ProductoHandler {
+    fun insert(db: SQLiteDatabase, producto: Producto): Boolean {
         val values = ContentValues().apply {
-            put(Literals.Database.ID_CATEGORIA_COLUMN, productoEntity.idCategoria)
-            put(Literals.Database.NOMBRE_COLUMN, productoEntity.nombre)
-            put(Literals.Database.CANTIDAD_COLUMN, productoEntity.cantidad)
-            put(Literals.Database.MARCA_COLUMN, productoEntity.marca)
+            put(Literals.Database.ID_CATEGORIA_COLUMN, producto.idCategoria)
+            put(Literals.Database.NOMBRE_COLUMN, producto.nombre)
+            put(Literals.Database.CANTIDAD_COLUMN, producto.cantidad)
+            put(Literals.Database.MARCA_COLUMN, producto.marca)
         }
 
         val rowId = db.insert(Literals.Database.PRODUCTO_TABLE, null, values)
@@ -25,7 +25,7 @@ object ProductoHandler: DatabaseCRUD<ProductoEntity> {
             return true
     }
 
-    override fun deleteById(db: SQLiteDatabase, id: Int): Boolean {
+    fun deleteById(db: SQLiteDatabase, id: Int): Boolean {
         val deletedRows: Int = db.delete(
             Literals.Database.PRODUCTO_TABLE,
             "${Literals.Database.ID_COLUMN} = ?",
@@ -35,7 +35,7 @@ object ProductoHandler: DatabaseCRUD<ProductoEntity> {
         return deletedRows == 1
     }
 
-    override fun getAll(db: SQLiteDatabase): MutableList<ProductoEntity> {
+    fun getAll(db: SQLiteDatabase): MutableList<ProductoEntity> {
         println("******** NO IMPLEMENTADO ***********")
         TODO("Not yet implemented")
     }

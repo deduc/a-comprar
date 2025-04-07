@@ -1,4 +1,4 @@
-package org.ivandev.acomprar.viewModels
+package org.ivandev.acomprar.stores
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -8,10 +8,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.ivandev.acomprar.database.Database
 import org.ivandev.acomprar.database.entities.CategoriaEntity
+import org.ivandev.acomprar.models.Categoria
 
 class CategoriaStore : ViewModel() {
     // valor modificable
-    private val _categorias = mutableStateOf<List<CategoriaEntity>>(Database.getAllCategoria())
+    private val _categorias = mutableStateOf(Database.getAllCategoria())
     // valor para obtener
     val categorias: State<List<CategoriaEntity>> = _categorias
 
@@ -35,14 +36,18 @@ class CategoriaStore : ViewModel() {
         Database.updateCategoriaById(updatedCategoriaEntity)
     }
 
-    fun addCategoria(newCategoriaEntity: CategoriaEntity) {
-        val lastId = _categorias.value.last().id!!
-        newCategoriaEntity.id = lastId + 1
-        _categorias.value = _categorias.value + newCategoriaEntity
+    fun addCategoria(categoria: Categoria) {
+        val added = Database.addCategoria(categoria)
+
+        if (added) {
+            val newId = _categorias.value.last().id + 1
+            _categorias.value += CategoriaEntity(newId, categoria.nombre)
+        }
+
     }
 
     fun deleteCategoria(deleteCategoriaEntity: CategoriaEntity) {
-        Database.deleteCategoriaById(deleteCategoriaEntity.id!!)
+        Database.deleteCategoriaById(deleteCategoriaEntity.id)
         _categorias.value = _categorias.value.filter { it.id != deleteCategoriaEntity.id }.toList()
     }
 

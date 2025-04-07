@@ -55,13 +55,13 @@ class EditProductoScreen(
         val categorias = Database.getAllCategoria()
 
         // Preseleccionar la categoría con el ID especificado
-        val categoriaEntitySeleccionada = remember { mutableStateOf<CategoriaEntity?>(null) }
+        val categoriaEntitySeleccionada = remember { mutableStateOf<CategoriaEntity>(CategoriaEntity(0, "")) }
         // Expansión del desplegable
         val expanded = remember { mutableStateOf(false) }
 
         LaunchedEffect(idCategoria) {
             val categoriaPorDefecto = categorias.find { it.id == idCategoria }
-            categoriaEntitySeleccionada.value = categoriaPorDefecto
+            if (categoriaPorDefecto != null) categoriaEntitySeleccionada.value = categoriaPorDefecto
         }
 
         val nombre = remember { mutableStateOf(productoEntity.nombre) }
@@ -120,7 +120,7 @@ class EditProductoScreen(
                 onClick = {
                     val newProductoEntity = ProductoEntity(
                         id = productoEntity.id,
-                        idCategoria = categoriaEntitySeleccionada.value?.id,
+                        idCategoria = categoriaEntitySeleccionada.value.id,
                         nombre = nombre.value,
                         cantidad = cantidad.value,
                         marca = marca.value

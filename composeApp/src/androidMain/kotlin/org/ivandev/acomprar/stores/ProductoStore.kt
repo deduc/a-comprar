@@ -10,6 +10,7 @@ import kotlinx.coroutines.withContext
 import org.ivandev.acomprar.database.Database
 import org.ivandev.acomprar.database.entities.ProductoEntity
 import org.ivandev.acomprar.database.special_classes.CategoriaWithProductos
+import org.ivandev.acomprar.models.Producto
 
 class ProductoStore : ViewModel() {
     private val _categoriasWithProductosList = mutableStateOf<List<CategoriaWithProductos>?>(null)
@@ -37,11 +38,11 @@ class ProductoStore : ViewModel() {
     }
 
 
-    fun addProducto(productoEntity: ProductoEntity) {
-        val added = Database.addProducto(productoEntity)
+    fun addProducto(producto: Producto) {
+        val added = Database.addProducto(producto)
 
         if (added) {
-            getProductosByCategoriaId(productoEntity.idCategoria!!)
+            getProductosByCategoriaId(producto.idCategoria!!)
         }
     }
 

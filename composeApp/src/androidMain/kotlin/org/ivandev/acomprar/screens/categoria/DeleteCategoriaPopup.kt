@@ -7,7 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.lifecycle.viewmodel.compose.viewModel
 import org.ivandev.acomprar.database.entities.CategoriaEntity
-import org.ivandev.acomprar.viewModels.CategoriaStore
+import org.ivandev.acomprar.stores.CategoriaStore
 
 @Composable
 fun DeleteCategoriaPopup(categoriaEntity: State<CategoriaEntity?>) {

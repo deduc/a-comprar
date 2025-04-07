@@ -21,8 +21,9 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import org.ivandev.acomprar.database.entities.CategoriaEntity
 import org.ivandev.acomprar.database.entities.ProductoEntity
+import org.ivandev.acomprar.models.Producto
 import org.ivandev.acomprar.stores.ProductoStore
-import org.ivandev.acomprar.viewModels.CategoriaStore
+import org.ivandev.acomprar.stores.CategoriaStore
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -54,14 +55,14 @@ fun AddProductoPopup(idCategoria: Int) {
             confirmButton = {
                 TextButton(
                     onClick = {
-                        val newProductoEntity = ProductoEntity(
+                        val newProducto = Producto(
                             id = null,
                             idCategoria = categoriaEntitySeleccionada.value?.id,
                             nombre = nombre.value,
                             cantidad = cantidad.value,
                             marca = marca.value
                         )
-                        productoStore.addProducto(newProductoEntity)
+                        productoStore.addProducto(newProducto)
                         productoStore.updateShowAddProductoPopup(false)
                     }
                 ) {

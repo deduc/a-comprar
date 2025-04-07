@@ -29,7 +29,7 @@ import org.ivandev.acomprar.components.CommonScreen
 import org.ivandev.acomprar.components.MyIcons
 import org.ivandev.acomprar.components.MyScrollableColumn
 import org.ivandev.acomprar.database.entities.CategoriaEntity
-import org.ivandev.acomprar.viewModels.CategoriaStore
+import org.ivandev.acomprar.stores.CategoriaStore
 
 class CategoriasScreen : Screen {
     @Composable

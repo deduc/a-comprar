@@ -4,6 +4,7 @@ import android.content.ContentValues
 import android.database.sqlite.SQLiteDatabase
 import org.ivandev.acomprar.Literals
 import org.ivandev.acomprar.database.entities.MenuEntity
+import org.ivandev.acomprar.models.Menu
 
 object MenuHandler  {
     fun getAll(db: SQLiteDatabase): List<MenuEntity> {
@@ -42,9 +43,9 @@ object MenuHandler  {
         return result
     }
 
-    fun insert(db: SQLiteDatabase, menuEntity: MenuEntity): Boolean {
+    fun insert(db: SQLiteDatabase, menu: Menu): Boolean {
         val datos = ContentValues()
-        datos.put(Literals.Database.NOMBRE_COLUMN, menuEntity.nombre)
+        datos.put(Literals.Database.NOMBRE_COLUMN, menu.nombre)
 
         val result = db.insert(
             Literals.Database.MENU_TABLE,

@@ -3,19 +3,19 @@ package org.ivandev.acomprar.database.handlers
 import android.content.ContentValues
 import android.database.sqlite.SQLiteDatabase
 import org.ivandev.acomprar.Literals
+import org.ivandev.acomprar.models.Categoria
 import org.ivandev.acomprar.database.entities.CategoriaEntity
-import org.ivandev.acomprar.database.interfaces.DatabaseCRUD
 
-object CategoriaHandler: DatabaseCRUD<CategoriaEntity> {
-    override fun insert(db: SQLiteDatabase, categoriaEntity: CategoriaEntity): Boolean {
+object CategoriaHandler {
+    fun insert(db: SQLiteDatabase, categoria: Categoria): Boolean {
         val datos = ContentValues()
-        datos.put("nombre", categoriaEntity.nombre)
+        datos.put("nombre", categoria.nombre)
         db.insert(Literals.Database.CATEGORIA_TABLE, null, datos)
 
-        return checkIfCategoriaWasInserted(db, categoriaEntity)
+        return checkIfCategoriaWasInserted(db, categoria)
     }
 
-    override fun getAll(db: SQLiteDatabase): MutableList<CategoriaEntity> {
+    fun getAll(db: SQLiteDatabase): MutableList<CategoriaEntity> {
         val command = "SELECT * FROM ${Literals.Database.CATEGORIA_TABLE}"
         val result = mutableListOf<CategoriaEntity>()
 
@@ -34,7 +34,7 @@ object CategoriaHandler: DatabaseCRUD<CategoriaEntity> {
         return result
     }
 
-    override fun deleteById(db: SQLiteDatabase, id: Int): Boolean {
+    fun deleteById(db: SQLiteDatabase, id: Int): Boolean {
         val deletedRows: Int = db.delete(
             Literals.Database.CATEGORIA_TABLE,
             "${Literals.Database.ID_COLUMN} = ?",
@@ -80,7 +80,7 @@ object CategoriaHandler: DatabaseCRUD<CategoriaEntity> {
         return updatedRows == 1
     }
 
-    private fun checkIfCategoriaWasInserted(db: SQLiteDatabase, categoriaEntity: CategoriaEntity): Boolean {
+    private fun checkIfCategoriaWasInserted(db: SQLiteDatabase, categoria: Categoria): Boolean {
         db.query(
             Literals.Database.CATEGORIA_TABLE, // Nombre tabla
             arrayOf(Literals.Database.NOMBRE_COLUMN), // Columnas output
@@ -91,7 +91,7 @@ object CategoriaHandler: DatabaseCRUD<CategoriaEntity> {
             "id DESC", // ordenar salida
             "1" // cantidad de filas retornadas
         ).use { cursor ->
-            return cursor.moveToFirst() && cursor.getString(0) == categoriaEntity.nombre
+            return cursor.moveToFirst() && cursor.getString(0) == categoria.nombre
         }
     }
 }
