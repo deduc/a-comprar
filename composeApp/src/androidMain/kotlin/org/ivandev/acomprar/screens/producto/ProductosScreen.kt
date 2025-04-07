@@ -32,7 +32,7 @@ import org.ivandev.acomprar.components.CommonScreen
 import org.ivandev.acomprar.components.MyIcons
 import org.ivandev.acomprar.components.MyScrollableColumn
 import org.ivandev.acomprar.database.Database
-import org.ivandev.acomprar.database.entities.Producto
+import org.ivandev.acomprar.database.entities.ProductoEntity
 import org.ivandev.acomprar.database.special_classes.CategoriaWithProductos
 import org.ivandev.acomprar.stores.ProductoStore
 
@@ -51,11 +51,11 @@ class ProductosScreen: Screen {
     @Composable
     fun MainContent() {
         val productoStore: ProductoStore = viewModel()
-        val categoriaWithProductosList: State<List<CategoriaWithProductos>?> = productoStore.categoriaWithProductos
+        val categoriaWithProductosList: State<List<CategoriaWithProductos>?> = productoStore.categoriasWithProductosList
 
         val productoToAdd: State<Boolean> = productoStore.productoToAdd
-        val productoToEdit: State<Producto?> = productoStore.productoToEdit
-        val productoToDelete: State<Producto?> = productoStore.productoToDelete
+        val productoEntityToEdit: State<ProductoEntity?> = productoStore.productoEntityToEdit
+        val productoEntityToDelete: State<ProductoEntity?> = productoStore.productoEntityToDelete
 
         if (categoriaWithProductosList.value?.isNotEmpty() == true) {
             MyScrollableColumn {
@@ -66,7 +66,7 @@ class ProductosScreen: Screen {
                             CategoriaHeader(categoriaWithProductos.categoriaName, productoStore)
 
                             Column(Modifier.padding(Tools.padding8dp)) {
-                                ProductsContainer(categoriaWithProductos.productos, productoStore)
+                                ProductsContainer(categoriaWithProductos.productoEntities, productoStore)
                             }
                         }
 
@@ -104,38 +104,38 @@ class ProductosScreen: Screen {
     }
 
     @Composable
-    fun ProductsContainer(productos: List<Producto>?, productoStore: ProductoStore) {
-        if (productos.isNullOrEmpty()) {
+    fun ProductsContainer(productoEntities: List<ProductoEntity>?, productoStore: ProductoStore) {
+        if (productoEntities.isNullOrEmpty()) {
             Text("Sin productos.")
         }
         else {
-            productos.forEach { producto: Producto ->
-                ProductsAndButtonsList(producto, productoStore)
+            productoEntities.forEach { productoEntity: ProductoEntity ->
+                ProductsAndButtonsList(productoEntity, productoStore)
             }
         }
     }
 
     @Composable
     fun ProductsAndButtonsList(
-        producto: Producto,
+        productoEntity: ProductoEntity,
         productoStore: ProductoStore
     ) {
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
             Row(Modifier.weight(0.8f)) {
-                val cantidad = producto.cantidad ?: ""
+                val cantidad = productoEntity.cantidad ?: ""
 
-                Text("${producto.nombre} - $cantidad")
+                Text("${productoEntity.nombre} - $cantidad")
             }
 
             Row(Modifier.weight(0.2f)) {
                 MyIcons.EditIcon {
-                    productoStore.updateProductoToEdit(producto)
+                    productoStore.updateProductoToEdit(productoEntity)
                 }
 
                 Spacer(Modifier.width(8.dp))
 
                 MyIcons.TrashIcon {
-                    productoStore.updateProductoToDelete(producto)
+                    productoStore.updateProductoToDelete(productoEntity)
                 }
             }
 
@@ -154,7 +154,7 @@ class ProductosScreen: Screen {
             CategoriaWithProductos(
                 categoriaName = categoria.categoriaName,
                 categoriaId = categoria.categoriaId,
-                productos = categoria.productos?.filter { it.id != removingId }
+                productoEntities = categoria.productoEntities?.filter { it.id != removingId }
             )
         }
 
@@ -167,8 +167,8 @@ class ProductosScreen: Screen {
     }
 
     @Composable
-    fun PopupEditProducto(producto: Producto) {}
+    fun PopupEditProducto(productoEntity: ProductoEntity) {}
 
     @Composable
-    fun PopupDeleteProducto(producto: Producto) {}
+    fun PopupDeleteProducto(productoEntity: ProductoEntity) {}
 }

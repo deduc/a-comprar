@@ -1,9 +1,9 @@
 package org.ivandev.acomprar.database.entities
 
-data class Comida(
-    var id: Int?,
-    var idMenu: Int?,
-    var nombre: String?,
+data class ComidaEntity(
+    var id: Int,
+    var idMenu: Int,
+    var nombre: String,
     // Lunes = 0, Martes = 1... domingo = 6
     var dia: Int,
     // comida = 0, cena = 1, postre = 2

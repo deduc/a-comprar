@@ -1,6 +1,6 @@
 package org.ivandev.acomprar.database.entities
 
-class Menu(
-    var id: Int?,
+class MenuEntity(
+    var id: Int,
     var nombre: String
 )

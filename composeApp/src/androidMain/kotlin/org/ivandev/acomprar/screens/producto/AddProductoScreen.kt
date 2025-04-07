@@ -24,8 +24,8 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import org.ivandev.acomprar.Literals
 import org.ivandev.acomprar.components.CommonScreen
 import org.ivandev.acomprar.database.Database
-import org.ivandev.acomprar.database.entities.Categoria
-import org.ivandev.acomprar.database.entities.Producto
+import org.ivandev.acomprar.database.entities.CategoriaEntity
+import org.ivandev.acomprar.database.entities.ProductoEntity
 import org.ivandev.acomprar.screens.producto.classes.ProductoCheckedMessage
 
 class AddProductoScreen(
@@ -55,13 +55,13 @@ class AddProductoScreen(
         val categorias = Database.getAllCategoria()
 
         // Preseleccionar la categoría con el ID especificado
-        val categoriaSeleccionada = remember { mutableStateOf<Categoria?>(null) }
+        val categoriaEntitySeleccionada = remember { mutableStateOf<CategoriaEntity?>(null) }
         // Expansión del desplegable
         val expanded = remember { mutableStateOf(false) }
 
         LaunchedEffect(id) {
             val categoriaPorDefecto = categorias.find { it.id == id }
-            categoriaSeleccionada.value = categoriaPorDefecto
+            categoriaEntitySeleccionada.value = categoriaPorDefecto
         }
 
         val nombre = remember { mutableStateOf("") }
@@ -91,7 +91,7 @@ class AddProductoScreen(
             // Desplegable para seleccionar una categoría
             ExposedDropdownMenuBox(expanded = expanded.value, onExpandedChange = { expanded.value = !expanded.value }) {
                 TextField(
-                    value = categoriaSeleccionada.value?.nombre ?: "Seleccionar categoría",
+                    value = categoriaEntitySeleccionada.value?.nombre ?: "Seleccionar categoría",
                     onValueChange = {},
                     label = { Text("Categoría") },
                     readOnly = true,
@@ -106,7 +106,7 @@ class AddProductoScreen(
                 ) {
                     categorias.forEach { categoria ->
                         DropdownMenuItem(onClick = {
-                            categoriaSeleccionada.value = categoria
+                            categoriaEntitySeleccionada.value = categoria
                             expanded.value = false
                         }) {
                             Text(categoria.nombre)
@@ -117,14 +117,14 @@ class AddProductoScreen(
 
             Button(
                 onClick = {
-                    val producto = Producto(
+                    val productoEntity = ProductoEntity(
                         id = null,
-                        idCategoria = categoriaSeleccionada.value?.id,
+                        idCategoria = categoriaEntitySeleccionada.value?.id,
                         nombre = nombre.value,
                         cantidad = cantidad.value,
                         marca = marca.value
                     )
-                    addProducto(navigator, producto)
+                    addProducto(navigator, productoEntity)
                 }
             ) {
                 Text(Literals.ADD_TEXT)
@@ -132,14 +132,14 @@ class AddProductoScreen(
         }
     }
 
-    private fun addProducto(navigator: Navigator, producto: Producto){
-        var checking: ProductoCheckedMessage = isProductoOk(producto)
+    private fun addProducto(navigator: Navigator, productoEntity: ProductoEntity){
+        var checking: ProductoCheckedMessage = isProductoOk(productoEntity)
 
         if (! checking.checkedPassedTest) {
             println(checking.message)
         }
 
-        if (! Database.addProducto(producto)) {
+        if (! Database.addProducto(productoEntity)) {
             println("ERROR - No se ha podido añadir la fila por un error desconocido")
             navigator.pop()
             return
@@ -149,10 +149,10 @@ class AddProductoScreen(
         navigator.pop()
     }
 
-    private fun isProductoOk(producto: Producto): ProductoCheckedMessage {
+    private fun isProductoOk(productoEntity: ProductoEntity): ProductoCheckedMessage {
         var result: ProductoCheckedMessage = if (
-            producto.idCategoria != null &&
-            ! producto.nombre.isNullOrEmpty()
+            productoEntity.idCategoria != null &&
+            ! productoEntity.nombre.isNullOrEmpty()
         ) {
             ProductoCheckedMessage(true, "")
         } else {

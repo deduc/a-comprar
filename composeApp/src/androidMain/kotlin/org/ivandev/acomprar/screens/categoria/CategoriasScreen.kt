@@ -28,7 +28,7 @@ import org.ivandev.acomprar.Tools
 import org.ivandev.acomprar.components.CommonScreen
 import org.ivandev.acomprar.components.MyIcons
 import org.ivandev.acomprar.components.MyScrollableColumn
-import org.ivandev.acomprar.database.entities.Categoria
+import org.ivandev.acomprar.database.entities.CategoriaEntity
 import org.ivandev.acomprar.viewModels.CategoriaStore
 
 class CategoriasScreen : Screen {
@@ -70,27 +70,27 @@ class CategoriasScreen : Screen {
         val categoriaStore: CategoriaStore = viewModel()
 
         val categorias = categoriaStore.categorias
-        var categoriaToEdit: State<Categoria?> = categoriaStore.categoriaToEdit
-        var categoriaToDelete: State<Categoria?> = categoriaStore.categoriaToDelete
+        var categoriaEntityToEdit: State<CategoriaEntity?> = categoriaStore.categoriaEntityToEdit
+        var categoriaEntityToDelete: State<CategoriaEntity?> = categoriaStore.categoriaEntityToDelete
 
         Column(Tools.styleBorderBlack) {
             TableHeaders()
 
             // TABLE CONTENT
-            categorias.value.forEachIndexed { index: Int, categoria: Categoria ->
+            categorias.value.forEachIndexed { index: Int, categoriaEntity: CategoriaEntity ->
                 Row(Modifier.fillMaxWidth().border(1.dp, Color.Black), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
 
                     Column(Modifier.weight(0.65f).border(1.dp, Color.Black)) {
-                        Text(categoria.nombre, Modifier.padding(Tools.padding8dp))
+                        Text(categoriaEntity.nombre, Modifier.padding(Tools.padding8dp))
                     }
 
                     Column(Modifier.weight(0.35f).border(1.dp, Color.Black)) {
                         Row(Modifier.fillMaxWidth().padding(Tools.padding8dp), horizontalArrangement = Arrangement.SpaceBetween) {
-                            MyIcons.ViewIcon { seeCategoriaById(categoria, navigator) }
+                            MyIcons.ViewIcon { seeCategoriaById(categoriaEntity, navigator) }
 
-                            if(categoria.id != Literals.Database.ID_SIN_CATEGORIA_VALUE) {
-                                MyIcons.EditIcon { categoriaStore.updateCategoriaToEdit(categoria) }
-                                MyIcons.TrashIcon { categoriaStore.updateCategoriaToDelete(categoria) }
+                            if(categoriaEntity.id != Literals.Database.ID_SIN_CATEGORIA_VALUE) {
+                                MyIcons.EditIcon { categoriaStore.updateCategoriaToEdit(categoriaEntity) }
+                                MyIcons.TrashIcon { categoriaStore.updateCategoriaToDelete(categoriaEntity) }
                             }
                         }
                     }
@@ -99,14 +99,14 @@ class CategoriasScreen : Screen {
         }
 
         // Mostrar el popup si hay una categoría seleccionada
-        if (categoriaToEdit.value != null) {
-            EditCategoriaPopup(categoriaToEdit)
+        if (categoriaEntityToEdit.value != null) {
+            EditCategoriaPopup(categoriaEntityToEdit)
         }
 
 
         // Mostrar el popup si hay una categoría seleccionada
-        if (categoriaToDelete.value != null) {
-            DeleteCategoriaPopup(categoriaToDelete)
+        if (categoriaEntityToDelete.value != null) {
+            DeleteCategoriaPopup(categoriaEntityToDelete)
         }
     }
 
@@ -122,7 +122,7 @@ class CategoriasScreen : Screen {
         }
     }
 
-    private fun seeCategoriaById(categoria: Categoria, navigator: Navigator) {
-        navigator.push(SeeCategoriaAndProductsScreen(categoria))
+    private fun seeCategoriaById(categoriaEntity: CategoriaEntity, navigator: Navigator) {
+        navigator.push(SeeCategoriaAndProductsScreen(categoriaEntity))
     }
 }

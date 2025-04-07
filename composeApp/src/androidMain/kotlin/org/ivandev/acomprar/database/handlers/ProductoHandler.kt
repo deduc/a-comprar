@@ -3,18 +3,18 @@ package org.ivandev.acomprar.database.handlers
 import android.content.ContentValues
 import android.database.sqlite.SQLiteDatabase
 import org.ivandev.acomprar.Literals
-import org.ivandev.acomprar.database.entities.Categoria
-import org.ivandev.acomprar.database.entities.Producto
+import org.ivandev.acomprar.database.entities.CategoriaEntity
+import org.ivandev.acomprar.database.entities.ProductoEntity
 import org.ivandev.acomprar.database.interfaces.DatabaseCRUD
 import org.ivandev.acomprar.database.special_classes.CategoriaWithProductos
 
-object ProductoHandler: DatabaseCRUD<Producto> {
-    override fun insert(db: SQLiteDatabase, producto: Producto): Boolean {
+object ProductoHandler: DatabaseCRUD<ProductoEntity> {
+    override fun insert(db: SQLiteDatabase, productoEntity: ProductoEntity): Boolean {
         val values = ContentValues().apply {
-            put(Literals.Database.ID_CATEGORIA_COLUMN, producto.idCategoria)
-            put(Literals.Database.NOMBRE_COLUMN, producto.nombre)
-            put(Literals.Database.CANTIDAD_COLUMN, producto.cantidad)
-            put(Literals.Database.MARCA_COLUMN, producto.marca)
+            put(Literals.Database.ID_CATEGORIA_COLUMN, productoEntity.idCategoria)
+            put(Literals.Database.NOMBRE_COLUMN, productoEntity.nombre)
+            put(Literals.Database.CANTIDAD_COLUMN, productoEntity.cantidad)
+            put(Literals.Database.MARCA_COLUMN, productoEntity.marca)
         }
 
         val rowId = db.insert(Literals.Database.PRODUCTO_TABLE, null, values)
@@ -35,13 +35,13 @@ object ProductoHandler: DatabaseCRUD<Producto> {
         return deletedRows == 1
     }
 
-    override fun getAll(db: SQLiteDatabase): MutableList<Producto> {
+    override fun getAll(db: SQLiteDatabase): MutableList<ProductoEntity> {
         println("******** NO IMPLEMENTADO ***********")
         TODO("Not yet implemented")
     }
 
-    fun getProductosByCategoriaId(db: SQLiteDatabase, id: Int): List<Producto> {
-        val productos = mutableListOf<Producto>()
+    fun getProductosByCategoriaId(db: SQLiteDatabase, id: Int): List<ProductoEntity> {
+        val productoEntities = mutableListOf<ProductoEntity>()
 
         val cursor = db.query(
             Literals.Database.PRODUCTO_TABLE, // Nombre de la tabla
@@ -53,33 +53,34 @@ object ProductoHandler: DatabaseCRUD<Producto> {
             null
         )
 
-        if (cursor != null) {
-            while (cursor.moveToNext()) {
-                val producto = Producto(
-                    id = cursor.getInt(cursor.getColumnIndexOrThrow(Literals.Database.ID_COLUMN)),
-                    idCategoria = cursor.getInt(cursor.getColumnIndexOrThrow(Literals.Database.ID_CATEGORIA_COLUMN)),
-                    nombre = cursor.getString(cursor.getColumnIndexOrThrow(Literals.Database.NOMBRE_COLUMN)),
-                    cantidad = cursor.getString(cursor.getColumnIndexOrThrow(Literals.Database.CANTIDAD_COLUMN)),
-                    marca = cursor.getString(cursor.getColumnIndexOrThrow(Literals.Database.MARCA_COLUMN))
+        // Usamos el cursor con 'use' para que se cierre automáticamente cuando ya no se necesita
+        cursor.use {
+            while (it.moveToNext()) {
+                val productoEntity = ProductoEntity(
+                    id = it.getInt(it.getColumnIndexOrThrow(Literals.Database.ID_COLUMN)),
+                    idCategoria = it.getInt(it.getColumnIndexOrThrow(Literals.Database.ID_CATEGORIA_COLUMN)),
+                    nombre = it.getString(it.getColumnIndexOrThrow(Literals.Database.NOMBRE_COLUMN)),
+                    cantidad = it.getString(it.getColumnIndexOrThrow(Literals.Database.CANTIDAD_COLUMN)),
+                    marca = it.getString(it.getColumnIndexOrThrow(Literals.Database.MARCA_COLUMN))
                 )
-                productos.add(producto)
+                productoEntities.add(productoEntity)
             }
         }
 
-        return productos
+        return productoEntities
     }
 
-    fun getAllProductosByCategoria(db: SQLiteDatabase,categorias: List<Categoria>): List<CategoriaWithProductos> {
+    fun getAllProductosByCategoria(db: SQLiteDatabase, categoriaEntities: List<CategoriaEntity>): List<CategoriaWithProductos> {
         val productsByCategoria: MutableList<CategoriaWithProductos> = mutableListOf()
 
-        categorias?.forEach { categoria: Categoria ->
-            var productos: List<Producto>? = getProductosByCategoriaId(db, categoria.id!!)
+        categoriaEntities?.forEach { categoriaEntity: CategoriaEntity ->
+            var productoEntities: List<ProductoEntity>? = getProductosByCategoriaId(db, categoriaEntity.id!!)
 
             productsByCategoria.add(
                 CategoriaWithProductos(
-                    categoriaName = categoria.nombre,
-                    categoriaId = categoria.id!!,
-                    productos
+                    categoriaName = categoriaEntity.nombre,
+                    categoriaId = categoriaEntity.id!!,
+                    productoEntities
                 )
             )
         }
@@ -87,19 +88,19 @@ object ProductoHandler: DatabaseCRUD<Producto> {
         return productsByCategoria
     }
 
-    fun updateById(db: SQLiteDatabase, producto: Producto): Boolean {
+    fun updateById(db: SQLiteDatabase, productoEntity: ProductoEntity): Boolean {
         var productKeyValueColumn = ContentValues()
-        productKeyValueColumn.put(Literals.Database.ID_COLUMN, producto.id)
-        productKeyValueColumn.put(Literals.Database.ID_CATEGORIA_COLUMN, producto.idCategoria)
-        productKeyValueColumn.put(Literals.Database.NOMBRE_COLUMN, producto.nombre)
-        productKeyValueColumn.put(Literals.Database.CANTIDAD_COLUMN, producto.cantidad)
-        productKeyValueColumn.put(Literals.Database.MARCA_COLUMN, producto.marca)
+        productKeyValueColumn.put(Literals.Database.ID_COLUMN, productoEntity.id)
+        productKeyValueColumn.put(Literals.Database.ID_CATEGORIA_COLUMN, productoEntity.idCategoria)
+        productKeyValueColumn.put(Literals.Database.NOMBRE_COLUMN, productoEntity.nombre)
+        productKeyValueColumn.put(Literals.Database.CANTIDAD_COLUMN, productoEntity.cantidad)
+        productKeyValueColumn.put(Literals.Database.MARCA_COLUMN, productoEntity.marca)
 
         var productosUpdated: Int = db.update(
             Literals.Database.PRODUCTO_TABLE,
             productKeyValueColumn,
             "${Literals.Database.ID_COLUMN} = ?",
-            arrayOf("${producto.id}")
+            arrayOf("${productoEntity.id}")
         )
 
         return productosUpdated == 1

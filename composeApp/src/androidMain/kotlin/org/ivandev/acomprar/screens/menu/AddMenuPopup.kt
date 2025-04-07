@@ -13,7 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import org.ivandev.acomprar.Literals
-import org.ivandev.acomprar.database.entities.Menu
+import org.ivandev.acomprar.database.entities.MenuEntity
 import org.ivandev.acomprar.stores.MenuStore
 
 @Composable
@@ -26,7 +26,7 @@ fun AddMenuPopup(onDismiss: () -> Unit) {
         confirmButton = {
             TextButton(
                 onClick = {
-                    menuStore.addMenu(Menu(null, menuName.value))
+                    menuStore.addMenu(MenuEntity(null, menuName.value))
                     onDismiss()
                 }
             ) { Text(Literals.ADD_TEXT) }

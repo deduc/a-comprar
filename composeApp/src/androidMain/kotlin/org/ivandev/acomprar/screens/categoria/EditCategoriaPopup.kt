@@ -11,23 +11,23 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewmodel.compose.viewModel
-import org.ivandev.acomprar.database.entities.Categoria
+import org.ivandev.acomprar.database.entities.CategoriaEntity
 import org.ivandev.acomprar.viewModels.CategoriaStore
 
 @Composable
-fun EditCategoriaPopup(categoriaToEdit: State<Categoria?>) {
+fun EditCategoriaPopup(categoriaEntityToEdit: State<CategoriaEntity?>) {
     val categoriaStore: CategoriaStore = viewModel()
 
-    var newCategoriaName by remember { mutableStateOf(categoriaToEdit.value!!.nombre) }
+    var newCategoriaName by remember { mutableStateOf(categoriaEntityToEdit.value!!.nombre) }
 
-    if (categoriaToEdit.value != null) {
+    if (categoriaEntityToEdit.value != null) {
         AlertDialog(
             onDismissRequest = { categoriaStore.updateCategoriaToEdit(null) },
             confirmButton = {
                 TextButton(
                     onClick = {
-                        categoriaToEdit.value!!.nombre = newCategoriaName
-                        categoriaStore.updateCategoria(categoriaToEdit.value!!)
+                        categoriaEntityToEdit.value!!.nombre = newCategoriaName
+                        categoriaStore.updateCategoria(categoriaEntityToEdit.value!!)
                         categoriaStore.updateCategoriaToEdit(null)
                     }
                 ) {

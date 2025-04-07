@@ -3,20 +3,20 @@ package org.ivandev.acomprar.database.handlers
 import android.content.ContentValues
 import android.database.sqlite.SQLiteDatabase
 import org.ivandev.acomprar.Literals
-import org.ivandev.acomprar.database.entities.Comida
+import org.ivandev.acomprar.database.entities.ComidaEntity
 import org.ivandev.acomprar.enumeration.DaysOfWeekEnum
 import org.ivandev.acomprar.enumeration.TipoComidaEnum
 
 object ComidaHandler {
-    fun getComidasByMenuId(db: SQLiteDatabase, id: Int): List<Comida> {
+    fun getComidasByMenuId(db: SQLiteDatabase, id: Int): List<ComidaEntity> {
         val command = "SELECT * FROM ${Literals.Database.COMIDA_TABLE} where ${Literals.Database.ID_MENU_COLUMN} = $id"
-        val result = mutableListOf<Comida>()
+        val result = mutableListOf<ComidaEntity>()
 
         db.rawQuery(command, null).use { cursor ->
             if (cursor.moveToFirst()) {
                 do {
                     result.add(
-                        Comida(
+                        ComidaEntity(
                             cursor.getInt(0),
                             cursor.getInt(1),
                             cursor.getString(2),

@@ -3,27 +3,27 @@ package org.ivandev.acomprar.database.handlers
 import android.content.ContentValues
 import android.database.sqlite.SQLiteDatabase
 import org.ivandev.acomprar.Literals
-import org.ivandev.acomprar.database.entities.Categoria
+import org.ivandev.acomprar.database.entities.CategoriaEntity
 import org.ivandev.acomprar.database.interfaces.DatabaseCRUD
 
-object CategoriaHandler: DatabaseCRUD<Categoria> {
-    override fun insert(db: SQLiteDatabase, categoria: Categoria): Boolean {
+object CategoriaHandler: DatabaseCRUD<CategoriaEntity> {
+    override fun insert(db: SQLiteDatabase, categoriaEntity: CategoriaEntity): Boolean {
         val datos = ContentValues()
-        datos.put("nombre", categoria.nombre)
+        datos.put("nombre", categoriaEntity.nombre)
         db.insert(Literals.Database.CATEGORIA_TABLE, null, datos)
 
-        return checkIfCategoriaWasInserted(db, categoria)
+        return checkIfCategoriaWasInserted(db, categoriaEntity)
     }
 
-    override fun getAll(db: SQLiteDatabase): MutableList<Categoria> {
+    override fun getAll(db: SQLiteDatabase): MutableList<CategoriaEntity> {
         val command = "SELECT * FROM ${Literals.Database.CATEGORIA_TABLE}"
-        val result = mutableListOf<Categoria>()
+        val result = mutableListOf<CategoriaEntity>()
 
         db.rawQuery(command, null).use { cursor ->
             if (cursor.moveToFirst()) {
                 do {
                     result.add(
-                        Categoria(
+                        CategoriaEntity(
                             cursor.getInt(0),
                             cursor.getString(1)
                         )
@@ -66,21 +66,21 @@ object CategoriaHandler: DatabaseCRUD<Categoria> {
 
 
 
-    fun updateCategoriaById(db: SQLiteDatabase, categoria: Categoria): Boolean {
+    fun updateCategoriaById(db: SQLiteDatabase, categoriaEntity: CategoriaEntity): Boolean {
         var categoriaNameColumn = ContentValues()
-        categoriaNameColumn.put(Literals.Database.NOMBRE_COLUMN, categoria.nombre)
+        categoriaNameColumn.put(Literals.Database.NOMBRE_COLUMN, categoriaEntity.nombre)
 
         val updatedRows: Int = db.update(
             Literals.Database.CATEGORIA_TABLE,
             categoriaNameColumn,
             "${Literals.Database.ID_COLUMN} = ?",
-            arrayOf("${categoria.id}"),
+            arrayOf("${categoriaEntity.id}"),
         )
 
         return updatedRows == 1
     }
 
-    private fun checkIfCategoriaWasInserted(db: SQLiteDatabase, categoria: Categoria): Boolean {
+    private fun checkIfCategoriaWasInserted(db: SQLiteDatabase, categoriaEntity: CategoriaEntity): Boolean {
         db.query(
             Literals.Database.CATEGORIA_TABLE, // Nombre tabla
             arrayOf(Literals.Database.NOMBRE_COLUMN), // Columnas output
@@ -91,7 +91,7 @@ object CategoriaHandler: DatabaseCRUD<Categoria> {
             "id DESC", // ordenar salida
             "1" // cantidad de filas retornadas
         ).use { cursor ->
-            return cursor.moveToFirst() && cursor.getString(0) == categoria.nombre
+            return cursor.moveToFirst() && cursor.getString(0) == categoriaEntity.nombre
         }
     }
 }

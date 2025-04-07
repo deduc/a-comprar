@@ -24,12 +24,12 @@ import org.ivandev.acomprar.Tools
 import org.ivandev.acomprar.components.CommonScreen
 import org.ivandev.acomprar.components.MyIcons
 import org.ivandev.acomprar.components.MyScrollableColumn
-import org.ivandev.acomprar.database.entities.Menu
+import org.ivandev.acomprar.database.entities.MenuEntity
 import org.ivandev.acomprar.screens.menu.classes.MyMenuComidas
 import org.ivandev.acomprar.stores.MenuStore
 
 class EditMenuScreen(
-    private val menu: Menu
+    private val menuEntity: MenuEntity
 ): Screen {
     @Composable
     override fun Content() {
@@ -43,7 +43,7 @@ class EditMenuScreen(
     @Composable
     fun MainContent() {
         val menuStore: MenuStore = viewModel()
-        var menuName = remember { mutableStateOf(menu.nombre) }
+        var menuName = remember { mutableStateOf(menuEntity.nombre) }
 
         TextField(
             value = menuName.value,
@@ -53,19 +53,19 @@ class EditMenuScreen(
 
         Spacer(Modifier.height(Tools.height16dp))
 
-        MenuFormulary(menuStore, menu)
+        MenuFormulary(menuStore, menuEntity)
     }
 
     @Composable
-    fun MenuFormulary(menuStore: MenuStore, menu: Menu) {
+    fun MenuFormulary(menuStore: MenuStore, menuEntity: MenuEntity) {
         val headers: List<String> = listOf(Literals.Table.DIA_COLUMN, Literals.Table.COMIDA_COLUMN, Literals.Table.CENA_COLUMN)
         val diasSemana: List<String> = Literals.DaysOfWeek.getDaysOfWeek()
         val comidasYCenas = remember { mutableStateOf<MyMenuComidas?>(null) }
         var indexAux: Int = 0
 
         // LaunchedEffect carga datos de manera reactiva y la UI se refresca (y depende de) cuando menu.id cambia
-        LaunchedEffect(menu.id) {
-            comidasYCenas.value = menuStore.getComidasYCenasByMenuId(menu)
+        LaunchedEffect(menuEntity.id) {
+            comidasYCenas.value = menuStore.getComidasYCenasByMenuId(menuEntity)
         }
 
         if (comidasYCenas.value != null) {
@@ -111,7 +111,7 @@ class EditMenuScreen(
 
     @Composable
     fun EditableComida(comidasYCenas: MyMenuComidas, index: Int) {
-        if (comidasYCenas.comidas.size <= index) {
+        if (comidasYCenas.comidaEntities.size <= index) {
             Row {
                 MyIcons.AddIcon()
                 Text("HOLA")
@@ -120,7 +120,7 @@ class EditMenuScreen(
         else {
             Row {
                 Text(
-                    comidasYCenas.comidas[index]?.nombre ?: "aaa",
+                    comidasYCenas.comidaEntities[index]?.nombre ?: "aaa",
                     Modifier.clickable {  }
                 )
             }

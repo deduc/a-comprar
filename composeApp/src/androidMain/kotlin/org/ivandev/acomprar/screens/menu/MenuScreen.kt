@@ -28,7 +28,7 @@ import org.ivandev.acomprar.Literals
 import org.ivandev.acomprar.Tools
 import org.ivandev.acomprar.components.CommonScreen
 import org.ivandev.acomprar.components.MyIcons
-import org.ivandev.acomprar.database.entities.Menu
+import org.ivandev.acomprar.database.entities.MenuEntity
 import org.ivandev.acomprar.stores.MenuStore
 
 class MenuScreen: Screen {
@@ -46,15 +46,15 @@ class MenuScreen: Screen {
     @Composable
     fun MainContent() {
         val menuStore: MenuStore = viewModel()
-        val menuList: State<List<Menu>> = menuStore.getMenusList()
+        val menuEntityList: State<List<MenuEntity>> = menuStore.getMenusList()
         val showPopup = remember { mutableStateOf(false) }
         val navigator: Navigator = LocalNavigator.currentOrThrow
 
         Column {
             Column(Modifier.weight(1f)) {
-                if (menuList.value.isNotEmpty()) {
-                    menuList.value.forEach { menu: Menu ->
-                        MenuRow(menu, navigator, menuStore)
+                if (menuEntityList.value.isNotEmpty()) {
+                    menuEntityList.value.forEach { menuEntity: MenuEntity ->
+                        MenuRow(menuEntity, navigator, menuStore)
                         Spacer(Modifier.height(Tools.height16dp))
                     }
                 } else {
@@ -79,7 +79,7 @@ class MenuScreen: Screen {
     }
 
     @Composable
-    fun MenuRow(menu: Menu, navigator: Navigator, menuStore: MenuStore) {
+    fun MenuRow(menuEntity: MenuEntity, navigator: Navigator, menuStore: MenuStore) {
         Row(
             modifier = Modifier.fillMaxWidth().border(1.dp, Color.Black).padding(8.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -87,13 +87,13 @@ class MenuScreen: Screen {
         )
         {
             Column {
-                Text(menu.nombre, style = Tools.styleTitle)
+                Text(menuEntity.nombre, style = Tools.styleTitle)
             }
 
             Row {
-                MyIcons.EditIcon { navigator.push(EditMenuScreen(menu)) }
+                MyIcons.EditIcon { navigator.push(EditMenuScreen(menuEntity)) }
                 Spacer(Modifier.width(Tools.buttonsSpacer8dp))
-                MyIcons.TrashIcon { menuStore.deleteMenu(menu) }
+                MyIcons.TrashIcon { menuStore.deleteMenu(menuEntity) }
             }
         }
     }

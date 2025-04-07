@@ -6,20 +6,20 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.lifecycle.viewmodel.compose.viewModel
-import org.ivandev.acomprar.database.entities.Categoria
+import org.ivandev.acomprar.database.entities.CategoriaEntity
 import org.ivandev.acomprar.viewModels.CategoriaStore
 
 @Composable
-fun DeleteCategoriaPopup(categoria: State<Categoria?>) {
+fun DeleteCategoriaPopup(categoriaEntity: State<CategoriaEntity?>) {
     val categoriaStore: CategoriaStore = viewModel()
 
-    if (categoria.value != null) {
+    if (categoriaEntity.value != null) {
         AlertDialog(
             onDismissRequest = { categoriaStore.updateCategoriaToDelete(null) },
             confirmButton = {
                 TextButton(
                     onClick = {
-                        deleteCategoria(categoria.value!!, categoriaStore)
+                        deleteCategoria(categoriaEntity.value!!, categoriaStore)
                     }
                 ) {
                     Text("Aceptar")
@@ -32,13 +32,13 @@ fun DeleteCategoriaPopup(categoria: State<Categoria?>) {
             },
             title = { Text("Borrar categoría") },
             text = {
-                Text("¿Quieres borrar la categoría${categoria.value!!.nombre}?")
+                Text("¿Quieres borrar la categoría ${categoriaEntity.value!!.nombre}?")
             }
         )
     }
 }
 
-private fun deleteCategoria(categoria: Categoria, categoriaStore: CategoriaStore) {
-    categoriaStore.deleteCategoria(categoria)
+private fun deleteCategoria(categoriaEntity: CategoriaEntity, categoriaStore: CategoriaStore) {
+    categoriaStore.deleteCategoria(categoriaEntity)
     categoriaStore.updateCategoriaToDelete(null)
 }

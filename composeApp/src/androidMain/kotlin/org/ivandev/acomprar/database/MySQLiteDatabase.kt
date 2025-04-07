@@ -4,10 +4,10 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import org.ivandev.acomprar.Literals
-import org.ivandev.acomprar.database.entities.Categoria
-import org.ivandev.acomprar.database.entities.Comida
-import org.ivandev.acomprar.database.entities.Menu
-import org.ivandev.acomprar.database.entities.Producto
+import org.ivandev.acomprar.database.entities.CategoriaEntity
+import org.ivandev.acomprar.database.entities.ComidaEntity
+import org.ivandev.acomprar.database.entities.MenuEntity
+import org.ivandev.acomprar.database.entities.ProductoEntity
 import org.ivandev.acomprar.database.handlers.CategoriaHandler
 import org.ivandev.acomprar.database.handlers.ComidaHandler
 import org.ivandev.acomprar.database.handlers.MenuHandler
@@ -41,30 +41,30 @@ class MySQLiteDatabase(context: Context, version: Int) : SQLiteOpenHelper(
     }
 
 
-    fun addCategoria(categoria: Categoria): Boolean {
+    fun addCategoria(categoriaEntity: CategoriaEntity): Boolean {
         val db = writableDatabase
-        val result = CategoriaHandler.insert(db, categoria)
+        val result = CategoriaHandler.insert(db, categoriaEntity)
 
         db.close()
         return result
     }
 
-    fun addProducto(producto: Producto): Boolean {
+    fun addProducto(productoEntity: ProductoEntity): Boolean {
         val db = writableDatabase
-        val result = ProductoHandler.insert(db, producto)
+        val result = ProductoHandler.insert(db, productoEntity)
 
         db.close()
         return result
     }
 
-    fun addMenuAndComidasYCenas(menu: Menu): Boolean {
+    fun addMenuAndComidasYCenas(menuEntity: MenuEntity): Boolean {
         val db = writableDatabase
         var result = false
 
         try {
             db.beginTransaction() // Inicia una transacción para garantizar atomicidad
 
-            val inserted = MenuHandler.insert(db, menu)
+            val inserted = MenuHandler.insert(db, menuEntity)
             if (!inserted) { return false }
 
             val lastMenu = MenuHandler.getLast(db) ?: return false
@@ -83,7 +83,7 @@ class MySQLiteDatabase(context: Context, version: Int) : SQLiteOpenHelper(
     }
 
 
-    fun getAllCategoria(): List<Categoria> {
+    fun getAllCategoria(): List<CategoriaEntity> {
         val db = readableDatabase
         val result = CategoriaHandler.getAll(db)
 
@@ -94,14 +94,14 @@ class MySQLiteDatabase(context: Context, version: Int) : SQLiteOpenHelper(
     fun getAllProductosByCategoria(): List<CategoriaWithProductos> {
         val db = readableDatabase
 
-        val categorias: List<Categoria> = CategoriaHandler.getAll(db)
-        val result = ProductoHandler.getAllProductosByCategoria(db, categorias)
+        val categoriaEntities: List<CategoriaEntity> = CategoriaHandler.getAll(db)
+        val result = ProductoHandler.getAllProductosByCategoria(db, categoriaEntities)
 
         db.close()
         return result
     }
 
-    fun getAllMenu(): List<Menu> {
+    fun getAllMenu(): List<MenuEntity> {
         val db = readableDatabase
         val result = MenuHandler.getAll(db)
 
@@ -110,15 +110,11 @@ class MySQLiteDatabase(context: Context, version: Int) : SQLiteOpenHelper(
     }
 
 
-    fun getProductosByCategoriaId(id: Int): List<Producto> {
-        val db = readableDatabase
-        val result = ProductoHandler.getProductosByCategoriaId(db, id)
-
-        db.close()
-        return result
+    fun getProductosByCategoriaId(id: Int): List<ProductoEntity> {
+        return ProductoHandler.getProductosByCategoriaId(readableDatabase, id)
     }
 
-    fun getComidasByMenuId(id: Int): List<Comida> {
+    fun getComidasByMenuId(id: Int): List<ComidaEntity> {
         val db = readableDatabase
         val result = ComidaHandler.getComidasByMenuId(db, id)
 
@@ -126,7 +122,7 @@ class MySQLiteDatabase(context: Context, version: Int) : SQLiteOpenHelper(
         return result
     }
 
-    fun getLastMenu(): Menu {
+    fun getLastMenu(): MenuEntity {
         val db = readableDatabase
         val result = MenuHandler.getLast(db)!!
         db.close()
@@ -135,17 +131,17 @@ class MySQLiteDatabase(context: Context, version: Int) : SQLiteOpenHelper(
 
 
 
-    fun updateCategoriaById(categoria: Categoria): Boolean {
+    fun updateCategoriaById(categoriaEntity: CategoriaEntity): Boolean {
         val db = writableDatabase
-        val result = CategoriaHandler.updateCategoriaById(db, categoria)
+        val result = CategoriaHandler.updateCategoriaById(db, categoriaEntity)
 
         db.close()
         return result
     }
 
-    fun updateProductoById(producto: Producto): Boolean {
+    fun updateProductoById(productoEntity: ProductoEntity): Boolean {
         val db = writableDatabase
-        val result = ProductoHandler.updateById(db, producto)
+        val result = ProductoHandler.updateById(db, productoEntity)
 
         db.close()
         return result
@@ -177,13 +173,13 @@ class MySQLiteDatabase(context: Context, version: Int) : SQLiteOpenHelper(
     }
 
 
-    fun deleteMenu(menu: Menu): Boolean {
+    fun deleteMenu(menuEntity: MenuEntity): Boolean {
         val db = writableDatabase
-        val deletedMenu = MenuHandler.delete(db, menu)
+        val deletedMenu = MenuHandler.delete(db, menuEntity)
         var result = false
 
         if (deletedMenu) {
-            result = ComidaHandler.deleteAllComidasByMenuId(db, menu.id!!)
+            result = ComidaHandler.deleteAllComidasByMenuId(db, menuEntity.id!!)
         }
 
         db.close()

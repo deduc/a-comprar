@@ -1,10 +1,10 @@
 package org.ivandev.acomprar.screens.menu.classes
 
-import org.ivandev.acomprar.database.entities.Comida
+import org.ivandev.acomprar.database.entities.ComidaEntity
 
 
 class MyMenuComidas (
     var menuId: Int?,
     var menuName: String?,
-    var comidas: List<Comida>,
+    var comidaEntities: List<ComidaEntity>,
 )

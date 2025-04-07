@@ -7,19 +7,19 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.ivandev.acomprar.database.Database
-import org.ivandev.acomprar.database.entities.Categoria
+import org.ivandev.acomprar.database.entities.CategoriaEntity
 
 class CategoriaStore : ViewModel() {
     // valor modificable
-    private val _categorias = mutableStateOf<List<Categoria>>(Database.getAllCategoria())
+    private val _categorias = mutableStateOf<List<CategoriaEntity>>(Database.getAllCategoria())
     // valor para obtener
-    val categorias: State<List<Categoria>> = _categorias
+    val categorias: State<List<CategoriaEntity>> = _categorias
 
-    private val _categoriaToDelete = mutableStateOf<Categoria?>(null)
-    val categoriaToDelete: State<Categoria?> = _categoriaToDelete
+    private val _categoriaEntityToDelete = mutableStateOf<CategoriaEntity?>(null)
+    val categoriaEntityToDelete: State<CategoriaEntity?> = _categoriaEntityToDelete
 
-    private val _categoriaToEdit = mutableStateOf<Categoria?>(null)
-    val categoriaToEdit: State<Categoria?> = _categoriaToEdit
+    private val _categoriaEntityToEdit = mutableStateOf<CategoriaEntity?>(null)
+    val categoriaEntityToEdit: State<CategoriaEntity?> = _categoriaEntityToEdit
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
@@ -27,31 +27,31 @@ class CategoriaStore : ViewModel() {
         }
     }
 
-    fun updateCategoria(updatedCategoria: Categoria) {
+    fun updateCategoria(updatedCategoriaEntity: CategoriaEntity) {
         _categorias.value = _categorias.value.map {
-            if (it.id == updatedCategoria.id) updatedCategoria else it
+            if (it.id == updatedCategoriaEntity.id) updatedCategoriaEntity else it
         }.toList()
 
-        Database.updateCategoriaById(updatedCategoria)
+        Database.updateCategoriaById(updatedCategoriaEntity)
     }
 
-    fun addCategoria(newCategoria: Categoria) {
+    fun addCategoria(newCategoriaEntity: CategoriaEntity) {
         val lastId = _categorias.value.last().id!!
-        newCategoria.id = lastId + 1
-        _categorias.value = _categorias.value + newCategoria
+        newCategoriaEntity.id = lastId + 1
+        _categorias.value = _categorias.value + newCategoriaEntity
     }
 
-    fun deleteCategoria(deleteCategoria: Categoria) {
-        Database.deleteCategoriaById(deleteCategoria.id!!)
-        _categorias.value = _categorias.value.filter { it.id != deleteCategoria.id }.toList()
+    fun deleteCategoria(deleteCategoriaEntity: CategoriaEntity) {
+        Database.deleteCategoriaById(deleteCategoriaEntity.id!!)
+        _categorias.value = _categorias.value.filter { it.id != deleteCategoriaEntity.id }.toList()
     }
 
-    fun updateCategoriaToDelete(categoria: Categoria?) {
-        _categoriaToDelete.value = categoria
+    fun updateCategoriaToDelete(categoriaEntity: CategoriaEntity?) {
+        _categoriaEntityToDelete.value = categoriaEntity
     }
 
-    fun updateCategoriaToEdit(categoria: Categoria?) {
-        _categoriaToEdit.value = categoria
+    fun updateCategoriaToEdit(categoriaEntity: CategoriaEntity?) {
+        _categoriaEntityToEdit.value = categoriaEntity
     }
 
 }

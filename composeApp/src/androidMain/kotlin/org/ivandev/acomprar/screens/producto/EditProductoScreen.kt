@@ -24,49 +24,49 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import org.ivandev.acomprar.Literals
 import org.ivandev.acomprar.components.CommonScreen
 import org.ivandev.acomprar.database.Database
-import org.ivandev.acomprar.database.entities.Categoria
-import org.ivandev.acomprar.database.entities.Producto
+import org.ivandev.acomprar.database.entities.CategoriaEntity
+import org.ivandev.acomprar.database.entities.ProductoEntity
 
 
 class EditProductoScreen(
-    private val producto: Producto
+    private val productoEntity: ProductoEntity
 ): Screen {
     @Composable
     override fun Content() {
         val screen = CommonScreen(
             title = Literals.EDIT_PRODUCTO_TITLE
         ) {
-            MainContent(producto)
+            MainContent(productoEntity)
         }
 
         screen.Render()
     }
 
     @Composable
-    fun MainContent(producto: Producto) {
-        EditProductoForm(producto)
+    fun MainContent(productoEntity: ProductoEntity) {
+        EditProductoForm(productoEntity)
     }
 
     @OptIn(ExperimentalMaterialApi::class)
     @Composable
-    fun EditProductoForm(producto: Producto) {
+    fun EditProductoForm(productoEntity: ProductoEntity) {
         val navigator: Navigator = LocalNavigator.currentOrThrow
-        val idCategoria: Int = producto.idCategoria!!
+        val idCategoria: Int = productoEntity.idCategoria!!
         val categorias = Database.getAllCategoria()
 
         // Preseleccionar la categoría con el ID especificado
-        val categoriaSeleccionada = remember { mutableStateOf<Categoria?>(null) }
+        val categoriaEntitySeleccionada = remember { mutableStateOf<CategoriaEntity?>(null) }
         // Expansión del desplegable
         val expanded = remember { mutableStateOf(false) }
 
         LaunchedEffect(idCategoria) {
             val categoriaPorDefecto = categorias.find { it.id == idCategoria }
-            categoriaSeleccionada.value = categoriaPorDefecto
+            categoriaEntitySeleccionada.value = categoriaPorDefecto
         }
 
-        val nombre = remember { mutableStateOf(producto.nombre) }
-        val cantidad = remember { mutableStateOf(producto.cantidad.toString()) }
-        val marca = remember { mutableStateOf(producto.marca) }
+        val nombre = remember { mutableStateOf(productoEntity.nombre) }
+        val cantidad = remember { mutableStateOf(productoEntity.cantidad.toString()) }
+        val marca = remember { mutableStateOf(productoEntity.marca) }
 
         Column(
             modifier = Modifier.fillMaxWidth(),
@@ -91,7 +91,7 @@ class EditProductoScreen(
             // Desplegable para seleccionar una categoría
             ExposedDropdownMenuBox(expanded = expanded.value, onExpandedChange = { expanded.value = !expanded.value }) {
                 TextField(
-                    value = categoriaSeleccionada.value?.nombre ?: "Seleccionar categoría",
+                    value = categoriaEntitySeleccionada.value?.nombre ?: "Seleccionar categoría",
                     onValueChange = {},
                     label = { Text("Categoría") },
                     readOnly = true,
@@ -104,13 +104,13 @@ class EditProductoScreen(
                     expanded = expanded.value,
                     onDismissRequest = { expanded.value = false }
                 ) {
-                    categorias.forEach { categoria: Categoria ->
+                    categorias.forEach { categoriaEntity: CategoriaEntity ->
                         DropdownMenuItem(
                             onClick = {
-                                categoriaSeleccionada.value = categoria
+                                categoriaEntitySeleccionada.value = categoriaEntity
                                 expanded.value = false
                             },
-                            text = { categoria.nombre }
+                            text = { categoriaEntity.nombre }
                         )
                     }
                 }
@@ -118,14 +118,14 @@ class EditProductoScreen(
 
             Button(
                 onClick = {
-                    val newProducto = Producto(
-                        id = producto.id,
-                        idCategoria = categoriaSeleccionada.value?.id,
+                    val newProductoEntity = ProductoEntity(
+                        id = productoEntity.id,
+                        idCategoria = categoriaEntitySeleccionada.value?.id,
                         nombre = nombre.value,
                         cantidad = cantidad.value,
                         marca = marca.value
                     )
-                    updateProducto(newProducto, navigator)
+                    updateProducto(newProductoEntity, navigator)
                 }
             ) {
                 Text(Literals.ADD_TEXT)
@@ -133,8 +133,8 @@ class EditProductoScreen(
         }
     }
 
-    private fun updateProducto(producto: Producto, navigator: Navigator) {
-        val updated = Database.updateProductoById(producto)
+    private fun updateProducto(productoEntity: ProductoEntity, navigator: Navigator) {
+        val updated = Database.updateProductoById(productoEntity)
 
         if (updated) {
             println("Binchilin se ha actualizado 1 producto")

@@ -15,7 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import org.ivandev.acomprar.database.Database
-import org.ivandev.acomprar.database.entities.Categoria
+import org.ivandev.acomprar.database.entities.CategoriaEntity
 import org.ivandev.acomprar.viewModels.CategoriaStore
 
 @Composable
@@ -30,8 +30,8 @@ fun AddCategoriaPopup() {
             confirmButton = {
                 TextButton(
                     onClick = {
-                        val newCategoria = Categoria(null, nombreCategoria)
-                        addNewCategoria(newCategoria, categoriaStore)
+                        val newCategoriaEntity = CategoriaEntity(null, nombreCategoria)
+                        addNewCategoria(newCategoriaEntity, categoriaStore)
                         showPopup = false
                     }
                 ) {
@@ -60,7 +60,7 @@ fun AddCategoriaPopup() {
     }
 }
 
-private fun addNewCategoria(categoria: Categoria, categoriaStore: CategoriaStore) {
-    Database.addCategoria(categoria)
-    categoriaStore.addCategoria(categoria)
+private fun addNewCategoria(categoriaEntity: CategoriaEntity, categoriaStore: CategoriaStore) {
+    Database.addCategoria(categoriaEntity)
+    categoriaStore.addCategoria(categoriaEntity)
 }

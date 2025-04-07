@@ -1,7 +1,6 @@
 package org.ivandev.acomprar.database.entities
 
-class MenuComida(
+class CategoriaEntity(
     var id: Int,
-    var idMenu: Int,
-    var idComida: Int
+    var nombre: String,
 )

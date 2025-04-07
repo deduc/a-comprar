@@ -1,11 +1,14 @@
 package org.ivandev.acomprar.database
 
 import android.content.Context
-import org.ivandev.acomprar.database.entities.Carrito
-import org.ivandev.acomprar.database.entities.Categoria
-import org.ivandev.acomprar.database.entities.Comida
-import org.ivandev.acomprar.database.entities.Menu
-import org.ivandev.acomprar.database.entities.Producto
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
+import org.ivandev.acomprar.database.entities.CarritoEntity
+import org.ivandev.acomprar.database.entities.CategoriaEntity
+import org.ivandev.acomprar.database.entities.ComidaEntity
+import org.ivandev.acomprar.database.entities.MenuEntity
+import org.ivandev.acomprar.database.entities.ProductoEntity
 import org.ivandev.acomprar.database.special_classes.CategoriaWithProductos
 
 object Database {
@@ -24,37 +27,37 @@ object Database {
     fun deleteAllProducto() {}
 
 
-    fun addCategoria(categoria: Categoria): Boolean {
-        return mySQLiteDatabase.addCategoria(categoria)
+    fun addCategoria(categoriaEntity: CategoriaEntity): Boolean {
+        return mySQLiteDatabase.addCategoria(categoriaEntity)
     }
 
-    fun addProducto(producto: Producto): Boolean {
-        return mySQLiteDatabase.addProducto(producto)
+    fun addProducto(productoEntity: ProductoEntity): Boolean {
+        return mySQLiteDatabase.addProducto(productoEntity)
     }
 
-    fun addMenu(menu: Menu): Boolean {
-        return mySQLiteDatabase.addMenuAndComidasYCenas(menu)
+    fun addMenu(menuEntity: MenuEntity): Boolean {
+        return mySQLiteDatabase.addMenuAndComidasYCenas(menuEntity)
     }
 
-    fun getLastMenu(): Menu {
+    fun getLastMenu(): MenuEntity {
         return mySQLiteDatabase.getLastMenu()
     }
 
 
 
-    fun getAllCarrito(): List<Carrito> {
+    fun getAllCarrito(): List<CarritoEntity> {
         return listOf()
     }
 
-    fun getAllCategoria(): List<Categoria> {
+    fun getAllCategoria(): List<CategoriaEntity> {
         return mySQLiteDatabase.getAllCategoria()
     }
 
-    fun getAllMenu(): List<Menu> {
+    fun getAllMenu(): List<MenuEntity> {
         return mySQLiteDatabase.getAllMenu()
     }
 
-    fun getAllProducto(): List<Producto> {
+    fun getAllProducto(): List<ProductoEntity> {
         return listOf()
     }
 
@@ -62,21 +65,26 @@ object Database {
         return mySQLiteDatabase.getAllProductosByCategoria()
     }
 
-    fun getProductosByCategoriaId(id: Int): List<Producto> {
-        return mySQLiteDatabase.getProductosByCategoriaId(id)
+    fun getProductosByCategoriaId(id: Int): List<ProductoEntity> {
+        return runBlocking {
+            // Ejecuta el método en un hilo de fondo para evitar bloquear el hilo principal
+            withContext(Dispatchers.IO) {
+                mySQLiteDatabase.getProductosByCategoriaId(id)
+            }
+        }
     }
 
-    fun getComidasByMenuId(id: Int): List<Comida> {
+    fun getComidasByMenuId(id: Int): List<ComidaEntity> {
         return mySQLiteDatabase.getComidasByMenuId(id)
     }
 
 
-    fun updateCategoriaById(categoria: Categoria): Boolean {
-        return mySQLiteDatabase.updateCategoriaById(categoria)
+    fun updateCategoriaById(categoriaEntity: CategoriaEntity): Boolean {
+        return mySQLiteDatabase.updateCategoriaById(categoriaEntity)
     }
 
-    fun updateProductoById(producto: Producto): Boolean {
-        return mySQLiteDatabase.updateProductoById(producto)
+    fun updateProductoById(productoEntity: ProductoEntity): Boolean {
+        return mySQLiteDatabase.updateProductoById(productoEntity)
     }
 
 
@@ -94,7 +102,7 @@ object Database {
         return mySQLiteDatabase.deleteProductoById(id)
     }
 
-    fun deleteMenu(menu: Menu): Boolean {
-        return mySQLiteDatabase.deleteMenu(menu)
+    fun deleteMenu(menuEntity: MenuEntity): Boolean {
+        return mySQLiteDatabase.deleteMenu(menuEntity)
     }
 }

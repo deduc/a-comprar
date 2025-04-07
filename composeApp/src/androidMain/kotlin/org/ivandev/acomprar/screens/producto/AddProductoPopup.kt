@@ -13,63 +13,62 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
-import org.ivandev.acomprar.database.Database
 import org.ivandev.acomprar.database.entities.CategoriaEntity
 import org.ivandev.acomprar.database.entities.ProductoEntity
 import org.ivandev.acomprar.stores.ProductoStore
+import org.ivandev.acomprar.viewModels.CategoriaStore
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun EditProductoPopup(productoEntity: ProductoEntity) {
+fun AddProductoPopup(idCategoria: Int) {
     val productoStore: ProductoStore = viewModel()
-    var showPopup by remember { mutableStateOf(true) }
+    val categoriaStore: CategoriaStore = viewModel()
 
-    val idCategoria: Int = productoEntity.idCategoria!!
-    val categorias = Database.getAllCategoria()
+    val categorias: State<List<CategoriaEntity>> = categoriaStore.categorias
+    var showAddProductoPopup = productoStore.showAddProductoPopup
+
 
     // Preseleccionar la categoría con el ID especificado
     val categoriaEntitySeleccionada = remember { mutableStateOf<CategoriaEntity?>(null) }
     // Expansión del desplegable
+
     val expanded = remember { mutableStateOf(false) }
+    val nombre = remember { mutableStateOf("") }
+    val cantidad = remember { mutableStateOf("") }
+    val marca = remember { mutableStateOf("") }
 
     LaunchedEffect(idCategoria) {
-        val categoriaPorDefecto = categorias.find { it.id == idCategoria }
+        val categoriaPorDefecto = categorias.value.find { it.id == idCategoria }
         categoriaEntitySeleccionada.value = categoriaPorDefecto
     }
 
-    val nombre = remember { mutableStateOf(productoEntity.nombre) }
-    val cantidad = remember { mutableStateOf(productoEntity.cantidad.toString()) }
-    val marca = remember { mutableStateOf(productoEntity.marca) }
-
-    if (showPopup) {
+    if (showAddProductoPopup.value) {
         AlertDialog(
-            onDismissRequest = { showPopup = false },
+            onDismissRequest = { productoStore.updateShowAddProductoPopup(false) },
             confirmButton = {
                 TextButton(
                     onClick = {
                         val newProductoEntity = ProductoEntity(
-                            id = productoEntity.id,
+                            id = null,
                             idCategoria = categoriaEntitySeleccionada.value?.id,
                             nombre = nombre.value,
                             cantidad = cantidad.value,
                             marca = marca.value
                         )
-                        updateProducto(newProductoEntity, productoStore)
-
-                        showPopup = false
+                        productoStore.addProducto(newProductoEntity)
+                        productoStore.updateShowAddProductoPopup(false)
                     }
                 ) {
                     Text("Aceptar")
                 }
             },
-            title = { Text("Editando producto") },
+            title = { Text("Añadir producto") },
             text = {
                 Column(
                     modifier = Modifier.fillMaxWidth(),
@@ -107,7 +106,7 @@ fun EditProductoPopup(productoEntity: ProductoEntity) {
                             expanded = expanded.value,
                             onDismissRequest = { expanded.value = false }
                         ) {
-                            categorias.forEach { categoriaEntity: CategoriaEntity ->
+                            categorias.value.forEach { categoriaEntity: CategoriaEntity ->
                                 DropdownMenuItem(
                                     onClick = {
                                         categoriaEntitySeleccionada.value = categoriaEntity
@@ -122,8 +121,4 @@ fun EditProductoPopup(productoEntity: ProductoEntity) {
             }
         )
     }
-}
-
-private fun updateProducto(productoEntity: ProductoEntity, productoStore: ProductoStore) {
-    productoStore.updateProductoById(productoEntity)
 }
