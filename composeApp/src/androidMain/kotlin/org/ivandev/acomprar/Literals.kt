@@ -110,5 +110,11 @@ object Literals {
         const val ADD_CATEGORIA: String = "Añadir categoría"
         const val ADD_PRODUCTO: String = "Añadir producto"
         const val ADD_MENU: String = "Añadir menú"
+        const val ADD_TEST_DATA: String = "Añadir datos de prueba"
+        const val DELETE_ALL_PRODUCTS: String = "Borrar todos los productos"
+    }
+
+    object Errors {
+        const val NO_NAME_PROVIDED: String = "ERROR: El campo Nombre no puede estar vacío."
     }
 }

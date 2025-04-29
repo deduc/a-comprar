@@ -13,10 +13,8 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -29,7 +27,8 @@ import org.ivandev.acomprar.stores.ProductoStore
 @Composable
 fun EditProductoPopup(productoEntity: ProductoEntity) {
     val productoStore: ProductoStore = viewModel()
-    var showPopup by remember { mutableStateOf(true) }
+
+    var showPopup = productoStore.productoEntityToEdit
 
     val idCategoria: Int = productoEntity.idCategoria!!
     val categorias = Database.getAllCategoria()
@@ -48,9 +47,9 @@ fun EditProductoPopup(productoEntity: ProductoEntity) {
     val cantidad = remember { mutableStateOf(productoEntity.cantidad.toString()) }
     val marca = remember { mutableStateOf(productoEntity.marca) }
 
-    if (showPopup) {
+    if (showPopup.value != null) {
         AlertDialog(
-            onDismissRequest = { showPopup = false },
+            onDismissRequest = { productoStore.setEditProductoPopup(null) },
             confirmButton = {
                 TextButton(
                     onClick = {
@@ -61,9 +60,8 @@ fun EditProductoPopup(productoEntity: ProductoEntity) {
                             cantidad = cantidad.value,
                             marca = marca.value
                         )
-                        updateProducto(newProductoEntity, productoStore)
-
-                        showPopup = false
+                        productoStore.updateProductoById(newProductoEntity)
+                        productoStore.setEditProductoPopup(null)
                     }
                 ) {
                     Text("Aceptar")
@@ -122,8 +120,4 @@ fun EditProductoPopup(productoEntity: ProductoEntity) {
             }
         )
     }
-}
-
-private fun updateProducto(productoEntity: ProductoEntity, productoStore: ProductoStore) {
-    productoStore.updateProductoById(productoEntity)
 }

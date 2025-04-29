@@ -54,11 +54,23 @@ class MySQLiteDatabase(context: Context, version: Int) : SQLiteOpenHelper(
 
     fun addProducto(producto: Producto): Boolean {
         val db = writableDatabase
+
         val result = ProductoHandler.insert(db, producto)
 
         db.close()
         return result
     }
+
+    fun addProductosList(productos: List<Producto>): Boolean {
+        val db = writableDatabase
+
+        productos.forEach { producto: Producto ->
+            ProductoHandler.insert(db, producto)
+        }
+
+        return true
+    }
+
 
     fun addMenuAndComidasYCenas(menu: Menu): Boolean {
         val db = writableDatabase
@@ -161,6 +173,18 @@ class MySQLiteDatabase(context: Context, version: Int) : SQLiteOpenHelper(
     }
 
 
+    fun deleteAllProducto(): Boolean {
+        val db = writableDatabase
+        val productos: List<ProductoEntity> = ProductoHandler.getAll(db)
+
+        productos.forEach {
+//            println("Borrando producto con id = ${it.id}")
+            ProductoHandler.deleteById(db, it.id)
+        }
+
+        val result: List<ProductoEntity> = ProductoHandler.getAll(db)
+        return result.size == 0
+    }
 
     fun deleteCategoriaById(id: Int): Boolean {
         val db = writableDatabase

@@ -32,7 +32,6 @@ import org.ivandev.acomprar.components.CommonScreen
 import org.ivandev.acomprar.components.MyIcons
 import org.ivandev.acomprar.components.MyScrollableColumn
 import org.ivandev.acomprar.database.Database
-import org.ivandev.acomprar.database.entities.CategoriaEntity
 import org.ivandev.acomprar.database.entities.ProductoEntity
 import org.ivandev.acomprar.screens.producto.AddProductoPopup
 import org.ivandev.acomprar.screens.producto.EditProductoPopup
@@ -40,11 +39,12 @@ import org.ivandev.acomprar.stores.ProductoStore
 import java.util.Locale
 
 class SeeCategoriaAndProductsScreen(
-    private val categoriaEntity: CategoriaEntity
+    private val categoriaId: Int,
+    private val categoriaNombre: String
 ) : Screen {
     @Composable
     override fun Content() {
-        val categoriaName: String = categoriaEntity.nombre.replaceFirstChar { it: Char ->
+        val categoriaName: String = categoriaNombre.replaceFirstChar { it: Char ->
             if (it.isLowerCase()) it.titlecase(Locale.getDefault())
             else it.toString()
         }
@@ -53,27 +53,27 @@ class SeeCategoriaAndProductsScreen(
 
         LaunchedEffect(Unit) {
             productos.value = withContext(Dispatchers.IO) {
-                Database.getProductosByCategoriaId(categoriaEntity.id!! )
+                Database.getProductosByCategoriaId(categoriaId )
             }
         }
 
         val screen = CommonScreen(title = categoriaName) {
-            MainContent(categoriaEntity)
+            MainContent(categoriaId, categoriaNombre)
         }
 
         screen.Render()
     }
 
     @Composable
-    private fun MainContent(categoriaEntity: CategoriaEntity) {
-        val selectedProduct = remember { mutableStateOf<ProductoEntity?>(null) }
+    private fun MainContent(categoriaId: Int, categoriaNombre: String) {
         val productoStore: ProductoStore = viewModel()
-        val productosList: State<List<ProductoEntity>?> = productoStore.productosByCategoria
 
+        val selectedProduct = productoStore.productoEntityToEdit
+        val productosList: State<List<ProductoEntity>?> = productoStore.productosByCategoria
         var showAddProductoPopup = productoStore.showAddProductoPopup
 
-        LaunchedEffect(categoriaEntity.id) {
-            productoStore.getProductosByCategoriaId(categoriaEntity.id!!)
+        LaunchedEffect(categoriaId) {
+            productoStore.getProductosByCategoriaId(categoriaId)
         }
 
         Column {
@@ -97,11 +97,13 @@ class SeeCategoriaAndProductsScreen(
 
         // Mostrar el popup si hay una categoría seleccionada
         selectedProduct.value?.let { productoEntity: ProductoEntity ->
-            if (productoEntity != null) EditProductoPopup(productoEntity)
+            if (productoEntity != null) {
+                EditProductoPopup(productoEntity)
+            }
         }
 
         if (showAddProductoPopup.value) {
-            AddProductoPopup(categoriaEntity.id!!)
+            AddProductoPopup(categoriaId)
         }
     }
 
@@ -113,7 +115,7 @@ class SeeCategoriaAndProductsScreen(
             verticalAlignment = Alignment.Bottom,
         ) {
             Button(onClick = {
-                productoStore.updateShowAddProductoPopup(true)
+                productoStore.setAddProductoPopup(true)
             }) {
                 Text(Literals.ButtonsText.ADD_PRODUCTO)
             }
@@ -121,7 +123,9 @@ class SeeCategoriaAndProductsScreen(
     }
 
     @Composable
-    private fun ProductInfo(productoEntity: ProductoEntity, selectedProduct: MutableState<ProductoEntity?>) {
+    private fun ProductInfo(productoEntity: ProductoEntity, selectedProduct: State<ProductoEntity?>) {
+        val productoStore: ProductoStore = viewModel()
+
         Column(Modifier.border(1.dp, Color.Black)) {
             Row(Modifier.border(1.dp, Color.Black).padding(8.dp), Arrangement.SpaceBetween) {
                 Column(Modifier.weight(1f)) {
@@ -129,7 +133,7 @@ class SeeCategoriaAndProductsScreen(
                 }
 
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    MyIcons.EditIcon { selectedProduct.value = productoEntity }
+                    MyIcons.EditIcon { productoStore.setEditProductoPopup(productoEntity) }
 
                     Spacer(Modifier.width(Tools.buttonsSpacer8dp))
 
@@ -141,7 +145,8 @@ class SeeCategoriaAndProductsScreen(
                     val cantidad: String = if(! productoEntity.cantidad.isNullOrEmpty()) productoEntity.cantidad else Literals.SIN_CANTIDAD_TEXT
                     val marca: String = if(! productoEntity.marca.isNullOrEmpty()) productoEntity.marca else Literals.SIN_MARCA_TEXT
 
-                    Text("- $cantidad\n- $marca")
+                    Text("- $cantidad")
+                    Text("- $marca")
                 }
             }
         }

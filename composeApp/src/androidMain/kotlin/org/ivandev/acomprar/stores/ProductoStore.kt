@@ -4,6 +4,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -16,11 +17,17 @@ class ProductoStore : ViewModel() {
     private val _categoriasWithProductosList = mutableStateOf<List<CategoriaWithProductos>?>(null)
     val categoriasWithProductosList: State<List<CategoriaWithProductos>?> = _categoriasWithProductosList
 
+    // Productos filtered by IdCategoria
     private val _productosByCategoria = mutableStateOf<List<ProductoEntity>?>(null)
     val productosByCategoria: State<List<ProductoEntity>?> = _productosByCategoria
 
-    private val _productoToAdd = mutableStateOf(false)
-    val productoToAdd: State<Boolean> = _productoToAdd
+    private val _productoToAdd = mutableStateOf<Producto?>(null)
+    val productoToAdd: State<Producto?> = _productoToAdd
+
+
+    // popups
+    private val _addProductoPopup = mutableStateOf(false)
+    val addProductoPopup: State<Boolean> = _addProductoPopup
 
     private val _productoEntityToEdit = mutableStateOf<ProductoEntity?>(null)
     val productoEntityToEdit: State<ProductoEntity?> = _productoEntityToEdit
@@ -43,6 +50,10 @@ class ProductoStore : ViewModel() {
 
         if (added) {
             getProductosByCategoriaId(producto.idCategoria!!)
+
+            CoroutineScope(Dispatchers.IO).launch {
+                getAllProductosByCategoria()
+            }
         }
     }
 
@@ -91,21 +102,20 @@ class ProductoStore : ViewModel() {
     }
 
 
-
-    fun updateProductoToAdd(newValue: Boolean) {
-        _productoToAdd.value = newValue
+    fun setProductoToAdd(producto: Producto) {
+        _productoToAdd.value = producto
     }
 
-    fun updateProductoToEdit(productoEntity: ProductoEntity?) {
+    fun setAddProductoPopup(newValue: Boolean) {
+        _addProductoPopup.value = newValue
+    }
+
+    fun setEditProductoPopup(productoEntity: ProductoEntity?) {
         _productoEntityToEdit.value = productoEntity
     }
 
-    fun updateProductoToDelete(productoEntity: ProductoEntity?) {
+    fun setProductoToDeletePopup(productoEntity: ProductoEntity?) {
         _productoEntityToDelete.value = productoEntity
-    }
-
-    fun updateShowAddProductoPopup(newValue: Boolean) {
-        _showAddProductoPopup.value = newValue
     }
 
     private suspend fun getAllProductosByCategoria() {

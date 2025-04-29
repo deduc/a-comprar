@@ -1,9 +1,9 @@
 package org.ivandev.acomprar.models
 
 class Producto(
-    val id: Int?,
-    val idCategoria: Int?,
-    val nombre: String,
-    val cantidad: String?,
-    val marca: String?,
+    var id: Int?,
+    var idCategoria: Int?,
+    var nombre: String?,
+    var cantidad: String?,
+    var marca: String?,
 )

@@ -1,5 +1,7 @@
 package org.ivandev.acomprar
 
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.border
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -22,4 +24,18 @@ object Tools {
     var styleTitle = TextStyle(fontSize = this.titleFontSize, textDecoration = TextDecoration.Underline, fontWeight = FontWeight.Black)
     var styleTableHeader = TextStyle(fontSize = this.titleFontSize, fontWeight = FontWeight.Bold, textDecoration = TextDecoration.Underline)
     var styleBorderBlack = Modifier.border(1.dp, Color.Black)
+
+    object Notifier {
+        private var appContext: Context? = null
+
+        fun init(context: Context) {
+            appContext = context.applicationContext
+        }
+
+        fun showToast(message: String, duration: Int = Toast.LENGTH_SHORT) {
+            appContext?.let {
+                Toast.makeText(it, message, duration).show()
+            }
+        }
+    }
 }

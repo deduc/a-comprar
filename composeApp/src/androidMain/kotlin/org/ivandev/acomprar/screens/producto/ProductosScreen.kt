@@ -34,6 +34,7 @@ import org.ivandev.acomprar.components.MyScrollableColumn
 import org.ivandev.acomprar.database.Database
 import org.ivandev.acomprar.database.entities.ProductoEntity
 import org.ivandev.acomprar.database.special_classes.CategoriaWithProductos
+import org.ivandev.acomprar.models.Producto
 import org.ivandev.acomprar.stores.ProductoStore
 
 class ProductosScreen: Screen {
@@ -53,17 +54,17 @@ class ProductosScreen: Screen {
         val productoStore: ProductoStore = viewModel()
         val categoriaWithProductosList: State<List<CategoriaWithProductos>?> = productoStore.categoriasWithProductosList
 
-        val productoToAdd: State<Boolean> = productoStore.productoToAdd
-        val productoEntityToEdit: State<ProductoEntity?> = productoStore.productoEntityToEdit
-        val productoEntityToDelete: State<ProductoEntity?> = productoStore.productoEntityToDelete
+        // productoStore.productoEntityToEdit
+        // productoStore.productoEntityToDelete
 
         if (categoriaWithProductosList.value?.isNotEmpty() == true) {
             MyScrollableColumn {
                 Column(Modifier.fillMaxSize()) {
                     // Categorías
                     categoriaWithProductosList.value?.forEach { categoriaWithProductos: CategoriaWithProductos ->
+                        // Categoria y sus productos
                         Column(Modifier.border(1.dp, Color.Black)) {
-                            CategoriaHeader(categoriaWithProductos.categoriaName, productoStore)
+                            CategoriaHeader(categoriaWithProductos, productoStore)
 
                             Column(Modifier.padding(Tools.padding8dp)) {
                                 ProductsContainer(categoriaWithProductos.productoEntities, productoStore)
@@ -79,26 +80,36 @@ class ProductosScreen: Screen {
             Text("No hay categorías disponibles", Modifier.fillMaxSize(), textAlign = TextAlign.Center)
         }
 
-//        PopupAddProducto()
+        // Popups !!!!!!!!!!!
+        if (productoStore.addProductoPopup.value) {
+            AddProductoPopup(productoStore.productoToAdd.value!!.idCategoria!!)
+        }
+
 //        PopupEditProducto(producto)
 //        PopupDeleteProducto(producto)
     }
 
     @Composable
-    fun CategoriaHeader(categoriaName: String, productoStore: ProductoStore) {
+    fun CategoriaHeader(categoriaWithProductos: CategoriaWithProductos, productoStore: ProductoStore) {
         Row(
             modifier = Modifier.fillMaxWidth().border(1.dp, Color.Black).padding(4.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                categoriaName,
+                categoriaWithProductos.categoriaName,
                 style = TextStyle(fontSize = 20.sp, textDecoration = TextDecoration.Underline, fontWeight = FontWeight.Black),
                 modifier = Modifier.weight(1f)
             )
 
             MyIcons.AddIcon(
-                Modifier.size(24.dp).clickable { productoStore.updateProductoToAdd(true) }
+                Modifier.size(24.dp).clickable {
+                    productoStore.setAddProductoPopup(true)
+
+                    productoStore.setProductoToAdd(
+                        Producto(null, categoriaWithProductos.categoriaId, null, null, null)
+                    )
+                }
             )
         }
     }
@@ -129,13 +140,13 @@ class ProductosScreen: Screen {
 
             Row(Modifier.weight(0.2f)) {
                 MyIcons.EditIcon {
-                    productoStore.updateProductoToEdit(productoEntity)
+                    productoStore.setEditProductoPopup(productoEntity)
                 }
 
                 Spacer(Modifier.width(8.dp))
 
                 MyIcons.TrashIcon {
-                    productoStore.updateProductoToDelete(productoEntity)
+                    productoStore.setProductoToDeletePopup(productoEntity)
                 }
             }
 
@@ -160,15 +171,4 @@ class ProductosScreen: Screen {
 
         setProductosWithCategoria(updatedList)
     }
-
-    @Composable
-    fun PopupAddProducto() {
-
-    }
-
-    @Composable
-    fun PopupEditProducto(productoEntity: ProductoEntity) {}
-
-    @Composable
-    fun PopupDeleteProducto(productoEntity: ProductoEntity) {}
 }

@@ -26,12 +26,12 @@ class MainActivity : ComponentActivity() {
     fun App(context: Context) {
         LaunchedEffect(Unit) {
             Database.initializeDatabase(context)
+            Tools.Notifier.init(context)
         }
 
-        val homeScreen = remember { HomeScreen() }
-
+        val screenToShow = remember { HomeScreen() }
         MaterialTheme {
-            Navigator(screen = homeScreen) { navigator ->
+            Navigator(screen = screenToShow) { navigator ->
                 SlideTransition(navigator)
             }
         }

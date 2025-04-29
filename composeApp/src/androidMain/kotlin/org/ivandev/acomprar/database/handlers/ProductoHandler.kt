@@ -10,6 +10,9 @@ import org.ivandev.acomprar.models.Producto
 
 object ProductoHandler {
     fun insert(db: SQLiteDatabase, producto: Producto): Boolean {
+        if (producto.cantidad.isNullOrEmpty()) producto.cantidad = Literals.SIN_CANTIDAD_TEXT
+        if (producto.cantidad.isNullOrEmpty()) producto.cantidad = Literals.SIN_MARCA_TEXT
+
         val values = ContentValues().apply {
             put(Literals.Database.ID_CATEGORIA_COLUMN, producto.idCategoria)
             put(Literals.Database.NOMBRE_COLUMN, producto.nombre)
@@ -36,8 +39,27 @@ object ProductoHandler {
     }
 
     fun getAll(db: SQLiteDatabase): MutableList<ProductoEntity> {
-        println("******** NO IMPLEMENTADO ***********")
-        TODO("Not yet implemented")
+        val result: MutableList<ProductoEntity> = mutableListOf()
+
+        val cursor = db.query(
+            Literals.Database.PRODUCTO_TABLE, null,null,null,null,null,null
+        )
+
+        cursor.use {
+            while (it.moveToNext()) {
+                val productoEntity = ProductoEntity(
+                    id = it.getInt(it.getColumnIndexOrThrow(Literals.Database.ID_COLUMN)),
+                    idCategoria = it.getInt(it.getColumnIndexOrThrow(Literals.Database.ID_CATEGORIA_COLUMN)),
+                    nombre = it.getString(it.getColumnIndexOrThrow(Literals.Database.NOMBRE_COLUMN)),
+                    cantidad = it.getString(it.getColumnIndexOrThrow(Literals.Database.CANTIDAD_COLUMN)),
+                    marca = it.getString(it.getColumnIndexOrThrow(Literals.Database.MARCA_COLUMN))
+                )
+
+                result.add(productoEntity)
+            }
+        }
+
+        return result
     }
 
     fun getProductosByCategoriaId(db: SQLiteDatabase, id: Int): List<ProductoEntity> {

@@ -27,7 +27,9 @@ object Database {
     fun deleteAllCarrito() {}
     fun deleteAllCategoria() {}
     fun deleteAllMenu() {}
-    fun deleteAllProducto() {}
+    fun deleteAllProducto(): Boolean {
+        return mySQLiteDatabase.deleteAllProducto()
+    }
 
 
     fun addCategoria(categoriaEntity: Categoria): Boolean {
@@ -38,15 +40,18 @@ object Database {
         return mySQLiteDatabase.addProducto(producto)
     }
 
+    fun addProductosList(productos: List<Producto>): Boolean {
+        return mySQLiteDatabase.addProductosList(productos)
+    }
+
     fun addMenu(menu: Menu): Boolean {
         return mySQLiteDatabase.addMenuAndComidasYCenas(menu)
     }
 
+
     fun getLastMenu(): MenuEntity {
         return mySQLiteDatabase.getLastMenu()
     }
-
-
 
     fun getAllCarrito(): List<CarritoEntity> {
         return listOf()

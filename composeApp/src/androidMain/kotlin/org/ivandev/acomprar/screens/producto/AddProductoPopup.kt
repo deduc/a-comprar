@@ -19,11 +19,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
+import org.ivandev.acomprar.Literals
+import org.ivandev.acomprar.Tools
 import org.ivandev.acomprar.database.entities.CategoriaEntity
-import org.ivandev.acomprar.database.entities.ProductoEntity
 import org.ivandev.acomprar.models.Producto
-import org.ivandev.acomprar.stores.ProductoStore
 import org.ivandev.acomprar.stores.CategoriaStore
+import org.ivandev.acomprar.stores.ProductoStore
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -32,13 +33,11 @@ fun AddProductoPopup(idCategoria: Int) {
     val categoriaStore: CategoriaStore = viewModel()
 
     val categorias: State<List<CategoriaEntity>> = categoriaStore.categorias
-    var showAddProductoPopup = productoStore.showAddProductoPopup
-
 
     // Preseleccionar la categoría con el ID especificado
     val categoriaEntitySeleccionada = remember { mutableStateOf<CategoriaEntity?>(null) }
-    // Expansión del desplegable
 
+    // Expansión del desplegable de las categorias
     val expanded = remember { mutableStateOf(false) }
     val nombre = remember { mutableStateOf("") }
     val cantidad = remember { mutableStateOf("") }
@@ -47,11 +46,12 @@ fun AddProductoPopup(idCategoria: Int) {
     LaunchedEffect(idCategoria) {
         val categoriaPorDefecto = categorias.value.find { it.id == idCategoria }
         categoriaEntitySeleccionada.value = categoriaPorDefecto
+
     }
 
-    if (showAddProductoPopup.value) {
+    if (productoStore.addProductoPopup.value) {
         AlertDialog(
-            onDismissRequest = { productoStore.updateShowAddProductoPopup(false) },
+            onDismissRequest = { productoStore.setAddProductoPopup(false) },
             confirmButton = {
                 TextButton(
                     onClick = {
@@ -62,8 +62,14 @@ fun AddProductoPopup(idCategoria: Int) {
                             cantidad = cantidad.value,
                             marca = marca.value
                         )
-                        productoStore.addProducto(newProducto)
-                        productoStore.updateShowAddProductoPopup(false)
+
+                        if (newProducto.nombre!!.isEmpty()) {
+                            Tools.Notifier.showToast(Literals.Errors.NO_NAME_PROVIDED)
+                        }
+                        else {
+                            productoStore.addProducto(newProducto)
+                            productoStore.setAddProductoPopup(false)
+                        }
                     }
                 ) {
                     Text("Aceptar")

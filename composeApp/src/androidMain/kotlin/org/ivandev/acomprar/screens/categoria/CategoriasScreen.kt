@@ -123,6 +123,6 @@ class CategoriasScreen : Screen {
     }
 
     private fun seeCategoriaById(categoriaEntity: CategoriaEntity, navigator: Navigator) {
-        navigator.push(SeeCategoriaAndProductsScreen(categoriaEntity))
+        navigator.push(SeeCategoriaAndProductsScreen(categoriaEntity.id, categoriaEntity.nombre))
     }
 }
