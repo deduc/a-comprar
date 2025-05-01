@@ -106,15 +106,18 @@ class ConfigurationScreen: Screen {
                         val ok = (0..8).all {
                             val result = Database.addProductosList(
                                 listOf(
-                                    Producto(null, it, "aaa$it", "0 ud", ""),
-                                    Producto(null, it, "abbb$it", null, null)
+                                    Producto(null, it, "prueba$it", "0 ud", ""),
+                                    Producto(null, it, "test$it", null, null)
                                 )
                             )
                             result
                         }
 
                         withContext(Dispatchers.Main) {
-                            Tools.Notifier.showToast(if (ok) "Registros de prueba añadidos." else "Error al añadir registros de prueba.")
+                            Tools.Notifier.showToast(
+                                if (ok) Literals.ToastText.ADDED_DATA_TEST
+                                else Literals.ToastText.ERROR_ADDING_DATA_TEST
+                            )
                         }
                     }
                 },
@@ -142,7 +145,10 @@ class ConfigurationScreen: Screen {
                             val ok = Database.deleteAllProducto()
 
                             withContext(Dispatchers.Main) {
-                                Tools.Notifier.showToast(if (ok) "Productos borrados." else "Error inesperado mientras se borraban productos.")
+                                Tools.Notifier.showToast(
+                                    if (ok) Literals.ToastText.DELETED_ALL_PRODUCTOS
+                                    else Literals.ToastText.ERROR_DELETING_ALL_PRODUCTOS
+                                )
                             }
                         }
                     },

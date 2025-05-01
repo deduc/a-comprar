@@ -67,4 +67,18 @@ object MenuHandler  {
         return result == 1
     }
 
+    fun updateMenuNameById(db: SQLiteDatabase, menu: MenuEntity): Boolean {
+        val datos = ContentValues()
+        datos.put(Literals.Database.ID_COLUMN, menu.id)
+        datos.put(Literals.Database.NOMBRE_COLUMN, menu.nombre)
+
+        val result = db.update(
+            Literals.Database.MENU_TABLE,
+            datos,
+            "${Literals.Database.ID_COLUMN} = ?",
+            arrayOf(menu.id.toString())
+        )
+
+        return result == 1
+    }
 }

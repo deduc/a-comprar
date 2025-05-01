@@ -6,7 +6,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.transitions.SlideTransition
@@ -24,10 +23,8 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     fun App(context: Context) {
-        LaunchedEffect(Unit) {
-            Database.initializeDatabase(context)
-            Tools.Notifier.init(context)
-        }
+        Database.initializeDatabase(context)
+        Tools.Notifier.init(context)
 
         val screenToShow = remember { HomeScreen() }
         MaterialTheme {

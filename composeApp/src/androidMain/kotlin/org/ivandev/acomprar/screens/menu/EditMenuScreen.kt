@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.TextField
@@ -15,9 +16,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import cafe.adriel.voyager.core.screen.Screen
 import org.ivandev.acomprar.Literals
@@ -43,22 +47,34 @@ class EditMenuScreen(
 
     @Composable
     fun MainContent() {
-        val menuStore: MenuStore = viewModel()
+        // instancia única de menuStore en toda la app
+        val menuStore: MenuStore = viewModel(LocalContext.current as ViewModelStoreOwner)
         var menuName = remember { mutableStateOf(menuEntity.nombre) }
 
-        MyScrollableColumn {
-            Row(horizontalArrangement = Arrangement.Center) {
-                TextField(
-                    value = menuName.value,
-                    label = { Literals.ADD_MENU_TITLE },
-                    onValueChange = { menuName.value = it }
-                )
+
+        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
+            TextField(
+                value = menuName.value,
+                label = { Literals.ADD_MENU_TITLE },
+                onValueChange = { menuName.value = it }
+            )
+
+            MyIcons.SaveIcon {
+                val newMenu = MenuEntity(menuEntity.id, menuName.value)
+
+                menuStore.updateMenuNameById(newMenu) { result ->
+                    if (result) {
+                        Tools.Notifier.showToast("Nuevo nombre guardado.")
+                    } else {
+                        Tools.Notifier.showToast("ERROR inesperado.")
+                    }
+                }
             }
-
-            Spacer(Modifier.height(Tools.height16dp))
-
-            MenuFormulary(menuStore, menuEntity)
         }
+
+        Spacer(Modifier.height(Tools.height16dp))
+
+        MenuFormulary(menuStore, menuEntity)
     }
 
     @Composable
@@ -82,17 +98,29 @@ class EditMenuScreen(
                     Column {
                         diasSemana.forEachIndexed { index: Int, dia: String ->
                             Row(Tools.styleBorderBlack) {
-                                Column(Modifier.weight(1f).border(1.dp, Color.Black).padding(8.dp).fillMaxSize()) {
+                                Column(Modifier
+                                    .weight(1f)
+                                    .border(1.dp, Color.Black)
+                                    .padding(8.dp)
+                                    .fillMaxSize()) {
                                     Text(dia)
                                 }
 
-                                Column(Modifier.weight(1f).border(1.dp, Color.Black).padding(8.dp).fillMaxSize()) {
+                                Column(Modifier
+                                    .weight(1f)
+                                    .border(1.dp, Color.Black)
+                                    .padding(8.dp)
+                                    .fillMaxSize()) {
                                     EditableComida(comidasYCenas.value!!, indexAux)
                                 }
 
                                 indexAux++
 
-                                Column(Modifier.weight(1f).border(1.dp, Color.Black).padding(8.dp).fillMaxSize()) {
+                                Column(Modifier
+                                    .weight(1f)
+                                    .border(1.dp, Color.Black)
+                                    .padding(8.dp)
+                                    .fillMaxSize()) {
                                     EditableComida(comidasYCenas.value!!, indexAux)
                                 }
 
@@ -109,7 +137,10 @@ class EditMenuScreen(
     fun TableHeaders(headers: List<String>) {
         Row(Tools.styleBorderBlack) {
             headers.forEach { header ->
-                Text(header, Modifier.weight(1f).border(1.dp, Color.Black).padding(8.dp), style = Tools.styleTableHeader)
+                Text(header, Modifier
+                    .weight(1f)
+                    .border(1.dp, Color.Black)
+                    .padding(8.dp), style = Tools.styleTableHeader)
             }
         }
     }

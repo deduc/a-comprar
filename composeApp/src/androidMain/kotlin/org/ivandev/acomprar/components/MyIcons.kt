@@ -9,6 +9,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Save
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -23,7 +24,7 @@ object MyIcons {
         val icon: VectorPainter = rememberVectorPainter(Icons.Filled.Add)
         Icon(
             painter = icon,
-            contentDescription = "Settings",
+            contentDescription = "Add",
             modifier = modifier.then(
                 borderCircle()
             ),
@@ -36,7 +37,7 @@ object MyIcons {
         val icon: VectorPainter = rememberVectorPainter(Icons.Default.Edit)
         Icon(
             painter = icon,
-            contentDescription = "Settings",
+            contentDescription = "Edit",
             modifier = Modifier.size(24.dp).clickable { onClick() },
             tint = Color.Black
         )
@@ -47,7 +48,7 @@ object MyIcons {
         val icon: VectorPainter = rememberVectorPainter(Icons.Filled.Visibility)
         Icon(
             painter = icon,
-            contentDescription = "Settings",
+            contentDescription = "View",
             modifier = Modifier.size(24.dp).clickable { onClick() },
             tint = Color.Black
         )
@@ -58,7 +59,18 @@ object MyIcons {
         val icon: VectorPainter = rememberVectorPainter(Icons.Filled.Delete)
         Icon(
             painter = icon,
-            contentDescription = "Settings",
+            contentDescription = "Trash",
+            modifier = Modifier.size(24.dp).clickable { onClick() },
+            tint = Color.Black
+        )
+    }
+
+    @Composable
+    fun SaveIcon(onClick: () -> Unit) {
+        val icon: VectorPainter = rememberVectorPainter(Icons.Default.Save)
+        Icon(
+            painter = icon,
+            contentDescription = "Save",
             modifier = Modifier.size(24.dp).clickable { onClick() },
             tint = Color.Black
         )

@@ -12,13 +12,14 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
@@ -45,8 +46,9 @@ class MenuScreen: Screen {
 
     @Composable
     fun MainContent() {
-        val menuStore: MenuStore = viewModel()
-        val menuEntityList: State<List<MenuEntity>> = menuStore.getMenusList()
+        // instancia única de menuStore en toda la app
+        val menuStore: MenuStore = viewModel(LocalContext.current as ViewModelStoreOwner)
+        val menuEntityList = menuStore.menusList
         val showPopup = remember { mutableStateOf(false) }
         val navigator: Navigator = LocalNavigator.currentOrThrow
 

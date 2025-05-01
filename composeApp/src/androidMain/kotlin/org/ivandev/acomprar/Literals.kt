@@ -118,6 +118,14 @@ object Literals {
         const val INITIALIZE_APP: String = "Restablecer datos de fábrica"
     }
 
+    object ToastText {
+        const val ADDED_DATA_TEST = "Datos de prueba añadidos."
+        const val DELETED_ALL_PRODUCTOS = "Productos borrados."
+
+        const val ERROR_ADDING_DATA_TEST = "Error al añadir registros de prueba."
+        const val ERROR_DELETING_ALL_PRODUCTOS = "Error al añadir registros de prueba."
+    }
+
     object Errors {
         const val NO_NAME_PROVIDED: String = "ERROR: El campo Nombre no puede estar vacío."
     }

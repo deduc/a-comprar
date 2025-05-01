@@ -95,6 +95,11 @@ object Database {
         return mySQLiteDatabase.updateProductoById(productoEntity)
     }
 
+    fun updateMenuNameById(menu: MenuEntity): Boolean {
+        return mySQLiteDatabase.updateMenuNameById(menu)
+    }
+
+
 
     fun deleteCategoriaById(idCategoria: Int): Boolean {
         var result = mySQLiteDatabase.deleteCategoriaById(idCategoria)

@@ -3,6 +3,7 @@ package org.ivandev.acomprar
 import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.width
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
@@ -24,6 +25,8 @@ object Tools {
     var styleTitle = TextStyle(fontSize = this.titleFontSize, textDecoration = TextDecoration.Underline, fontWeight = FontWeight.Black)
     var styleTableHeader = TextStyle(fontSize = this.titleFontSize, fontWeight = FontWeight.Bold, textDecoration = TextDecoration.Underline)
     var styleBorderBlack = Modifier.border(1.dp, Color.Black)
+
+    var spacer8dpWidth = Modifier.width(height8dp)
 
     object Notifier {
         private var appContext: Context? = null

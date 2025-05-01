@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import org.ivandev.acomprar.database.Database
 import org.ivandev.acomprar.database.entities.ComidaEntity
 import org.ivandev.acomprar.database.entities.MenuEntity
@@ -14,14 +15,13 @@ import org.ivandev.acomprar.models.Menu
 import org.ivandev.acomprar.screens.menu.classes.MyMenuComidas
 
 class MenuStore : ViewModel() {
-    // valor modificable
-    private val _menus = mutableStateOf<List<MenuEntity>>(Database.getAllMenu())
-    // valor para obtener
-    val menus: State<List<MenuEntity>> = _menus
+    private val _menusList = mutableStateOf<List<MenuEntity>>(Database.getAllMenu())
+    val menusList: State<List<MenuEntity>> = _menusList
+
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            _menus.value = Database.getAllMenu()
+            getAllMenus()
         }
     }
 
@@ -30,12 +30,25 @@ class MenuStore : ViewModel() {
 
         if (added) {
             val newMenu = Database.getLastMenu()
-            _menus.value += newMenu
+            _menusList.value += newMenu
         }
     }
 
-    fun getMenusList(): State<List<MenuEntity>> {
-        return menus
+    fun updateMenuNameById(menu: MenuEntity, onComplete: (Boolean) -> Unit) {
+        viewModelScope.launch {
+            val updated = withContext(Dispatchers.IO) {
+                Database.updateMenuNameById(menu)
+            }
+
+            if (updated) getAllMenus()
+
+            onComplete(updated)
+        }
+    }
+
+
+    fun getAllMenus() {
+        _menusList.value = Database.getAllMenu()
     }
 
     fun getComidasYCenasByMenuId(menuEntity: MenuEntity): MyMenuComidas {
@@ -53,7 +66,7 @@ class MenuStore : ViewModel() {
     fun deleteMenu(menuEntity: MenuEntity) {
         val removed = Database.deleteMenu(menuEntity)
         if (removed) {
-            _menus.value = _menus.value.filter { it.id != menuEntity.id }
+            _menusList.value = _menusList.value.filter { it.id != menuEntity.id }
         }
     }
 }

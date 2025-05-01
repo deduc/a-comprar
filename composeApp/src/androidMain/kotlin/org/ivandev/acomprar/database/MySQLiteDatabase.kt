@@ -170,6 +170,15 @@ class MySQLiteDatabase(context: Context, version: Int) : SQLiteOpenHelper(
         return result
     }
 
+    fun updateMenuNameById(menu: MenuEntity): Boolean {
+        val db = writableDatabase
+        val result = MenuHandler.updateMenuNameById(db, menu)
+
+        db.close()
+        return result
+    }
+
+
 
     fun deleteAllProducto(): Boolean {
         val db = writableDatabase
