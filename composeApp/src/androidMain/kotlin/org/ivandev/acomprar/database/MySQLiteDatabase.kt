@@ -30,16 +30,14 @@ class MySQLiteDatabase(context: Context, version: Int) : SQLiteOpenHelper(
     // las lineas db.writableDatabase o db.readableDatabase
     override fun onCreate(db: SQLiteDatabase?) {
         db?.let { it: SQLiteDatabase ->
-            createTables(it)
-            initializeData(it)
+            setupDatabase(it)
         }
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
         db?.let {
             dropTables(it)
-
-            createTables(it)
+            setupDatabase(it)
         }
     }
 
@@ -246,5 +244,10 @@ class MySQLiteDatabase(context: Context, version: Int) : SQLiteOpenHelper(
         db.execSQL(DropTables.DROP_TABLE_MENU_COMIDA)
         db.execSQL(DropTables.DROP_TABLE_PRODUCTO)
         db.execSQL(DropTables.DROP_TABLE_CARRITO_PRODUCTO)
+    }
+
+    private fun setupDatabase(db: SQLiteDatabase) {
+        createTables(db)
+        initializeData(db)
     }
 }

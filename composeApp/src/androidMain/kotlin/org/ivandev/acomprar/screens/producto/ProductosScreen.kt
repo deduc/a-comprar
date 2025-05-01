@@ -54,9 +54,6 @@ class ProductosScreen: Screen {
         val productoStore: ProductoStore = viewModel()
         val categoriaWithProductosList: State<List<CategoriaWithProductos>?> = productoStore.categoriasWithProductosList
 
-        // productoStore.productoEntityToEdit
-        // productoStore.productoEntityToDelete
-
         if (categoriaWithProductosList.value?.isNotEmpty() == true) {
             MyScrollableColumn {
                 Column(Modifier.fillMaxSize()) {
@@ -84,15 +81,21 @@ class ProductosScreen: Screen {
         if (productoStore.addProductoPopup.value) {
             AddProductoPopup(productoStore.productoToAdd.value!!.idCategoria!!)
         }
-
-//        PopupEditProducto(producto)
-//        PopupDeleteProducto(producto)
+        if (productoStore.editProductoEntityPopup.value != null) {
+            EditProductoPopup(productoStore.editProductoEntityPopup.value!!)
+        }
+        if (productoStore.deleteProductoEntityPopup.value != null) {
+            productoStore.deleteProductoEntity(productoStore.deleteProductoEntityPopup.value!!)
+        }
     }
 
     @Composable
     fun CategoriaHeader(categoriaWithProductos: CategoriaWithProductos, productoStore: ProductoStore) {
         Row(
-            modifier = Modifier.fillMaxWidth().border(1.dp, Color.Black).padding(4.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .border(1.dp, Color.Black)
+                .padding(4.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -103,13 +106,15 @@ class ProductosScreen: Screen {
             )
 
             MyIcons.AddIcon(
-                Modifier.size(24.dp).clickable {
-                    productoStore.setAddProductoPopup(true)
+                Modifier
+                    .size(24.dp)
+                    .clickable {
+                        productoStore.setAddProductoPopup(true)
 
-                    productoStore.setProductoToAdd(
-                        Producto(null, categoriaWithProductos.categoriaId, null, null, null)
-                    )
-                }
+                        productoStore.setProductoToAdd(
+                            Producto(null, categoriaWithProductos.categoriaId, null, null, null)
+                        )
+                    }
             )
         }
     }
@@ -133,9 +138,7 @@ class ProductosScreen: Screen {
     ) {
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
             Row(Modifier.weight(0.8f)) {
-                val cantidad = productoEntity.cantidad ?: ""
-
-                Text("${productoEntity.nombre} - $cantidad")
+                Text("${productoEntity.nombre} - ${productoEntity.getCantidadFixed()}")
             }
 
             Row(Modifier.weight(0.2f)) {

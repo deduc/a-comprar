@@ -29,18 +29,19 @@ class ProductoStore : ViewModel() {
     private val _addProductoPopup = mutableStateOf(false)
     val addProductoPopup: State<Boolean> = _addProductoPopup
 
-    private val _productoEntityToEdit = mutableStateOf<ProductoEntity?>(null)
-    val productoEntityToEdit: State<ProductoEntity?> = _productoEntityToEdit
+    private val _editProductoEntityPopup = mutableStateOf<ProductoEntity?>(null)
+    val editProductoEntityPopup: State<ProductoEntity?> = _editProductoEntityPopup
 
-    private val _productoEntityToDelete = mutableStateOf<ProductoEntity?>(null)
-    val productoEntityToDelete: State<ProductoEntity?> = _productoEntityToDelete
+    private val _deleteProductoEntityPopup = mutableStateOf<ProductoEntity?>(null)
+    val deleteProductoEntityPopup: State<ProductoEntity?> = _deleteProductoEntityPopup
 
     private val _showAddProductoPopup = mutableStateOf(false)
     val showAddProductoPopup: State<Boolean> = _showAddProductoPopup
 
+
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            getAllProductosByCategoria()
+            loadProductosPorCategoria()
         }
     }
 
@@ -52,7 +53,7 @@ class ProductoStore : ViewModel() {
             getProductosByCategoriaId(producto.idCategoria!!)
 
             CoroutineScope(Dispatchers.IO).launch {
-                getAllProductosByCategoria()
+                loadProductosPorCategoria()
             }
         }
     }
@@ -68,36 +69,12 @@ class ProductoStore : ViewModel() {
     }
 
     fun updateProductoById(productoEntity: ProductoEntity) {
-        val productToUpdate: ProductoEntity? = _productosByCategoria.value?.find { it.id == productoEntity.id }
+        val updated = Database.updateProductoById(productoEntity)
 
-        if (productToUpdate == null) {
-            println("ERROR INESPERADO intentando actualizar producto by id.")
-            return
-        }
-
-        if (productToUpdate.idCategoria == productoEntity.idCategoria) {
-            val updated = Database.updateProductoById(productoEntity)
-
-            if (updated) {
-                _productosByCategoria.value = _productosByCategoria.value?.map { currentProducto ->
-                    if (currentProducto.id == productoEntity.id) {
-                        // Creamos una nueva instancia de Producto con los nuevos valores
-                        ProductoEntity(
-                            productoEntity.id,
-                            productoEntity.idCategoria,
-                            productoEntity.nombre,
-                            productoEntity.cantidad,
-                            productoEntity.marca
-                        )
-                    } else {
-                        // Devolver el producto original si no coincide el ID (en cada iteracion)
-                        currentProducto
-                    }
-                }
+        if (updated) {
+            CoroutineScope(Dispatchers.IO).launch {
+                loadProductosPorCategoria()
             }
-        } else {
-            // Si la categoría ha cambiado, lo borro de la lista
-            _productosByCategoria.value = _productosByCategoria.value?.filter { it.id != productoEntity.id }
         }
     }
 
@@ -111,18 +88,27 @@ class ProductoStore : ViewModel() {
     }
 
     fun setEditProductoPopup(productoEntity: ProductoEntity?) {
-        _productoEntityToEdit.value = productoEntity
+        _editProductoEntityPopup.value = productoEntity
     }
 
     fun setProductoToDeletePopup(productoEntity: ProductoEntity?) {
-        _productoEntityToDelete.value = productoEntity
+        _deleteProductoEntityPopup.value = productoEntity
     }
 
-    private suspend fun getAllProductosByCategoria() {
-        val data = Database.getAllProductosByCategoria()
+    fun deleteProductoEntity(productoEntity: ProductoEntity) {
+        Database.deleteProductoById(productoEntity.id)
 
-        withContext(Dispatchers.Main) {
-            _categoriasWithProductosList.value = data
+        CoroutineScope(Dispatchers.IO).launch {
+            loadProductosPorCategoria()
+        }
+    }
+
+    private fun loadProductosPorCategoria() {
+        viewModelScope.launch {
+            val productosPorCategoria = withContext(Dispatchers.IO) {
+                Database.getAllProductosByCategoria()
+            }
+            _categoriasWithProductosList.value = productosPorCategoria
         }
     }
 }

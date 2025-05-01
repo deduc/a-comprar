@@ -2,6 +2,7 @@ package org.ivandev.acomprar.screens.menu
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -45,15 +46,19 @@ class EditMenuScreen(
         val menuStore: MenuStore = viewModel()
         var menuName = remember { mutableStateOf(menuEntity.nombre) }
 
-        TextField(
-            value = menuName.value,
-            label = { Literals.ADD_MENU_TITLE },
-            onValueChange = { menuName.value = it }
-        )
+        MyScrollableColumn {
+            Row(horizontalArrangement = Arrangement.Center) {
+                TextField(
+                    value = menuName.value,
+                    label = { Literals.ADD_MENU_TITLE },
+                    onValueChange = { menuName.value = it }
+                )
+            }
 
-        Spacer(Modifier.height(Tools.height16dp))
+            Spacer(Modifier.height(Tools.height16dp))
 
-        MenuFormulary(menuStore, menuEntity)
+            MenuFormulary(menuStore, menuEntity)
+        }
     }
 
     @Composable

@@ -68,7 +68,7 @@ class SeeCategoriaAndProductsScreen(
     private fun MainContent(categoriaId: Int, categoriaNombre: String) {
         val productoStore: ProductoStore = viewModel()
 
-        val selectedProduct = productoStore.productoEntityToEdit
+        val selectedProduct = productoStore.editProductoEntityPopup
         val productosList: State<List<ProductoEntity>?> = productoStore.productosByCategoria
         var showAddProductoPopup = productoStore.showAddProductoPopup
 

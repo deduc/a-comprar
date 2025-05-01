@@ -3,8 +3,8 @@ package org.ivandev.acomprar.database.handlers
 import android.content.ContentValues
 import android.database.sqlite.SQLiteDatabase
 import org.ivandev.acomprar.Literals
-import org.ivandev.acomprar.models.Categoria
 import org.ivandev.acomprar.database.entities.CategoriaEntity
+import org.ivandev.acomprar.models.Categoria
 
 object CategoriaHandler {
     fun insert(db: SQLiteDatabase, categoria: Categoria): Boolean {
@@ -46,7 +46,7 @@ object CategoriaHandler {
 
 
     fun initialize(db: SQLiteDatabase) {
-        val categoriasList: List<String> = Literals.Database.Categorias.getPreSelectedCategorias()
+        val categoriasList: List<String> = Literals.Database.Categorias.getDefaultCategorias()
 
         categoriasList.forEach { categoria: String ->
             val categoriaAux = ContentValues().apply {

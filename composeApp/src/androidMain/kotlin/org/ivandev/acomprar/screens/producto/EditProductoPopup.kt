@@ -7,6 +7,7 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ExposedDropdownMenuBox
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
+import androidx.compose.material.TextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.DropdownMenuItem
@@ -28,26 +29,27 @@ import org.ivandev.acomprar.stores.ProductoStore
 fun EditProductoPopup(productoEntity: ProductoEntity) {
     val productoStore: ProductoStore = viewModel()
 
-    var showPopup = productoStore.productoEntityToEdit
-
     val idCategoria: Int = productoEntity.idCategoria!!
     val categorias = Database.getAllCategoria()
 
     // Preseleccionar la categoría con el ID especificado
-    val categoriaEntitySeleccionada = remember { mutableStateOf<CategoriaEntity>(CategoriaEntity(0, "")) }
+    val categoriaEntitySeleccionada = remember { mutableStateOf(CategoriaEntity(0, "")) }
     // Expansión del desplegable
     val expanded = remember { mutableStateOf(false) }
 
     LaunchedEffect(idCategoria) {
         val categoriaPorDefecto: CategoriaEntity? = categorias.find { it.id == idCategoria }
-        if (categoriaPorDefecto != null) categoriaEntitySeleccionada.value = categoriaPorDefecto
+
+        if (categoriaPorDefecto != null) {
+            categoriaEntitySeleccionada.value = categoriaPorDefecto
+        }
     }
 
     val nombre = remember { mutableStateOf(productoEntity.nombre) }
-    val cantidad = remember { mutableStateOf(productoEntity.cantidad.toString()) }
-    val marca = remember { mutableStateOf(productoEntity.marca) }
+    val cantidad = remember { mutableStateOf(productoEntity.getCantidadOrVoid()) }
+    val marca = remember { mutableStateOf(productoEntity.getMarcaOrVoid()) }
 
-    if (showPopup.value != null) {
+    if (productoStore.editProductoEntityPopup.value != null) {
         AlertDialog(
             onDismissRequest = { productoStore.setEditProductoPopup(null) },
             confirmButton = {
@@ -73,26 +75,29 @@ fun EditProductoPopup(productoEntity: ProductoEntity) {
                     modifier = Modifier.fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    androidx.compose.material3.TextField(
+                    TextField(
                         value = nombre.value,
                         onValueChange = { nombre.value = it },
                         label = { androidx.compose.material3.Text("Nombre del producto") }
                     )
-                    androidx.compose.material3.TextField(
+                    TextField(
                         value = cantidad.value,
                         onValueChange = { cantidad.value = it },
                         label = { androidx.compose.material3.Text("Cantidad") },
                     )
-                    androidx.compose.material3.TextField(
+                    TextField(
                         value = marca.value!!,
                         onValueChange = { marca.value = it },
                         label = { androidx.compose.material3.Text("Marca") }
                     )
 
                     // Desplegable para seleccionar una categoría
-                    ExposedDropdownMenuBox(expanded = expanded.value, onExpandedChange = { expanded.value = !expanded.value }) {
-                        androidx.compose.material3.TextField(
-                            value = categoriaEntitySeleccionada.value?.nombre ?: "Seleccionar categoría",
+                    ExposedDropdownMenuBox(
+                        expanded = expanded.value,
+                        onExpandedChange = { expanded.value = !expanded.value }
+                    ) {
+                        TextField(
+                            value = categoriaEntitySeleccionada.value.nombre,
                             onValueChange = {},
                             label = { androidx.compose.material3.Text("Categoría") },
                             readOnly = true,
@@ -111,7 +116,7 @@ fun EditProductoPopup(productoEntity: ProductoEntity) {
                                         categoriaEntitySeleccionada.value = categoriaEntity
                                         expanded.value = false
                                     },
-                                    text = { categoriaEntity.nombre }
+                                    text = { Text(categoriaEntity.nombre) }
                                 )
                             }
                         }

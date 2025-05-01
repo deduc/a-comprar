@@ -6,15 +6,15 @@ object Literals {
     const val ADD_PRODUCTO_TITLE: String = "Añadir producto"
     const val ADD_MENU_TITLE: String = "Añadir menú"
     const val NO_CATEGORY_TEXT: String = "Sin categoría"
-    const val NO_DATA_TEXT: String = "Sin datos."
-    const val SIN_CANTIDAD_TEXT: String = "Sin cantidad."
-    const val SIN_MARCA_TEXT: String = "Sin marca."
+    const val NO_DATA_TEXT: String = "Sin datos"
+    const val SIN_CANTIDAD_TEXT: String = "Sin cantidad"
+    const val SIN_MARCA_TEXT: String = "Sin marca"
 
     // Configuration texts
     const val CHANGE_TEXT: String = "Cambiar"
-    const val DELETE_ALL_DATA_TEXT: String = "Borrar todos los datos."
-    const val IMPORT_JSON_TEXT: String = "Importar datos."
-    const val SIZE_TEXT: String = "Tamaño del texto."
+    const val DELETE_ALL_DATA_TEXT: String = "Borrar todos los datos"
+    const val IMPORT_JSON_TEXT: String = "Importar datos"
+    const val SIZE_TEXT: String = "Tamaño del texto"
 
     // Home navigation buttons
     const val CATEGORIAS_TITLE: String = "Categorías"
@@ -67,16 +67,19 @@ object Literals {
         object Categorias {
             const val SIN_CATEGORIA: String = "Sin categoría"
             const val CARNE: String = "Carne"
+            const val PASTA: String = "Pasta"
             const val LACTEOS: String = "Lácteos"
             const val FRUTA: String = "Fruta"
             const val VERDURA: String = "Verdura"
+            const val FRIGORIFICOS: String = "Frigoríficos"
+            const val CONGELADOS: String = "Congelados"
             const val LIMPIEZA: String = "Limpieza"
             const val COMIDAS: String = "Comidas"
             const val CENAS: String = "Cenas"
             const val POSTRES: String = "Postres"
 
-            fun getPreSelectedCategorias(): List<String> {
-                return listOf(SIN_CATEGORIA, CARNE, LACTEOS, FRUTA, VERDURA, LIMPIEZA, COMIDAS, CENAS, POSTRES)
+            fun getDefaultCategorias(): List<String> {
+                return listOf(SIN_CATEGORIA, CARNE, PASTA, LACTEOS, FRUTA, VERDURA, FRIGORIFICOS, CONGELADOS, LIMPIEZA, COMIDAS, CENAS, POSTRES)
             }
         }
     }
@@ -112,6 +115,7 @@ object Literals {
         const val ADD_MENU: String = "Añadir menú"
         const val ADD_TEST_DATA: String = "Añadir datos de prueba"
         const val DELETE_ALL_PRODUCTS: String = "Borrar todos los productos"
+        const val INITIALIZE_APP: String = "Restablecer datos de fábrica"
     }
 
     object Errors {

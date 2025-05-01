@@ -10,9 +10,6 @@ import org.ivandev.acomprar.models.Producto
 
 object ProductoHandler {
     fun insert(db: SQLiteDatabase, producto: Producto): Boolean {
-        if (producto.cantidad.isNullOrEmpty()) producto.cantidad = Literals.SIN_CANTIDAD_TEXT
-        if (producto.cantidad.isNullOrEmpty()) producto.cantidad = Literals.SIN_MARCA_TEXT
-
         val values = ContentValues().apply {
             put(Literals.Database.ID_CATEGORIA_COLUMN, producto.idCategoria)
             put(Literals.Database.NOMBRE_COLUMN, producto.nombre)

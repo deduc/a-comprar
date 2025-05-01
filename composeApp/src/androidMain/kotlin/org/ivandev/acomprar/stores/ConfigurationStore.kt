@@ -11,6 +11,9 @@ class ConfigurationStore : ViewModel() {
     private val _showDeleteDataPopup = mutableStateOf(false)
     val showDeleteDataPopup: State<Boolean> = _showDeleteDataPopup
 
+    private val _showInitializeAppPopup = mutableStateOf(false)
+    val showInitializeAppPopup: State<Boolean> = _showInitializeAppPopup
+
     fun setShowAddProductsPopup(value: Boolean) {
         _showAddProductsPopup.value = value
     }

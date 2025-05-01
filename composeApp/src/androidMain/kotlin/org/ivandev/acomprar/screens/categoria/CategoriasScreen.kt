@@ -73,14 +73,14 @@ class CategoriasScreen : Screen {
         var categoriaEntityToEdit: State<CategoriaEntity?> = categoriaStore.categoriaEntityToEdit
         var categoriaEntityToDelete: State<CategoriaEntity?> = categoriaStore.categoriaEntityToDelete
 
-        Column(Tools.styleBorderBlack) {
+        Column {
             TableHeaders()
 
             // TABLE CONTENT
             categorias.value.forEachIndexed { index: Int, categoriaEntity: CategoriaEntity ->
                 Row(Modifier.fillMaxWidth().border(1.dp, Color.Black), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
 
-                    Column(Modifier.weight(0.65f).border(1.dp, Color.Black)) {
+                    Column(Modifier.weight(0.65f)) {
                         Text(categoriaEntity.nombre, Modifier.padding(Tools.padding8dp))
                     }
 
