@@ -2,10 +2,7 @@ package org.ivandev.acomprar
 
 object Literals {
     const val APP_NAME: String = "A Comprar!"
-    const val ADD_TEXT: String = "Añadir"
-    const val ADD_PRODUCTO_TITLE: String = "Añadir producto"
     const val ADD_MENU_TITLE: String = "Añadir menú"
-    const val NO_CATEGORY_TEXT: String = "Sin categoría"
     const val NO_DATA_TEXT: String = "Sin datos"
     const val SIN_CANTIDAD_TEXT: String = "Sin cantidad"
     const val SIN_MARCA_TEXT: String = "Sin marca"
@@ -114,6 +111,7 @@ object Literals {
         const val ADD_PRODUCTO: String = "Añadir producto"
         const val ADD_MENU: String = "Añadir menú"
         const val ADD_TEST_DATA: String = "Añadir datos de prueba"
+        const val CANEL_ACTION: String = "Cancelar"
         const val DELETE_ALL_PRODUCTS: String = "Borrar todos los productos"
         const val INITIALIZE_APP: String = "Restablecer datos de fábrica"
     }

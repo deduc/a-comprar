@@ -96,31 +96,21 @@ class EditMenuScreen(
 
                     // Mostrar las comidas y cenas por cada día de la semana
                     Column {
+                        val column1OutOf3Modifier = Modifier.weight(1f).border(1.dp, Color.Black).padding(8.dp).fillMaxSize()
+
                         diasSemana.forEachIndexed { index: Int, dia: String ->
                             Row(Tools.styleBorderBlack) {
-                                Column(Modifier
-                                    .weight(1f)
-                                    .border(1.dp, Color.Black)
-                                    .padding(8.dp)
-                                    .fillMaxSize()) {
+                                Column(column1OutOf3Modifier) {
                                     Text(dia)
                                 }
 
-                                Column(Modifier
-                                    .weight(1f)
-                                    .border(1.dp, Color.Black)
-                                    .padding(8.dp)
-                                    .fillMaxSize()) {
+                                Column(column1OutOf3Modifier) {
                                     EditableComida(comidasYCenas.value!!, indexAux)
                                 }
 
                                 indexAux++
 
-                                Column(Modifier
-                                    .weight(1f)
-                                    .border(1.dp, Color.Black)
-                                    .padding(8.dp)
-                                    .fillMaxSize()) {
+                                Column(column1OutOf3Modifier) {
                                     EditableComida(comidasYCenas.value!!, indexAux)
                                 }
 

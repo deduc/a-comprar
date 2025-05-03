@@ -10,38 +10,20 @@ class ProductoEntity(
     val marca: String?,
 ) {
     fun getCantidadFixed(): String {
-        if (cantidad == "") {
+        if (cantidad == null) {
             return Literals.SIN_CANTIDAD_TEXT
         }
         else {
-            return cantidad!!
+            return cantidad
         }
     }
 
     fun getMarcaFixed(): String {
-        if (marca == "") {
+        if (marca == null) {
             return Literals.SIN_MARCA_TEXT
         }
         else {
-            return marca!!
-        }
-    }
-
-    fun getCantidadOrVoid(): String {
-        if (cantidad == "") {
-            return cantidad
-        }
-        else {
-            return cantidad!!
-        }
-    }
-
-    fun getMarcaOrVoid(): String {
-        if (marca == "") {
             return marca
-        }
-        else {
-            return marca!!
         }
     }
 }

@@ -3,6 +3,7 @@ package org.ivandev.acomprar
 import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -27,6 +28,7 @@ object Tools {
     var styleBorderBlack = Modifier.border(1.dp, Color.Black)
 
     var spacer8dpWidth = Modifier.width(height8dp)
+    var spacer8dpHeight = Modifier.height(height8dp)
 
     object Notifier {
         private var appContext: Context? = null

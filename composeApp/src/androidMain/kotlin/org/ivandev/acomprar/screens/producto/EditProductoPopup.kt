@@ -46,8 +46,8 @@ fun EditProductoPopup(productoEntity: ProductoEntity) {
     }
 
     val nombre = remember { mutableStateOf(productoEntity.nombre) }
-    val cantidad = remember { mutableStateOf(productoEntity.getCantidadOrVoid()) }
-    val marca = remember { mutableStateOf(productoEntity.getMarcaOrVoid()) }
+    val cantidad = remember { mutableStateOf(productoEntity.getCantidadFixed()) }
+    val marca = remember { mutableStateOf(productoEntity.getMarcaFixed()) }
 
     if (productoStore.editProductoEntityPopup.value != null) {
         AlertDialog(

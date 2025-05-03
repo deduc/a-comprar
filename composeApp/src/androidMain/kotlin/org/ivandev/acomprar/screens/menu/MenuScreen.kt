@@ -12,8 +12,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -49,7 +47,6 @@ class MenuScreen: Screen {
         // instancia única de menuStore en toda la app
         val menuStore: MenuStore = viewModel(LocalContext.current as ViewModelStoreOwner)
         val menuEntityList = menuStore.menusList
-        val showPopup = remember { mutableStateOf(false) }
         val navigator: Navigator = LocalNavigator.currentOrThrow
 
         Column {
@@ -69,14 +66,17 @@ class MenuScreen: Screen {
                 horizontalArrangement = Arrangement.End,
                 verticalAlignment = Alignment.Bottom
             ) {
-                Button(onClick = { showPopup.value = true }) {
+                Button(onClick = { menuStore.toggleShowAddMenuPopup(true) }) {
                     Text(Literals.ButtonsText.ADD_MENU)
                 }
             }
         }
 
-        if (showPopup.value) {
-            AddMenuPopup(onDismiss = { showPopup.value = false }) // Pasar una función para cerrar el popup
+        if (menuStore.showAddMenuPopup.value) {
+            AddMenuPopup(onDismiss = {
+                menuStore.toggleShowAddMenuPopup(false)
+                menuStore.deleteCheckedData()
+            })
         }
     }
 

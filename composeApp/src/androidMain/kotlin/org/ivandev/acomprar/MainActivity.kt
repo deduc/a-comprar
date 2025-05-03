@@ -10,7 +10,7 @@ import androidx.compose.runtime.remember
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.transitions.SlideTransition
 import org.ivandev.acomprar.database.Database
-import org.ivandev.acomprar.screens.HomeScreen
+import org.ivandev.acomprar.screens.menu.MenuScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,7 +26,7 @@ class MainActivity : ComponentActivity() {
         Database.initializeDatabase(context)
         Tools.Notifier.init(context)
 
-        val screenToShow = remember { HomeScreen() }
+        val screenToShow = remember { MenuScreen() }
         MaterialTheme {
             Navigator(screen = screenToShow) { navigator ->
                 SlideTransition(navigator)
