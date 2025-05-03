@@ -17,6 +17,7 @@ import org.ivandev.acomprar.database.scripts.DropTables
 import org.ivandev.acomprar.database.special_classes.CategoriaWithProductos
 import org.ivandev.acomprar.models.Categoria
 import org.ivandev.acomprar.models.Menu
+import org.ivandev.acomprar.models.MenuDaysOfWeek
 import org.ivandev.acomprar.models.Producto
 
 class MySQLiteDatabase(context: Context, version: Int) : SQLiteOpenHelper(
@@ -72,30 +73,18 @@ class MySQLiteDatabase(context: Context, version: Int) : SQLiteOpenHelper(
 
     fun addMenuAndComidasYCenas(menu: Menu): Boolean {
         val db = writableDatabase
-        var result = false
-
-        try {
-            db.beginTransaction() // Inicia una transacción para garantizar atomicidad
-
-            val inserted = MenuHandler.insert(db, menu)
-            if (!inserted) { return false }
-
-            val lastMenu = MenuHandler.getLast(db) ?: return false
-            result = ComidaHandler.insertComidasYCenasByMenuId(db, lastMenu.id!!)
-
-            // Confirma la transacción si todo va bien
-            if (result) { db.setTransactionSuccessful() }
-        }
-        catch (e: Exception) {
-            e.printStackTrace() // Maneja excepciones para depuración
-        }
-        finally {
-            db.endTransaction() // Finaliza la transacción (commit o rollback)
-            db.close()
-        }
-
+        val result = MenuHandler.insert(db, menu)
+        db.close()
         return result
     }
+
+    fun addMenuDays(menuId: Int, menuDays: List<MenuDaysOfWeek>): Boolean {
+        val db = writableDatabase
+        val result = MenuHandler.addMenuDays(db, menuId , menuDays)
+        db.close()
+        return result
+    }
+
 
 
     fun getAllCategoria(): List<CategoriaEntity> {
@@ -137,11 +126,12 @@ class MySQLiteDatabase(context: Context, version: Int) : SQLiteOpenHelper(
         return result
     }
 
-    fun getLastMenu(): MenuEntity {
+    fun getLastMenu(): MenuEntity? {
         val db = readableDatabase
-        val result = MenuHandler.getLast(db)!!
+        val lastMenu: MenuEntity? = MenuHandler.getLast(db)
+
         db.close()
-        return result
+        return lastMenu
     }
 
 
@@ -222,6 +212,14 @@ class MySQLiteDatabase(context: Context, version: Int) : SQLiteOpenHelper(
         return result
     }
 
+    fun deleteLastMenu(): Boolean {
+        val db = writableDatabase
+        val result = MenuHandler.deleteLast(db)
+
+        db.close()
+        return result
+    }
+
     // METODOS ESPECIALES
     // METODOS ESPECIALES
     // METODOS ESPECIALES
@@ -235,6 +233,7 @@ class MySQLiteDatabase(context: Context, version: Int) : SQLiteOpenHelper(
         db.execSQL(CreateTables.CREATE_TABLE_MENU_COMIDA)
         db.execSQL(CreateTables.CREATE_TABLE_PRODUCTO)
         db.execSQL(CreateTables.CREATE_TABLE_CARRITO_PRODUCTO)
+        db.execSQL(CreateTables.CREATE_TABLE_MENU_DAY_OF_WEEK)
     }
 
     private fun initializeData(db: SQLiteDatabase) {
@@ -253,6 +252,7 @@ class MySQLiteDatabase(context: Context, version: Int) : SQLiteOpenHelper(
         db.execSQL(DropTables.DROP_TABLE_MENU_COMIDA)
         db.execSQL(DropTables.DROP_TABLE_PRODUCTO)
         db.execSQL(DropTables.DROP_TABLE_CARRITO_PRODUCTO)
+        db.execSQL(DropTables.DROP_TABLE_MENU_DAYS_OF_WEEK)
     }
 
     private fun setupDatabase(db: SQLiteDatabase) {

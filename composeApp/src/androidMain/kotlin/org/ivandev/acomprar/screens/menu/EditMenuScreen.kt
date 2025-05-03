@@ -79,7 +79,7 @@ class EditMenuScreen(
 
     @Composable
     fun MenuFormulary(menuStore: MenuStore, menuEntity: MenuEntity) {
-        val headers: List<String> = listOf(Literals.Table.DIA_COLUMN, Literals.Table.COMIDA_COLUMN, Literals.Table.CENA_COLUMN)
+        val headers: List<String> = listOf(Literals.UITables.DIA_COLUMN, Literals.UITables.COMIDA_COLUMN, Literals.UITables.CENA_COLUMN)
         val diasSemana: List<String> = Literals.DaysOfWeek.getDaysOfWeek()
         val comidasYCenas = remember { mutableStateOf<MyMenuComidas?>(null) }
         var indexAux: Int = 0

@@ -114,10 +114,10 @@ class CategoriasScreen : Screen {
     fun TableHeaders() {
         Row(Modifier.fillMaxWidth().border(1.dp, Color.Black), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
             Column(Modifier.weight(0.65f).border(1.dp, Color.Black).padding(Tools.padding8dp)) {
-                Text(Literals.Table.NOMBRE_COLUMN, style = Tools.styleTableHeader)
+                Text(Literals.UITables.NOMBRE_COLUMN, style = Tools.styleTableHeader)
             }
             Column(Modifier.weight(0.35f).border(1.dp, Color.Black).padding(Tools.padding8dp)) {
-                Text(Literals.Table.OPCIONES_COLUMN, style = Tools.styleTableHeader)
+                Text(Literals.UITables.OPCIONES_COLUMN, style = Tools.styleTableHeader)
             }
         }
     }

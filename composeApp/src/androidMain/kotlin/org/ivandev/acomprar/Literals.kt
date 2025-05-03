@@ -28,8 +28,6 @@ object Literals {
     object Database {
         // DATABASE
         // Base directory for app A Comprar
-        const val INTERNAL_DIRECTORY: String = "Database"
-        const val DATABASE_FOLDER: String = INTERNAL_DIRECTORY
         const val DATABASE_NAME: String = "acomprar.db"
 
         // Database table names
@@ -40,11 +38,13 @@ object Literals {
         const val COMIDA_PRODUCTO_TABLE: String = "comida_producto"
         const val MENU_TABLE: String = "menu"
         const val MENU_COMIDA_TABLE: String = "menu_comida"
+        const val MENU_DAYS_OF_WEEK: String = "menu_days_of_week"
         const val PRODUCTO_TABLE: String = "producto"
 
         // Database column names
         const val ID_COLUMN: String = "id"
         const val ID_COMIDA_COLUMN: String = "id_comida"
+        const val ID_CENA_COLUMN: String = "id_cena"
         const val ID_CATEGORIA_COLUMN: String = "id_categoria"
         const val ID_CARRITO_COLUMN: String = "id_carrito"
         const val ID_PRODUCTO_COLUMN: String = "id_producto"
@@ -82,7 +82,7 @@ object Literals {
     }
 
     // No SQL tables, just for UI "tables"
-    object Table {
+    object UITables {
         const val NOMBRE_COLUMN: String = "Nombre"
         const val CANTIDAD_COLUMN: String = "Cantidad"
         const val OPCIONES_COLUMN: String = "Opciones"
@@ -118,9 +118,15 @@ object Literals {
 
     object ToastText {
         const val ADDED_DATA_TEST = "Datos de prueba añadidos."
+        const val ADDED_MENU = "Menú añadido."
+
         const val DELETED_ALL_PRODUCTOS = "Productos borrados."
 
         const val ERROR_ADDING_DATA_TEST = "Error al añadir registros de prueba."
+        const val ERROR_ADDING_MENU = "Error al añadir el menú."
+        const val ERROR_ADDING_MENU_DAYS = "Error al añadir los días del menú."
+        const val ERROR_VOID_DATA = "Error no has rellenado suficientes datos."
+
         const val ERROR_DELETING_ALL_PRODUCTOS = "Error al añadir registros de prueba."
     }
 

@@ -27,6 +27,7 @@ import org.ivandev.acomprar.Literals
 import org.ivandev.acomprar.Tools
 import org.ivandev.acomprar.components.CommonScreen
 import org.ivandev.acomprar.components.MyIcons
+import org.ivandev.acomprar.components.MyScrollableColumn
 import org.ivandev.acomprar.database.entities.MenuEntity
 import org.ivandev.acomprar.stores.MenuStore
 
@@ -49,25 +50,27 @@ class MenuScreen: Screen {
         val menuEntityList = menuStore.menusList
         val navigator: Navigator = LocalNavigator.currentOrThrow
 
-        Column {
-            Column(Modifier.weight(1f)) {
-                if (menuEntityList.value.isNotEmpty()) {
-                    menuEntityList.value.forEach { menuEntity: MenuEntity ->
-                        MenuRow(menuEntity, navigator, menuStore)
-                        Spacer(Modifier.height(Tools.height16dp))
+        MyScrollableColumn {
+            Column {
+                Column(Modifier.weight(1f)) {
+                    if (menuEntityList.value.isNotEmpty()) {
+                        menuEntityList.value.forEach { menuEntity: MenuEntity ->
+                            MenuRow(menuEntity, navigator, menuStore)
+                            Spacer(Modifier.height(Tools.height16dp))
+                        }
+                    } else {
+                        Text("Sin menús.")
                     }
-                } else {
-                    Text("Sin menús.")
                 }
-            }
 
-            // *** Barra inferior de botones ***
-            Row(Modifier.fillMaxWidth().weight(0.125f),
-                horizontalArrangement = Arrangement.End,
-                verticalAlignment = Alignment.Bottom
-            ) {
-                Button(onClick = { menuStore.toggleShowAddMenuPopup(true) }) {
-                    Text(Literals.ButtonsText.ADD_MENU)
+                // *** Barra inferior de botones ***
+                Row(Modifier.fillMaxWidth().weight(0.125f),
+                    horizontalArrangement = Arrangement.End,
+                    verticalAlignment = Alignment.Bottom
+                ) {
+                    Button(onClick = { menuStore.toggleShowAddMenuPopup(true) }) {
+                        Text(Literals.ButtonsText.ADD_MENU)
+                    }
                 }
             }
         }

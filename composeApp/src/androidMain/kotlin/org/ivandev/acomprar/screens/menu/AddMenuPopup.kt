@@ -26,7 +26,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import org.ivandev.acomprar.Literals
 import org.ivandev.acomprar.Tools
 import org.ivandev.acomprar.models.Menu
-import org.ivandev.acomprar.screens.menu.classes.SelectedDayOfWeek
 import org.ivandev.acomprar.stores.MenuStore
 
 @Composable
@@ -40,9 +39,8 @@ fun AddMenuPopup(onDismiss: () -> Unit) {
             confirmButton = {
                 TextButton(
                     onClick = {
-                        menuStore.addMenu(Menu(null, menuName.value))
-                        menuStore.initializeCheckedList()
-                        onDismiss()
+                        val result: Boolean = menuStore.addMenuAndItsDays(Menu(null, menuName.value))
+                        if (result) onDismiss()
                     }
                 ) {
                     Text(Literals.ButtonsText.ADD_MENU)
@@ -83,7 +81,6 @@ fun AddMenuPopup(onDismiss: () -> Unit) {
 
 @Composable
 private fun DaysOfWeekFormulary(menuStore: MenuStore) {
-    val selectedDayOfWeek: MutableList<SelectedDayOfWeek> = mutableListOf()
     val checkedList = menuStore.checkedList
     val rows = menuStore.daysOfWeek.chunked(2)
 
@@ -128,11 +125,7 @@ fun ActionButtons(menuStore: MenuStore) {
     var diarioClicked = remember { mutableStateOf(false) }
     var weekendClicked = remember { mutableStateOf(false) }
 
-    Row(
-        Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceEvenly,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
+    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly, verticalAlignment = Alignment.CenterVertically) {
         Button(onClick = {
             allDaysClicked.value = !allDaysClicked.value
             diarioClicked.value = false
@@ -151,10 +144,14 @@ fun ActionButtons(menuStore: MenuStore) {
             diarioClicked.value = !diarioClicked.value
             weekendClicked.value = false
 
+            val lastDayValid = daysOfWeek.size - 2
             checkedList.forEachIndexed { index: Int, day: MutableState<Boolean> ->
-                if (index < daysOfWeek.size-2) {
-                    if(day.value) day.value = false
-                    else day.value = true
+                if (index < lastDayValid) {
+                    if(diarioClicked.value) day.value = true
+                    else day.value = false
+                }
+                else {
+                    day.value = false
                 }
             }
         }) {
@@ -163,13 +160,18 @@ fun ActionButtons(menuStore: MenuStore) {
 
         Button(onClick = {
             allDaysClicked.value = false
-            diarioClicked.value = !diarioClicked.value
-            weekendClicked.value = false
+            diarioClicked.value = false
+            weekendClicked.value = !weekendClicked.value
 
-            val last = checkedList.size - 1
-            checkedList[last].value = true
-            checkedList[last - 1].value = true
-
+            val lastDayValid = daysOfWeek.size - 2
+            checkedList.forEachIndexed { index: Int, day: MutableState<Boolean> ->
+                if (index < lastDayValid) {
+                    day.value = false
+                }
+                else {
+                    day.value = weekendClicked.value
+                }
+            }
         }) {
             Text("Finde")
         }

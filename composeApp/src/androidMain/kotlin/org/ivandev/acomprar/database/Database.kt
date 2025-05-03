@@ -12,11 +12,12 @@ import org.ivandev.acomprar.database.entities.ProductoEntity
 import org.ivandev.acomprar.database.special_classes.CategoriaWithProductos
 import org.ivandev.acomprar.models.Categoria
 import org.ivandev.acomprar.models.Menu
+import org.ivandev.acomprar.models.MenuDaysOfWeek
 import org.ivandev.acomprar.models.Producto
 
 object Database {
     lateinit var mySQLiteDatabase: MySQLiteDatabase
-    private val dbVersion: Int = 5
+    private val dbVersion: Int = 8
 
     fun initializeDatabase(context: Context) {
         mySQLiteDatabase = MySQLiteDatabase(context, dbVersion)
@@ -48,8 +49,12 @@ object Database {
         return mySQLiteDatabase.addMenuAndComidasYCenas(menu)
     }
 
+    fun addMenuDays(menuId: Int, menuDays: List<MenuDaysOfWeek>): Boolean {
+        return mySQLiteDatabase.addMenuDays(menuId, menuDays)
+    }
 
-    fun getLastMenu(): MenuEntity {
+
+    fun getLastMenu(): MenuEntity? {
         return mySQLiteDatabase.getLastMenu()
     }
 
@@ -117,5 +122,9 @@ object Database {
 
     fun deleteMenu(menuEntity: MenuEntity): Boolean {
         return mySQLiteDatabase.deleteMenu(menuEntity)
+    }
+
+    fun deleteLastMenu(): Boolean {
+        return mySQLiteDatabase.deleteLastMenu()
     }
 }
