@@ -56,13 +56,14 @@ class MenuStore : ViewModel() {
             return false
         }
 
-        val lastMenu: MenuEntity? = Database.getLastMenu()
-        if (lastMenu == null) {
+        val currentMenuAdded: MenuEntity? = Database.getLastMenu()
+        if (currentMenuAdded == null) {
             Tools.Notifier.showToast(Literals.ToastText.ERROR_ADDING_MENU)
             return false
         }
+        else _menusList.value += currentMenuAdded
 
-        if (!addMenuDays(lastMenu)) {
+        if (!addMenuDays(currentMenuAdded)) {
             Database.deleteLastMenu()
             Tools.Notifier.showToast(Literals.ToastText.ERROR_ADDING_MENU_DAYS)
             return false
@@ -124,17 +125,7 @@ class MenuStore : ViewModel() {
     }
 
     private fun addMenu(menu: Menu): Boolean {
-        val added = Database.addMenu(menu)
-
-        if (! added) {
-            return false
-        }
-        else {
-            val lastMenu = Database.getLastMenu()
-
-            if (lastMenu != null) _menusList.value += lastMenu
-            return true
-        }
+        return Database.addMenu(menu)
     }
 
     private fun addMenuDays(lastMenu: MenuEntity): Boolean {

@@ -9,8 +9,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
 @Composable
-fun MyScrollableColumn(content: @Composable () -> Unit) {
-    Column(Modifier.fillMaxSize().fillMaxWidth().verticalScroll(rememberScrollState())) {
+fun MyScrollableColumn(modifier: Modifier = Modifier, content: @Composable () -> Unit) {
+    Column(Modifier.fillMaxSize().fillMaxWidth().verticalScroll(rememberScrollState()).then(modifier)) {
         content()
     }
 }

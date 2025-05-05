@@ -50,9 +50,9 @@ class MenuScreen: Screen {
         val menuEntityList = menuStore.menusList
         val navigator: Navigator = LocalNavigator.currentOrThrow
 
-        MyScrollableColumn {
-            Column {
-                Column(Modifier.weight(1f)) {
+        Column {
+            Column(Modifier.weight(1f)) {
+                MyScrollableColumn {
                     if (menuEntityList.value.isNotEmpty()) {
                         menuEntityList.value.forEach { menuEntity: MenuEntity ->
                             MenuRow(menuEntity, navigator, menuStore)
@@ -62,15 +62,15 @@ class MenuScreen: Screen {
                         Text("Sin menús.")
                     }
                 }
+            }
 
-                // *** Barra inferior de botones ***
-                Row(Modifier.fillMaxWidth().weight(0.125f),
-                    horizontalArrangement = Arrangement.End,
-                    verticalAlignment = Alignment.Bottom
-                ) {
-                    Button(onClick = { menuStore.toggleShowAddMenuPopup(true) }) {
-                        Text(Literals.ButtonsText.ADD_MENU)
-                    }
+            // *** Barra inferior de botones ***
+            Row(Modifier.fillMaxWidth().weight(0.125f),
+                horizontalArrangement = Arrangement.End,
+                verticalAlignment = Alignment.Bottom
+            ) {
+                Button(onClick = { menuStore.toggleShowAddMenuPopup(true) }) {
+                    Text(Literals.ButtonsText.ADD_MENU)
                 }
             }
         }

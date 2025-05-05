@@ -80,6 +80,6 @@ object ComidaHandler {
             arrayOf(menuId.toString())
         )
 
-        return result > 0
+        return result >= 0
     }
 }
