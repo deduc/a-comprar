@@ -2,7 +2,9 @@ package org.ivandev.acomprar.database.handlers
 
 import android.content.ContentValues
 import android.database.sqlite.SQLiteDatabase
+import androidx.core.database.getIntOrNull
 import org.ivandev.acomprar.Literals
+import org.ivandev.acomprar.database.entities.MenuDaysOfWeekEntity
 import org.ivandev.acomprar.database.entities.MenuEntity
 import org.ivandev.acomprar.models.Menu
 import org.ivandev.acomprar.models.MenuDaysOfWeek
@@ -60,6 +62,29 @@ object MenuHandler  {
                     cursor.getInt(cursor.getColumnIndexOrThrow(Literals.Database.ID_COLUMN)),
                     cursor.getString(cursor.getColumnIndexOrThrow(Literals.Database.NOMBRE_COLUMN)),
                 )
+            }
+        }
+
+        return result
+    }
+
+    fun getMenuDaysOfWeekByMenuId(db: SQLiteDatabase, menuId: Int): MutableList<MenuDaysOfWeekEntity> {
+        var result = mutableListOf<MenuDaysOfWeekEntity>()
+        val command = "SELECT * FROM ${Literals.Database.MENU_DAYS_OF_WEEK} where ${Literals.Database.ID_MENU_COLUMN} == ${menuId}"
+
+        db.rawQuery(command, null).use { cursor ->
+            if (cursor.moveToFirst()) {
+                do {
+                    result.add(
+                        MenuDaysOfWeekEntity(
+                            cursor.getInt(cursor.getColumnIndexOrThrow(Literals.Database.ID_COLUMN)),
+                            cursor.getInt(cursor.getColumnIndexOrThrow(Literals.Database.ID_MENU_COLUMN)),
+                            cursor.getIntOrNull(cursor.getColumnIndexOrThrow(Literals.Database.ID_COMIDA_COLUMN)),
+                            cursor.getIntOrNull(cursor.getColumnIndexOrThrow(Literals.Database.ID_CENA_COLUMN)),
+                            cursor.getString(cursor.getColumnIndexOrThrow(Literals.Database.DIA_COLUMN))
+                        )
+                    )
+                } while (cursor.moveToNext())
             }
         }
 

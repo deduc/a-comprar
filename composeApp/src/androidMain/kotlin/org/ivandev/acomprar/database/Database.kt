@@ -7,6 +7,7 @@ import kotlinx.coroutines.withContext
 import org.ivandev.acomprar.database.entities.CarritoEntity
 import org.ivandev.acomprar.database.entities.CategoriaEntity
 import org.ivandev.acomprar.database.entities.ComidaEntity
+import org.ivandev.acomprar.database.entities.MenuDaysOfWeekEntity
 import org.ivandev.acomprar.database.entities.MenuEntity
 import org.ivandev.acomprar.database.entities.ProductoEntity
 import org.ivandev.acomprar.database.special_classes.CategoriaWithProductos
@@ -89,6 +90,10 @@ object Database {
 
     fun getComidasByMenuId(id: Int): List<ComidaEntity> {
         return mySQLiteDatabase.getComidasByMenuId(id)
+    }
+
+    fun getMenuDaysOfWeekByMenuId(menuId: Int): MutableList<MenuDaysOfWeekEntity> {
+        return mySQLiteDatabase.getMenuDaysOfWeekByMenuId(menuId)
     }
 
 

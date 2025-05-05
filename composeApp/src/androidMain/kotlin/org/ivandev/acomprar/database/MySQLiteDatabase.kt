@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper
 import org.ivandev.acomprar.Literals
 import org.ivandev.acomprar.database.entities.CategoriaEntity
 import org.ivandev.acomprar.database.entities.ComidaEntity
+import org.ivandev.acomprar.database.entities.MenuDaysOfWeekEntity
 import org.ivandev.acomprar.database.entities.MenuEntity
 import org.ivandev.acomprar.database.entities.ProductoEntity
 import org.ivandev.acomprar.database.handlers.CategoriaHandler
@@ -134,6 +135,13 @@ class MySQLiteDatabase(context: Context, version: Int) : SQLiteOpenHelper(
         return lastMenu
     }
 
+    fun getMenuDaysOfWeekByMenuId(menuId: Int): MutableList<MenuDaysOfWeekEntity> {
+        val db = readableDatabase
+        val result = MenuHandler.getMenuDaysOfWeekByMenuId(db, menuId)
+
+        db.close()
+        return result
+    }
 
 
     fun updateCategoriaById(categoriaEntity: CategoriaEntity): Boolean {
