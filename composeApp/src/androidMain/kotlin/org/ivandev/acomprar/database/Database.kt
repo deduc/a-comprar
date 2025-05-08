@@ -18,7 +18,7 @@ import org.ivandev.acomprar.models.Producto
 
 object Database {
     lateinit var mySQLiteDatabase: MySQLiteDatabase
-    private val dbVersion: Int = 8
+    private val dbVersion: Int = 9
 
     fun initializeDatabase(context: Context) {
         mySQLiteDatabase = MySQLiteDatabase(context, dbVersion)

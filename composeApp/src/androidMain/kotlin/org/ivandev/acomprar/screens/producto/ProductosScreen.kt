@@ -1,7 +1,6 @@
 package org.ivandev.acomprar.screens.producto
 
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -105,17 +104,13 @@ class ProductosScreen: Screen {
                 modifier = Modifier.weight(1f)
             )
 
-            MyIcons.AddIcon(
-                Modifier
-                    .size(24.dp)
-                    .clickable {
-                        productoStore.setAddProductoPopup(true)
+            MyIcons.AddIcon(Modifier.size(24.dp)){
+                productoStore.setAddProductoPopup(true)
 
-                        productoStore.setProductoToAdd(
-                            Producto(null, categoriaWithProductos.categoriaId, null, null, null)
-                        )
-                    }
-            )
+                productoStore.setProductoToAdd(
+                    Producto(null, categoriaWithProductos.categoriaId, null, null, null)
+                )
+            }
         }
     }
 

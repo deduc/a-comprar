@@ -96,7 +96,7 @@ class MenuScreen: Screen {
             }
 
             Row {
-                MyIcons.EditIcon { navigator.push(EditMenuScreen(menuEntity)) }
+                MyIcons.EditIcon { navigator.push(EditMenuScreen(menuEntity.id, menuEntity.nombre)) }
                 Spacer(Modifier.width(Tools.buttonsSpacer8dp))
                 MyIcons.TrashIcon { menuStore.deleteMenu(menuEntity) }
             }

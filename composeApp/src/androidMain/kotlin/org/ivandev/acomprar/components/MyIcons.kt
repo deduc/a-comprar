@@ -20,14 +20,18 @@ import androidx.compose.ui.unit.dp
 
 object MyIcons {
     @Composable
-    fun AddIcon(modifier: Modifier = Modifier, tint: Color = Color.Black) {
+    fun AddIcon(
+        modifier: Modifier = Modifier,
+        tint: Color = Color.Black,
+        onClick: () -> Unit
+    ) {
         val icon: VectorPainter = rememberVectorPainter(Icons.Filled.Add)
         Icon(
             painter = icon,
             contentDescription = "Add",
             modifier = modifier.then(
                 borderCircle()
-            ),
+            ).clickable { onClick() },
             tint = tint
         )
     }
@@ -75,7 +79,6 @@ object MyIcons {
             tint = Color.Black
         )
     }
-
 
     fun borderCircle(): Modifier {
         return Modifier.border(1.dp, Color.Black, CircleShape)

@@ -14,6 +14,7 @@ import androidx.compose.material.TextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -29,29 +30,67 @@ import org.ivandev.acomprar.Tools
 import org.ivandev.acomprar.components.CommonScreen
 import org.ivandev.acomprar.components.MyIcons
 import org.ivandev.acomprar.components.MyScrollableColumn
+import org.ivandev.acomprar.database.entities.ComidaEntity
+import org.ivandev.acomprar.database.entities.MenuDaysOfWeekEntity
 import org.ivandev.acomprar.database.entities.MenuEntity
 import org.ivandev.acomprar.screens.menu.classes.MyMenuComidas
 import org.ivandev.acomprar.stores.MenuStore
 
 class EditMenuScreen(
-    private val menuEntity: MenuEntity
+    private val menuId: Int,
+    private val menuName: String
 ): Screen {
     @Composable
     override fun Content() {
-        val screen = CommonScreen(title = Literals.ADD_MENU_TITLE) {
-            MainContent()
+        val menu = MenuEntity(menuId, menuName)
+        val screen = CommonScreen(title = menuName) {
+            MainContent(menu)
         }
 
         screen.Render()
     }
 
     @Composable
-    fun MainContent() {
+    fun MainContent(menuEntity: MenuEntity) {
         // instancia única de menuStore en toda la app
         val menuStore: MenuStore = viewModel(LocalContext.current as ViewModelStoreOwner)
-        var menuName = remember { mutableStateOf(menuEntity.nombre) }
+        menuStore.setEditingMenu(menuEntity)
 
+        var editingMenu = menuStore.editingMenu
+        var menuDaysOfWeek = remember { mutableStateOf<MutableList<MenuDaysOfWeekEntity>>(mutableListOf()) }
+        var menuName = remember { mutableStateOf(editingMenu.value!!.nombre) }
 
+        LaunchedEffect(menuEntity.id) {
+            menuDaysOfWeek.value = menuStore.getMenuDaysOfWeekByMenuId(menuEntity.id)
+        }
+
+        if (editingMenu.value != null) {
+            MyScrollableColumn {
+                MenuTitleFormulary(menuName, editingMenu.value!!, menuStore)
+                Spacer(Modifier.height(Tools.height16dp))
+                MenuComidasYCenasFormulary(menuStore, menuEntity, menuDaysOfWeek)
+            }
+
+            if (menuStore.addOrChangeComida.value) {
+                AddOrEditComidaInMenuPopup(menuEntity.id) {
+                    menuStore.setAddOrChangeComida(false)
+                    menuStore.setAddOrChangeProductoPopup(false)
+                }
+            }
+            else if (menuStore.addOrChangeCena.value) {
+                AddOrEditComidaInMenuPopup(menuEntity.id) {
+                    menuStore.setAddOrChangeCena(false)
+                    menuStore.setAddOrChangeProductoPopup(false)
+                }
+            }
+        }
+        else {
+            Text("Error inesperado que no permite visualizar el menú.")
+        }
+    }
+
+    @Composable
+    fun MenuTitleFormulary(menuName: MutableState<String>, menuEntity: MenuEntity, menuStore: MenuStore) {
         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
             TextField(
                 value = menuName.value,
@@ -71,50 +110,57 @@ class EditMenuScreen(
                 }
             }
         }
-
-        Spacer(Modifier.height(Tools.height16dp))
-
-        MenuFormulary(menuStore, menuEntity)
     }
 
     @Composable
-    fun MenuFormulary(menuStore: MenuStore, menuEntity: MenuEntity) {
-        val headers: List<String> = listOf(Literals.UITables.DIA_COLUMN, Literals.UITables.COMIDA_COLUMN, Literals.UITables.CENA_COLUMN)
-        val diasSemana: List<String> = Literals.DaysOfWeek.getDaysOfWeek()
-        val comidasYCenas = remember { mutableStateOf<MyMenuComidas?>(null) }
-        var indexAux: Int = 0
+    fun MenuComidasYCenasFormulary(menuStore: MenuStore, menuEntity: MenuEntity, menuDaysOfWeek: MutableState<MutableList<MenuDaysOfWeekEntity>>) {
+        val headers: List<String> = listOf(
+            Literals.UITables.DIA_COLUMN,
+            Literals.UITables.COMIDA_COLUMN,
+            Literals.UITables.CENA_COLUMN
+        )
 
-        // LaunchedEffect carga datos de manera reactiva y la UI se refresca (y depende de) cuando menu.id cambia
-        LaunchedEffect(menuEntity.id) {
-            comidasYCenas.value = menuStore.getComidasYCenasByMenuId(menuEntity)
-        }
+        Column(Tools.styleBorderBlack) {
+            TableHeaders(headers)
 
-        if (comidasYCenas.value != null) {
-            MyScrollableColumn {
-                Column(Tools.styleBorderBlack) {
-                    TableHeaders(headers)
+            // Mostrar las comidas y cenas por cada día de la semana
+            val columnModifier = Modifier.weight(1f).border(1.dp, Color.Black).padding(8.dp)
 
-                    // Mostrar las comidas y cenas por cada día de la semana
-                    Column {
-                        val column1OutOf3Modifier = Modifier.weight(1f).border(1.dp, Color.Black).padding(8.dp).fillMaxSize()
+            menuDaysOfWeek.value.forEach { menuDaysOfWeek: MenuDaysOfWeekEntity ->
+                val comida: ComidaEntity? = menuStore.getComidaById(menuDaysOfWeek.idComida)
+                val cena: ComidaEntity? = menuStore.getCenaById(menuDaysOfWeek.idCena)
 
-                        diasSemana.forEachIndexed { index: Int, dia: String ->
-                            Row(Tools.styleBorderBlack) {
-                                Column(column1OutOf3Modifier) {
-                                    Text(dia)
+                Row(
+                    Tools.styleBorderBlack,
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Column(columnModifier) {
+                        Text(menuDaysOfWeek.day)
+                    }
+
+                    Column(columnModifier) {
+                        Row(Modifier.fillMaxSize(), horizontalArrangement = Arrangement.Center) {
+                            if (comida != null) {
+                                Text(comida.nombre)
+                            } else {
+                                MyIcons.AddIcon{
+                                    menuStore.setAddOrChangeProductoPopup(true)
+                                    menuStore.setAddOrChangeComida(true)
                                 }
+                            }
+                        }
+                    }
 
-                                Column(column1OutOf3Modifier) {
-                                    EditableComida(comidasYCenas.value!!, indexAux)
+                    Column(columnModifier) {
+                        Row(Modifier.fillMaxSize(), horizontalArrangement = Arrangement.Center) {
+                            if (cena != null) {
+                                Text(cena.nombre)
+                            } else {
+                                MyIcons.AddIcon() {
+                                    menuStore.setAddOrChangeProductoPopup(true)
+                                    menuStore.setAddOrChangeCena(true)
                                 }
-
-                                indexAux++
-
-                                Column(column1OutOf3Modifier) {
-                                    EditableComida(comidasYCenas.value!!, indexAux)
-                                }
-
-                                indexAux++
                             }
                         }
                     }
@@ -139,7 +185,7 @@ class EditMenuScreen(
     fun EditableComida(comidasYCenas: MyMenuComidas, index: Int) {
         if (comidasYCenas.comidaEntities.size <= index) {
             Row {
-                MyIcons.AddIcon()
+                MyIcons.AddIcon() {}
                 Text("HOLA")
             }
         }
