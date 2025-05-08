@@ -17,6 +17,7 @@ import org.ivandev.acomprar.database.scripts.CreateTables
 import org.ivandev.acomprar.database.scripts.DropTables
 import org.ivandev.acomprar.database.special_classes.CategoriaWithProductos
 import org.ivandev.acomprar.models.Categoria
+import org.ivandev.acomprar.models.Comida
 import org.ivandev.acomprar.models.Menu
 import org.ivandev.acomprar.models.MenuDaysOfWeek
 import org.ivandev.acomprar.models.Producto
@@ -86,6 +87,13 @@ class MySQLiteDatabase(context: Context, version: Int) : SQLiteOpenHelper(
         return result
     }
 
+    fun addComida(comida: Comida): Boolean {
+        val db = writableDatabase
+        val result = ComidaHandler.insert(db, comida)
+        db.close()
+        return result
+    }
+
 
 
     fun getAllCategoria(): List<CategoriaEntity> {
@@ -119,9 +127,9 @@ class MySQLiteDatabase(context: Context, version: Int) : SQLiteOpenHelper(
         return ProductoHandler.getProductosByCategoriaId(readableDatabase, id)
     }
 
-    fun getComidasByMenuId(id: Int): List<ComidaEntity> {
+    fun getComidasByTipoId(id: Int): List<ComidaEntity> {
         val db = readableDatabase
-        val result = ComidaHandler.getComidasByMenuId(db, id)
+        val result = ComidaHandler.getComidasByTipoId(db, id)
 
         db.close()
         return result

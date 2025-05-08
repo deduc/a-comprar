@@ -47,11 +47,8 @@ object CreateTables {
     val CREATE_TABLE_COMIDA = """
         CREATE TABLE IF NOT EXISTS $tableComida (
             $idColumn INTEGER PRIMARY KEY AUTOINCREMENT,
-            $idMenuColumn INTEGER,
             $nombreColumn TEXT NOT NULL,
-            $diaColumn INTEGER NOT NULL CHECK($diaColumn BETWEEN 0 AND 6),
-            $tipoColumn BOOLEAN NOT NULL CHECK($tipoColumn IN (0,1)),
-            FOREIGN KEY($idMenuColumn) REFERENCES $tableMenu($idColumn) ON DELETE CASCADE
+            $tipoColumn BOOLEAN NOT NULL CHECK($tipoColumn IN (0,1))
         );
     """.trimIndent()
 

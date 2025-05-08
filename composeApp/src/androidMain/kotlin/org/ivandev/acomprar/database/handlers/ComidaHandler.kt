@@ -6,10 +6,11 @@ import org.ivandev.acomprar.Literals
 import org.ivandev.acomprar.database.entities.ComidaEntity
 import org.ivandev.acomprar.enumeration.DaysOfWeekEnum
 import org.ivandev.acomprar.enumeration.TipoComidaEnum
+import org.ivandev.acomprar.models.Comida
 
 object ComidaHandler {
-    fun getComidasByMenuId(db: SQLiteDatabase, id: Int): List<ComidaEntity> {
-        val command = "SELECT * FROM ${Literals.Database.COMIDA_TABLE} where ${Literals.Database.ID_MENU_COLUMN} = $id"
+    fun getComidasByTipoId(db: SQLiteDatabase, tipoId: Int): List<ComidaEntity> {
+        val command = "SELECT * FROM ${Literals.Database.COMIDA_TABLE} where ${Literals.Database.TIPO_COLUMN} = $tipoId"
         val result = mutableListOf<ComidaEntity>()
 
         db.rawQuery(command, null).use { cursor ->
@@ -18,10 +19,8 @@ object ComidaHandler {
                     result.add(
                         ComidaEntity(
                             cursor.getInt(0),
-                            cursor.getInt(1),
-                            cursor.getString(2),
-                            cursor.getInt(3),
-                            cursor.getInt(4),
+                            cursor.getString(1),
+                            cursor.getInt(2),
                         )
                     )
                 } while (cursor.moveToNext())
@@ -29,6 +28,22 @@ object ComidaHandler {
         }
 
         return result
+    }
+
+    fun insert(db: SQLiteDatabase, comida: Comida): Boolean {
+        var comidaInsert = ContentValues().apply {
+            put(Literals.Database.ID_COLUMN, comida.id)
+            put(Literals.Database.NOMBRE_COLUMN, comida.nombre)
+            put(Literals.Database.TIPO_COLUMN, comida.tipo)
+        }
+
+        val result = db.insert(
+            Literals.Database.COMIDA_TABLE,
+            null,
+            comidaInsert
+        )
+
+        return result != -1L
     }
 
     fun insertComidasYCenasByMenuId(db: SQLiteDatabase, menuId: Int): Boolean {

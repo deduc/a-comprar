@@ -25,7 +25,7 @@ import org.ivandev.acomprar.stores.MenuStore
 @Composable
 fun AddOrEditComidaInMenuPopup(idMenu: Int, onDismiss: () -> Unit) {
     val menuStore: MenuStore = viewModel(LocalContext.current as ViewModelStoreOwner)
-    val comidasYCenasByMenuId = menuStore.getComidasYCenasByMenuIdFormated(idMenu)
+    val comidasYCenasByMenuId = menuStore.getComidasYCenasByMenuIdFormatted(idMenu)
 
     val expanded = remember { mutableStateOf<Boolean>(false) }
     val comidaSelected = remember { mutableStateOf<ComidaEntity?>(null) }

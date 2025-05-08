@@ -104,27 +104,25 @@ class MenuStore : ViewModel() {
 
         // Ejecutar la consulta en un hilo de fondo (IO) para no bloquear el hilo principal
         runBlocking(Dispatchers.IO) {
-            val comidaEntities: List<ComidaEntity> = Database.getComidasByMenuId(menuEntity.id)
+            val comidaEntities: List<ComidaEntity> = Database.getComidasByTipoId(TipoComidaEnum.COMIDA)
             myComidasYCenas = MyMenuComidas(menuEntity.id, menuEntity.nombre, comidaEntities)
         }
 
         return myComidasYCenas
     }
 
-    fun getComidasYCenasByMenuIdFormated(idMenu: Int): List<ComidaEntity?> {
-        _comidasYCenasByMenuId.clear()
+    fun getComidasYCenasByMenuIdFormatted(idMenu: Int): List<ComidaEntity?> {
+        val comidasYCenas = mutableListOf<ComidaEntity?>()
+        comidasYCenas.add(null)
 
-        _comidasYCenasByMenuId.add(null)
+        val comidasList = Database.getComidasByTipoId(TipoComidaEnum.COMIDA)
+        val cenasList = Database.getComidasByTipoId(TipoComidaEnum.CENA)
 
-        val comidasListAux: List<ComidaEntity> = Database.getComidasByMenuId(idMenu)
-
-        comidasListAux.forEach { comida: ComidaEntity ->
-            _comidasYCenasByMenuId.add(
-                ComidaEntity(comida.id, comida.idMenu, comida.nombre, comida.dia, comida.tipo)
-            )
+        (comidasList + cenasList).forEach { comida ->
+            comidasYCenas.add(ComidaEntity(comida.id, comida.nombre, comida.tipo))
         }
 
-        return _comidasYCenasByMenuId
+        return comidasYCenas
     }
 
     fun getComidaById(idComida: Int?): ComidaEntity? {
