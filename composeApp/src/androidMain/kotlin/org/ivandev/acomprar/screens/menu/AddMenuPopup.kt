@@ -39,7 +39,11 @@ fun AddMenuPopup(onDismiss: () -> Unit) {
             confirmButton = {
                 TextButton(
                     onClick = {
-                        val result: Boolean = menuStore.addMenuAndItsDays(Menu(null, menuName.value))
+                        val result: Boolean = menuStore.addMenuAndItsDays(
+                            Menu(null, menuName.value),
+                            menuStore.checkedList
+                        )
+
                         if (result) onDismiss()
                     }
                 ) {

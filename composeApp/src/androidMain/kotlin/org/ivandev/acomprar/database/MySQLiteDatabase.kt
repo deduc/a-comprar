@@ -87,7 +87,7 @@ class MySQLiteDatabase(context: Context, version: Int) : SQLiteOpenHelper(
         return result
     }
 
-    fun addComida(comida: Comida): Boolean {
+    fun addComida(comida: Comida): ComidaEntity? {
         val db = writableDatabase
         val result = ComidaHandler.insert(db, comida)
         db.close()
@@ -103,6 +103,14 @@ class MySQLiteDatabase(context: Context, version: Int) : SQLiteOpenHelper(
         db.close()
         return result
     }
+
+    fun getAllComidas(): MutableList<ComidaEntity> {
+        val db = readableDatabase
+        val result = ComidaHandler.getAll(db)
+        db.close()
+        return result
+    }
+
 
     fun getAllProductosByCategoria(): List<CategoriaWithProductos> {
         val db = readableDatabase

@@ -29,7 +29,6 @@ fun AddOrEditComidaInMenuPopup(idMenu: Int, onDismiss: () -> Unit) {
 
     val expanded = remember { mutableStateOf<Boolean>(false) }
     val comidaSelected = remember { mutableStateOf<ComidaEntity?>(null) }
-    val comidaSeleccionada = remember { mutableStateOf<ComidaEntity?>(null) }
 
     if (menuStore.addOrChangeProductoPopup.value) {
         AlertDialog(
@@ -37,7 +36,7 @@ fun AddOrEditComidaInMenuPopup(idMenu: Int, onDismiss: () -> Unit) {
             confirmButton = {
                 TextButton(
                     onClick = {
-
+                        menuStore.setAddOrChangeProductoPopup(false)
                     }
                 ) {
                     Text("Confirmar")
@@ -53,8 +52,8 @@ fun AddOrEditComidaInMenuPopup(idMenu: Int, onDismiss: () -> Unit) {
                     // Desplegable para seleccionar una categoría
                     ExposedDropdownMenuBox(expanded = expanded.value, onExpandedChange = { expanded.value = !expanded.value }) {
                         TextField(
-                            value = comidaSelected.value?.nombre ?: "Seleccionar categoría",
-                            onValueChange = {},
+                            value = comidaSelected.value?.nombre ?: "Seleccionar comida",
+                            onValueChange = { },
                             label = { Text("Comida") },
                             readOnly = true,
                             trailingIcon = {
@@ -70,7 +69,7 @@ fun AddOrEditComidaInMenuPopup(idMenu: Int, onDismiss: () -> Unit) {
                                 if (comida == null) {
                                     DropdownMenuItem(
                                         onClick = {
-                                            comidaSeleccionada.value = null
+                                            comidaSelected.value = null
                                             expanded.value = false
                                         },
                                         text = { Text("Sin valor") }
@@ -79,10 +78,10 @@ fun AddOrEditComidaInMenuPopup(idMenu: Int, onDismiss: () -> Unit) {
                                 else {
                                     DropdownMenuItem(
                                         onClick = {
-                                            comidaSeleccionada.value = comida
+                                            comidaSelected.value = comida
                                             expanded.value = false
                                         },
-                                        text = { comida.nombre }
+                                        text = { Text(comida.nombre) }
                                     )
                                 }
                             }

@@ -19,7 +19,7 @@ import org.ivandev.acomprar.models.Producto
 
 object Database {
     lateinit var mySQLiteDatabase: MySQLiteDatabase
-    private val dbVersion: Int = 10
+    private val dbVersion: Int = 11
 
     fun initializeDatabase(context: Context) {
         mySQLiteDatabase = MySQLiteDatabase(context, dbVersion)
@@ -55,7 +55,7 @@ object Database {
         return mySQLiteDatabase.addMenuDays(menuId, menuDays)
     }
 
-    fun addComida(comida: Comida): Boolean {
+    fun addComida(comida: Comida): ComidaEntity? {
         return mySQLiteDatabase.addComida(comida)
     }
 
@@ -66,6 +66,10 @@ object Database {
 
     fun getAllCarrito(): List<CarritoEntity> {
         return listOf()
+    }
+
+    fun getAllComidas(): MutableList<ComidaEntity> {
+        return mySQLiteDatabase.getAllComidas()
     }
 
     fun getAllCategoria(): List<CategoriaEntity> {

@@ -19,7 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
-import org.ivandev.acomprar.database.Database
+import org.ivandev.acomprar.enumeration.TipoComidaEnum
 import org.ivandev.acomprar.models.Comida
 import org.ivandev.acomprar.stores.ComidaStore
 
@@ -38,9 +38,10 @@ fun AddComidaPopup() {
             confirmButton = {
                 TextButton(
                     onClick = {
-                        tipo = if (tipoCheckBoxChecked.value) 1 else 2
+                        tipo = if (tipoCheckBoxChecked.value) TipoComidaEnum.COMIDA else TipoComidaEnum.CENA
                         var comida = Comida(null, nombre, tipo)
-                        Database.addComida(comida)
+
+                        comidaStore.addComida(comida)
                         comidaStore.setShowAddComidaPopup(false)
                     }
                 ) {

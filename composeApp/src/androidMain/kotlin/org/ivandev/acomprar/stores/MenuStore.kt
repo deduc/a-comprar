@@ -58,7 +58,7 @@ class MenuStore : ViewModel() {
         initializeCheckedList()
     }
 
-    fun addMenuAndItsDays(menu: Menu): Boolean {
+    fun addMenuAndItsDays(menu: Menu, checkedList: SnapshotStateList<MutableState<Boolean>>): Boolean {
         if (!validateMenuAndItsDays(menu.nombre, checkedList)) {
             Tools.Notifier.showToast(Literals.ToastText.ERROR_VOID_DATA)
             return false
