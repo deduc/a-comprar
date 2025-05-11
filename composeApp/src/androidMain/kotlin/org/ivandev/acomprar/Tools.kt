@@ -23,12 +23,14 @@ object Tools {
     var titleFontSize = 18.sp
     var buttonsSpacer8dp = 8.dp
 
-    var styleTitle = TextStyle(fontSize = this.titleFontSize, textDecoration = TextDecoration.Underline, fontWeight = FontWeight.Black)
+    var styleTitleUnderlineBlack = TextStyle(fontSize = this.titleFontSize, textDecoration = TextDecoration.Underline, fontWeight = FontWeight.Black)
+    var styleTitleBlack = TextStyle(fontSize = this.titleFontSize, textDecoration = null, fontWeight = FontWeight.Black)
     var styleTableHeader = TextStyle(fontSize = this.titleFontSize, fontWeight = FontWeight.Bold, textDecoration = TextDecoration.Underline)
     var styleBorderBlack = Modifier.border(1.dp, Color.Black)
 
     var spacer8dpWidth = Modifier.width(height8dp)
     var spacer8dpHeight = Modifier.height(height8dp)
+    var spacer16dpHeight = Modifier.height(height16dp)
 
     object Notifier {
         private var appContext: Context? = null

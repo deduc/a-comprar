@@ -119,7 +119,7 @@ fun AddProductoPopup(idCategoria: Int) {
                                         categoriaEntitySeleccionada.value = categoriaEntity
                                         expanded.value = false
                                     },
-                                    text = { categoriaEntity.nombre }
+                                    text = { Text(categoriaEntity.nombre) }
                                 )
                             }
                         }

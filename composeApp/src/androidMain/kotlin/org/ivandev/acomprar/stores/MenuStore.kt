@@ -49,6 +49,9 @@ class MenuStore : ViewModel() {
     private val _addOrChangeCena = mutableStateOf<Boolean>(false)
     val addOrChangeCena: State<Boolean> = _addOrChangeCena
 
+    private var _menuDaysOfWeekClicked = mutableStateOf<MenuDaysOfWeekEntity?>(null)
+    val menuDaysOfWeekClicked: State<MenuDaysOfWeekEntity?> = _menuDaysOfWeekClicked
+
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
@@ -113,11 +116,10 @@ class MenuStore : ViewModel() {
 
     fun getComidasYCenasByMenuIdFormatted(idMenu: Int): List<ComidaEntity?> {
         val comidasYCenas = mutableListOf<ComidaEntity?>()
-        comidasYCenas.add(null)
-
         val comidasList = Database.getComidasByTipoId(TipoComidaEnum.COMIDA)
         val cenasList = Database.getComidasByTipoId(TipoComidaEnum.CENA)
 
+        comidasYCenas.add(null)
         (comidasList + cenasList).forEach { comida ->
             comidasYCenas.add(ComidaEntity(comida.id, comida.nombre, comida.tipo))
         }
@@ -153,6 +155,10 @@ class MenuStore : ViewModel() {
 
     fun setEditingMenu(menuEntity: MenuEntity) {
         _editingMenu.value = menuEntity
+    }
+
+    fun setMenuDaysOfWeekClicked(menuDaysOfWeekEntity: MenuDaysOfWeekEntity?) {
+        _menuDaysOfWeekClicked.value = menuDaysOfWeekEntity
     }
 
     fun toggleShowAddMenuPopup(newValue: Boolean) {

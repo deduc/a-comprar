@@ -21,23 +21,25 @@ class ComidaStore: ViewModel() {
     val showAddComidaPopup: State<Boolean> = _showAddComidaPopup
 
     fun addComida(comida: Comida): Boolean {
-        var added = Database.addComida(comida)
+        var result = false
+        val added = Database.addComida(comida)
 
         if (added != null) {
             _comidasList.add(added)
-            return true
+            result = true
         }
         else {
             println("Error de algun tipo")
-            return false
         }
+
+        return result
     }
 
     fun setShowAddComidaPopup(newValue: Boolean) {
         _showAddComidaPopup.value = newValue
     }
 
-    fun getComidasListFromDb() {
+    fun getAllComidasFromDb() {
         viewModelScope.launch(Dispatchers.IO) {
             val comidasAux = Database.getAllComidas()
 
@@ -46,5 +48,9 @@ class ComidaStore: ViewModel() {
                 _comidasList.addAll(comidasAux)
             }
         }
+    }
+
+    fun deleteComidaById(comidaId: Int): Boolean {
+        return Database.deleteComidaById(comidaId)
     }
 }

@@ -214,6 +214,14 @@ class MySQLiteDatabase(context: Context, version: Int) : SQLiteOpenHelper(
         return result
     }
 
+    fun deleteComidaById(comidaId: Int): Boolean {
+        val db = writableDatabase
+        val result = ComidaHandler.deleteById(db, comidaId)
+
+        db.close()
+        return result
+    }
+
     fun deleteProductoById(id: Int): Boolean {
         val db = writableDatabase
         val result = ProductoHandler.deleteById(db, id)

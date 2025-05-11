@@ -57,25 +57,18 @@ fun AddMenuPopup(onDismiss: () -> Unit) {
             },
             text = {
                 Column {
-                    Text(Literals.ADD_MENU_TITLE, style = Tools.styleTitle)
+                    Text(Literals.ADD_MENU_TITLE, style = Tools.styleTitleUnderlineBlack)
                     Spacer(Tools.spacer8dpHeight)
 
                     Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-                        Column {
-                            TextField(
-                                value = menuName.value,
-                                onValueChange = { menuName.value = it },
-                                label = { Text("Nombre del menú") }
-                            )
-                        }
+                        TextField(
+                            value = menuName.value,
+                            onValueChange = { menuName.value = it },
+                            label = { Text("Nombre del menú") }
+                        )
 
-                        Column {
-                            DaysOfWeekFormulary(menuStore)
-                        }
-
-                        Column {
-                            ActionButtons(menuStore)
-                        }
+                        DaysOfWeekFormulary(menuStore)
+                        SelectionDaysButtons(menuStore)
                     }
                 }
             }
@@ -121,7 +114,7 @@ private fun DaysOfWeekFormulary(menuStore: MenuStore) {
 }
 
 @Composable
-fun ActionButtons(menuStore: MenuStore) {
+fun SelectionDaysButtons(menuStore: MenuStore) {
     var daysOfWeek = menuStore.daysOfWeek
     var checkedList = menuStore.checkedList
 

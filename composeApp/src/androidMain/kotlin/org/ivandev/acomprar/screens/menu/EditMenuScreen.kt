@@ -15,8 +15,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -57,31 +59,43 @@ class EditMenuScreen(
         menuStore.setEditingMenu(menuEntity)
 
         var editingMenu = menuStore.editingMenu
-        var menuDaysOfWeek = remember { mutableStateOf<MutableList<MenuDaysOfWeekEntity>>(mutableListOf()) }
+        val menuDaysOfWeek: SnapshotStateList<MenuDaysOfWeekEntity> = remember { mutableStateListOf<MenuDaysOfWeekEntity>() }
         var menuName = remember { mutableStateOf(editingMenu.value!!.nombre) }
 
         LaunchedEffect(menuEntity.id) {
-            menuDaysOfWeek.value = menuStore.getMenuDaysOfWeekByMenuId(menuEntity.id)
+            menuDaysOfWeek.clear()
+
+            menuDaysOfWeek.addAll(
+                menuStore.getMenuDaysOfWeekByMenuId(menuEntity.id)
+            )
         }
 
         if (editingMenu.value != null) {
             MyScrollableColumn {
                 MenuTitleFormulary(menuName, editingMenu.value!!, menuStore)
                 Spacer(Modifier.height(Tools.height16dp))
-                MenuComidasYCenasFormulary(menuStore, menuEntity, menuDaysOfWeek)
+                MenuComidasYCenasFormulary(menuStore, menuDaysOfWeek)
             }
 
             if (menuStore.addOrChangeComida.value) {
-                AddOrEditComidaInMenuPopup(menuEntity.id) {
-                    menuStore.setAddOrChangeComida(false)
-                    menuStore.setAddOrChangeProductoPopup(false)
-                }
+                AddOrEditComidaInMenuPopup(
+                    menuEntity.id,
+                    onDismiss = {
+                        menuStore.setAddOrChangeComida(false)
+                        menuStore.setAddOrChangeProductoPopup(false)
+                        menuStore.setMenuDaysOfWeekClicked(null)
+                    }
+                )
             }
             else if (menuStore.addOrChangeCena.value) {
-                AddOrEditComidaInMenuPopup(menuEntity.id) {
-                    menuStore.setAddOrChangeCena(false)
-                    menuStore.setAddOrChangeProductoPopup(false)
-                }
+                AddOrEditComidaInMenuPopup(
+                    menuEntity.id,
+                    onDismiss = {
+                        menuStore.setAddOrChangeCena(false)
+                        menuStore.setAddOrChangeProductoPopup(false)
+                        menuStore.setMenuDaysOfWeekClicked(null)
+                    }
+                )
             }
         }
         else {
@@ -113,7 +127,7 @@ class EditMenuScreen(
     }
 
     @Composable
-    fun MenuComidasYCenasFormulary(menuStore: MenuStore, menuEntity: MenuEntity, menuDaysOfWeek: MutableState<MutableList<MenuDaysOfWeekEntity>>) {
+    fun MenuComidasYCenasFormulary(menuStore: MenuStore, menuDaysOfWeek: SnapshotStateList<MenuDaysOfWeekEntity>) {
         val headers: List<String> = listOf(
             Literals.UITables.DIA_COLUMN,
             Literals.UITables.COMIDA_COLUMN,
@@ -126,15 +140,11 @@ class EditMenuScreen(
             // Mostrar las comidas y cenas por cada día de la semana
             val columnModifier = Modifier.weight(1f).border(1.dp, Color.Black).padding(8.dp)
 
-            menuDaysOfWeek.value.forEach { menuDaysOfWeek: MenuDaysOfWeekEntity ->
+            menuDaysOfWeek.forEach { menuDaysOfWeek: MenuDaysOfWeekEntity ->
                 val comida: ComidaEntity? = menuStore.getComidaById(menuDaysOfWeek.idComida)
                 val cena: ComidaEntity? = menuStore.getCenaById(menuDaysOfWeek.idCena)
 
-                Row(
-                    Tools.styleBorderBlack,
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center
-                ) {
+                Row(Tools.styleBorderBlack, verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
                     Column(columnModifier) {
                         Text(menuDaysOfWeek.day)
                     }
@@ -147,6 +157,7 @@ class EditMenuScreen(
                                 MyIcons.AddIcon{
                                     menuStore.setAddOrChangeProductoPopup(true)
                                     menuStore.setAddOrChangeComida(true)
+                                    menuStore.setMenuDaysOfWeekClicked(menuDaysOfWeek)
                                 }
                             }
                         }

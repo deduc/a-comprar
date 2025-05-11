@@ -36,6 +36,7 @@ fun AddOrEditComidaInMenuPopup(idMenu: Int, onDismiss: () -> Unit) {
             confirmButton = {
                 TextButton(
                     onClick = {
+                        menuStore.menuDaysOfWeekClicked
                         menuStore.setAddOrChangeProductoPopup(false)
                     }
                 ) {

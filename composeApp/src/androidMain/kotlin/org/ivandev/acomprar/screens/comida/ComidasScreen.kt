@@ -3,11 +3,14 @@ package org.ivandev.acomprar.screens.comida
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModelStoreOwner
@@ -15,9 +18,12 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import cafe.adriel.voyager.core.screen.Screen
 import kotlinx.coroutines.Dispatchers
 import org.ivandev.acomprar.Literals
+import org.ivandev.acomprar.Tools
 import org.ivandev.acomprar.components.CommonScreen
+import org.ivandev.acomprar.components.MyIcons
 import org.ivandev.acomprar.components.MyScrollableColumn
 import org.ivandev.acomprar.database.entities.ComidaEntity
+import org.ivandev.acomprar.enumeration.TipoComidaEnum
 import org.ivandev.acomprar.stores.ComidaStore
 
 class ComidasScreen: Screen {
@@ -32,33 +38,73 @@ class ComidasScreen: Screen {
         val comidasList: MutableList<ComidaEntity> = comidaStore.comidasList
 
         LaunchedEffect(Dispatchers.IO) {
-            comidaStore.getComidasListFromDb()
+            comidaStore.getAllComidasFromDb()
         }
 
         Column {
             MyScrollableColumn(Modifier.weight(1f)) {
-                if (comidasList.isNotEmpty()) {
-                    comidasList.forEach { comida: ComidaEntity ->
-                        Row {
-                            Text("${comida.id} - ${comida.nombre} - ${comida.tipo}")
-                        }
-                    }
-                }
-                else {
-                    Text("No hay datos")
-                }
+                ComidasTable(comidasList, comidaStore)
             }
 
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-                Button(onClick = {
-                    comidaStore.setShowAddComidaPopup(true)
-                }) {
-                    Text("Añadir comida")
-                }
-            }
+            ButtonsPanel(comidaStore)
 
             if (comidaStore.showAddComidaPopup.value) {
                 AddComidaPopup()
+            }
+        }
+    }
+
+    @Composable
+    fun ComidasTable(comidasList: List<ComidaEntity>, comidaStore: ComidaStore) {
+        val comidasListAux: List<List<ComidaEntity>> = TipoComidaEnum.separateComidas(comidasList)
+
+        comidasListAux.forEachIndexed { index: Int, listaTipoComidas: List<ComidaEntity> ->
+            val tipoComida: String = TipoComidaEnum.getTipoComidaPluralById(index)
+
+            Text(tipoComida, style = Tools.styleTitleBlack)
+            Spacer(Tools.spacer8dpHeight)
+
+            if (listaTipoComidas.isEmpty()) {
+                Text("No hay ${tipoComida}.")
+            }
+            else {
+                listaTipoComidas.forEach { comida: ComidaEntity ->
+                    ComidaRowIteration(comida, comidaStore)
+                }
+            }
+
+            Spacer(Tools.spacer16dpHeight)
+        }
+    }
+
+    @Composable
+    fun ComidaRowIteration(comida: ComidaEntity, comidaStore: ComidaStore) {
+        Row(
+            Modifier.fillMaxWidth().then(Tools.styleBorderBlack),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Column(Modifier.padding(Tools.padding8dp).weight(1f)) {
+                val tipoComida = TipoComidaEnum.getTipoComidaById(comida.tipo)
+                Text("${comida.nombre} - $tipoComida")
+            }
+            Column(Tools.styleBorderBlack.then(Modifier.padding(Tools.padding8dp))) {
+                Row {
+                    MyIcons.EditIcon {  }
+                    Spacer(Tools.spacer8dpWidth)
+                    MyIcons.TrashIcon { comidaStore.deleteComidaById(comida.id) }
+                }
+            }
+        }
+    }
+
+    @Composable
+    fun ButtonsPanel(comidaStore: ComidaStore) {
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+            Button(onClick = {
+                comidaStore.setShowAddComidaPopup(true)
+            }) {
+                Text("Añadir comida")
             }
         }
     }

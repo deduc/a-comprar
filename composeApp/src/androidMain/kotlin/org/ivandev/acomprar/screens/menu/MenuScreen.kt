@@ -92,7 +92,7 @@ class MenuScreen: Screen {
         )
         {
             Column {
-                Text(menuEntity.nombre, style = Tools.styleTitle)
+                Text(menuEntity.nombre, style = Tools.styleTitleUnderlineBlack)
             }
 
             Row {

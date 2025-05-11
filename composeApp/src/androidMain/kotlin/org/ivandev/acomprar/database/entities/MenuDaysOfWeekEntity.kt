@@ -6,6 +6,6 @@ class MenuDaysOfWeekEntity (
     // foreign keys a tabla Comida, el valpr no null indica si es comida o cena
     val idComida: Int?,
     val idCena: Int?,
-
+    // de luness a domingo
     val day: String,
 )

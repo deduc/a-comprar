@@ -32,6 +32,7 @@ object ComidaHandler {
 
         return result
     }
+
     fun getComidasByTipoId(db: SQLiteDatabase, tipoId: Int): List<ComidaEntity> {
         val command = "SELECT * FROM ${Literals.Database.COMIDA_TABLE} where ${Literals.Database.TIPO_COLUMN} = $tipoId"
         val result = mutableListOf<ComidaEntity>()
@@ -136,5 +137,15 @@ object ComidaHandler {
         )
 
         return result >= 0
+    }
+
+    fun deleteById(db: SQLiteDatabase, id: Int): Boolean {
+        val result = db.delete(
+            Literals.Database.COMIDA_TABLE,
+            "${Literals.Database.ID_COLUMN} = ?",
+            arrayOf(id.toString())
+        )
+
+        return result == 1
     }
 }

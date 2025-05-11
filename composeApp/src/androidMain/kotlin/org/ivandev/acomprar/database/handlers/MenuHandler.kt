@@ -70,7 +70,10 @@ object MenuHandler  {
 
     fun getMenuDaysOfWeekByMenuId(db: SQLiteDatabase, menuId: Int): MutableList<MenuDaysOfWeekEntity> {
         var result = mutableListOf<MenuDaysOfWeekEntity>()
-        val command = "SELECT * FROM ${Literals.Database.MENU_DAYS_OF_WEEK} where ${Literals.Database.ID_MENU_COLUMN} == ${menuId}"
+        val command =
+                "SELECT * " +
+                "FROM ${Literals.Database.MENU_DAYS_OF_WEEK} " +
+                "where ${Literals.Database.ID_MENU_COLUMN} == ${menuId}"
 
         db.rawQuery(command, null).use { cursor ->
             if (cursor.moveToFirst()) {

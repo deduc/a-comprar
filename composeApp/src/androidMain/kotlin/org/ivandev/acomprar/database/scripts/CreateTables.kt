@@ -48,7 +48,7 @@ object CreateTables {
         CREATE TABLE IF NOT EXISTS $tableComida (
             $idColumn INTEGER PRIMARY KEY AUTOINCREMENT,
             $nombreColumn TEXT NOT NULL,
-            $tipoColumn BOOLEAN NOT NULL CHECK($tipoColumn IN (0,1))
+            $tipoColumn BOOLEAN NOT NULL
         );
     """.trimIndent()
 

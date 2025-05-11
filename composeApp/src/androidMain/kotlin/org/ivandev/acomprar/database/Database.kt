@@ -19,7 +19,7 @@ import org.ivandev.acomprar.models.Producto
 
 object Database {
     lateinit var mySQLiteDatabase: MySQLiteDatabase
-    private val dbVersion: Int = 11
+    private val dbVersion: Int = 13
 
     fun initializeDatabase(context: Context) {
         mySQLiteDatabase = MySQLiteDatabase(context, dbVersion)
@@ -128,6 +128,10 @@ object Database {
         }
 
         return result
+    }
+
+    fun deleteComidaById(comidaId: Int): Boolean {
+        return mySQLiteDatabase.deleteComidaById(comidaId)
     }
 
     fun deleteProductoById(id: Int): Boolean {
