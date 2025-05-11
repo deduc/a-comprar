@@ -11,11 +11,15 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.ivandev.acomprar.database.Database
 import org.ivandev.acomprar.database.entities.ComidaEntity
+import org.ivandev.acomprar.enumeration.TipoComidaEnum
 import org.ivandev.acomprar.models.Comida
 
 class ComidaStore: ViewModel() {
     private var _comidasList = mutableStateListOf<ComidaEntity>()
     val comidasList: SnapshotStateList<ComidaEntity> = _comidasList
+
+    private var _comidasByTipo = mutableStateListOf<SnapshotStateList<ComidaEntity>>()
+    val comidasByTipo: SnapshotStateList<SnapshotStateList<ComidaEntity>> get() = _comidasByTipo
 
     private var _showAddComidaPopup = mutableStateOf<Boolean>(false)
     val showAddComidaPopup: State<Boolean> = _showAddComidaPopup
@@ -39,7 +43,7 @@ class ComidaStore: ViewModel() {
         _showAddComidaPopup.value = newValue
     }
 
-    fun getAllComidasFromDb() {
+    fun getAndSetAllComidasFromDb() {
         viewModelScope.launch(Dispatchers.IO) {
             val comidasAux = Database.getAllComidas()
 
@@ -50,7 +54,19 @@ class ComidaStore: ViewModel() {
         }
     }
 
+    fun getComidasFilteredByTipo(): SnapshotStateList<SnapshotStateList<ComidaEntity>> {
+        var comidasByTipoAux = TipoComidaEnum.getComidasFilteredByTipo(_comidasList)
+        _comidasByTipo = comidasByTipoAux
+
+        return comidasByTipo
+    }
+
     fun deleteComidaById(comidaId: Int): Boolean {
-        return Database.deleteComidaById(comidaId)
+        var result = false
+        val deleted = Database.deleteComidaById(comidaId)
+
+        if (deleted) _comidasList.removeAll { it.id == comidaId }
+
+        return result
     }
 }
