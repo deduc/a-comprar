@@ -17,7 +17,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
@@ -67,7 +69,7 @@ class CategoriasScreen : Screen {
     @Composable
     fun CategoriasContainer() {
         val navigator: Navigator = LocalNavigator.currentOrThrow
-        val categoriaStore: CategoriaStore = viewModel()
+        val categoriaStore: CategoriaStore = viewModel(LocalContext.current as ViewModelStoreOwner)
 
         val categorias = categoriaStore.categorias
         var categoriaEntityToEdit: State<CategoriaEntity?> = categoriaStore.categoriaEntityToEdit

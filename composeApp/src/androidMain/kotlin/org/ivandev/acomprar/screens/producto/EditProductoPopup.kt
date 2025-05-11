@@ -18,6 +18,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import org.ivandev.acomprar.database.Database
 import org.ivandev.acomprar.database.entities.CategoriaEntity
@@ -27,7 +29,7 @@ import org.ivandev.acomprar.stores.ProductoStore
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun EditProductoPopup(productoEntity: ProductoEntity) {
-    val productoStore: ProductoStore = viewModel()
+    val productoStore: ProductoStore = viewModel(LocalContext.current as ViewModelStoreOwner)
 
     val idCategoria: Int = productoEntity.idCategoria!!
     val categorias = Database.getAllCategoria()
@@ -49,9 +51,12 @@ fun EditProductoPopup(productoEntity: ProductoEntity) {
     val cantidad = remember { mutableStateOf(productoEntity.getCantidadFixed()) }
     val marca = remember { mutableStateOf(productoEntity.getMarcaFixed()) }
 
-    if (productoStore.editProductoEntityPopup.value != null) {
+    if (productoStore.showEditProductoPopup.value && productoStore.editProductoEntityPopup.value != null) {
         AlertDialog(
-            onDismissRequest = { productoStore.setEditProductoPopup(null) },
+            onDismissRequest = {
+                productoStore.setEditProductoPopup(null)
+                productoStore.setShowEditProductoPopup(false)
+           },
             confirmButton = {
                 TextButton(
                     onClick = {
@@ -67,6 +72,16 @@ fun EditProductoPopup(productoEntity: ProductoEntity) {
                     }
                 ) {
                     Text("Aceptar")
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = {
+                        productoStore.setEditProductoPopup(null)
+                        productoStore.setShowEditProductoPopup(false)
+                    }
+                ) {
+                    Text("Cancelar")
                 }
             },
             title = { Text("Editando producto") },

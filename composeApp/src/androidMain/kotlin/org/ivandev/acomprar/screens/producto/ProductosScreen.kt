@@ -17,12 +17,14 @@ import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import cafe.adriel.voyager.core.screen.Screen
 import org.ivandev.acomprar.Literals
@@ -50,7 +52,7 @@ class ProductosScreen: Screen {
 
     @Composable
     fun MainContent() {
-        val productoStore: ProductoStore = viewModel()
+        val productoStore: ProductoStore = viewModel(LocalContext.current as ViewModelStoreOwner)
         val categoriaWithProductosList: State<List<CategoriaWithProductos>?> = productoStore.categoriasWithProductosList
 
         if (categoriaWithProductosList.value?.isNotEmpty() == true) {
@@ -77,10 +79,10 @@ class ProductosScreen: Screen {
         }
 
         // Popups !!!!!!!!!!!
-        if (productoStore.addProductoPopup.value) {
+        if (productoStore.showAddProductoPopup.value) {
             AddProductoPopup(productoStore.productoToAdd.value!!.idCategoria!!)
         }
-        if (productoStore.editProductoEntityPopup.value != null) {
+        if (productoStore.showEditProductoPopup.value && productoStore.editProductoEntityPopup.value != null) {
             EditProductoPopup(productoStore.editProductoEntityPopup.value!!)
         }
         if (productoStore.deleteProductoEntityPopup.value != null) {
@@ -105,7 +107,7 @@ class ProductosScreen: Screen {
             )
 
             MyIcons.AddIcon(Modifier.size(24.dp)){
-                productoStore.setAddProductoPopup(true)
+                productoStore.setShowAddProductoPopup(true)
 
                 productoStore.setProductoToAdd(
                     Producto(null, categoriaWithProductos.categoriaId, null, null, null)
@@ -139,6 +141,7 @@ class ProductosScreen: Screen {
             Row(Modifier.weight(0.2f)) {
                 MyIcons.EditIcon {
                     productoStore.setEditProductoPopup(productoEntity)
+                    productoStore.setShowEditProductoPopup(true)
                 }
 
                 Spacer(Modifier.width(8.dp))
@@ -147,9 +150,9 @@ class ProductosScreen: Screen {
                     productoStore.setProductoToDeletePopup(productoEntity)
                 }
             }
-
-            Spacer(Modifier.height(Tools.height8dp))
         }
+
+        Spacer(Modifier.height(Tools.height10dp))
     }
 
     private fun deleteProductoById(

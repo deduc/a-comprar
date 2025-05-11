@@ -18,6 +18,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import org.ivandev.acomprar.Literals
 import org.ivandev.acomprar.Tools
@@ -29,8 +31,8 @@ import org.ivandev.acomprar.stores.ProductoStore
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun AddProductoPopup(idCategoria: Int) {
-    val productoStore: ProductoStore = viewModel()
-    val categoriaStore: CategoriaStore = viewModel()
+    val productoStore: ProductoStore = viewModel(LocalContext.current as ViewModelStoreOwner)
+    val categoriaStore: CategoriaStore = viewModel(LocalContext.current as ViewModelStoreOwner)
 
     val categorias: State<List<CategoriaEntity>> = categoriaStore.categorias
 
@@ -46,10 +48,9 @@ fun AddProductoPopup(idCategoria: Int) {
     LaunchedEffect(idCategoria) {
         val categoriaPorDefecto = categorias.value.find { it.id == idCategoria }
         categoriaEntitySeleccionada.value = categoriaPorDefecto
-
     }
 
-    if (productoStore.addProductoPopup.value) {
+    if (productoStore.showAddProductoPopup.value) {
         AlertDialog(
             onDismissRequest = { productoStore.setAddProductoPopup(false) },
             confirmButton = {
@@ -74,6 +75,13 @@ fun AddProductoPopup(idCategoria: Int) {
                 ) {
                     Text("Aceptar")
                 }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = {
+                        productoStore.setShowAddProductoPopup(false)
+                    }
+                ) { Text("Cancelar") }
             },
             title = { Text("Añadir producto") },
             text = {

@@ -14,11 +14,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 object Tools {
-    var height16dp = 16.dp
-    var height8dp = 8.dp
     var height4dp = 4.dp
-    var padding16dp = 16.dp
+    var height8dp = 8.dp
+    var height10dp = 10.dp
+    var height16dp = 16.dp
+
     var padding8dp = 8.dp
+    var padding16dp = 16.dp
     var primaryColor = Color(0x6200EE)
     var titleFontSize = 18.sp
     var buttonsSpacer8dp = 8.dp

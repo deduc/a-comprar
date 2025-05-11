@@ -1,7 +1,9 @@
 package org.ivandev.acomprar.stores
 
 import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineScope
@@ -14,37 +16,38 @@ import org.ivandev.acomprar.database.special_classes.CategoriaWithProductos
 import org.ivandev.acomprar.models.Producto
 
 class ProductoStore : ViewModel() {
-    private val _categoriasWithProductosList = mutableStateOf<List<CategoriaWithProductos>?>(null)
+    private var _categoriasWithProductosList = mutableStateOf<List<CategoriaWithProductos>?>(null)
     val categoriasWithProductosList: State<List<CategoriaWithProductos>?> = _categoriasWithProductosList
 
     // Productos filtered by IdCategoria
-    private val _productosByCategoria = mutableStateOf<List<ProductoEntity>?>(null)
-    val productosByCategoria: State<List<ProductoEntity>?> = _productosByCategoria
+    private var _productosByCategoria = mutableStateListOf<ProductoEntity>()
+    val productosByCategoria: SnapshotStateList<ProductoEntity> = _productosByCategoria
 
-    private val _productoToAdd = mutableStateOf<Producto?>(null)
+    private var _productoToAdd = mutableStateOf<Producto?>(null)
     val productoToAdd: State<Producto?> = _productoToAdd
 
 
     // popups
-    private val _addProductoPopup = mutableStateOf(false)
+    private var _addProductoPopup = mutableStateOf(false)
     val addProductoPopup: State<Boolean> = _addProductoPopup
 
-    private val _editProductoEntityPopup = mutableStateOf<ProductoEntity?>(null)
+    private var _editProductoEntityPopup = mutableStateOf<ProductoEntity?>(null)
     val editProductoEntityPopup: State<ProductoEntity?> = _editProductoEntityPopup
 
-    private val _deleteProductoEntityPopup = mutableStateOf<ProductoEntity?>(null)
+    private var _deleteProductoEntityPopup = mutableStateOf<ProductoEntity?>(null)
     val deleteProductoEntityPopup: State<ProductoEntity?> = _deleteProductoEntityPopup
 
-    private val _showAddProductoPopup = mutableStateOf(false)
+    private var _showAddProductoPopup = mutableStateOf(false)
     val showAddProductoPopup: State<Boolean> = _showAddProductoPopup
 
+    private var _showEditProductoPopup = mutableStateOf(false)
+    val showEditProductoPopup: State<Boolean> = _showEditProductoPopup
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
             loadProductosPorCategoria()
         }
     }
-
 
     fun addProducto(producto: Producto) {
         val added = Database.addProducto(producto)
@@ -63,7 +66,8 @@ class ProductoStore : ViewModel() {
             val result = Database.getProductosByCategoriaId(idCategoria)
 
             withContext(Dispatchers.Main) {
-                _productosByCategoria.value = result
+                _productosByCategoria.clear()
+                _productosByCategoria.addAll(result)
             }
         }
     }
@@ -77,7 +81,6 @@ class ProductoStore : ViewModel() {
             }
         }
     }
-
 
     fun setProductoToAdd(producto: Producto) {
         _productoToAdd.value = producto
@@ -95,6 +98,14 @@ class ProductoStore : ViewModel() {
         _deleteProductoEntityPopup.value = productoEntity
     }
 
+    fun setShowAddProductoPopup(newValue: Boolean) {
+        _showAddProductoPopup.value = newValue
+    }
+
+    fun setShowEditProductoPopup(newValue: Boolean) {
+        _showEditProductoPopup.value = newValue
+    }
+
     fun deleteProductoEntity(productoEntity: ProductoEntity) {
         Database.deleteProductoById(productoEntity.id)
 
@@ -104,11 +115,13 @@ class ProductoStore : ViewModel() {
     }
 
     private fun loadProductosPorCategoria() {
-        viewModelScope.launch {
-            val productosPorCategoria = withContext(Dispatchers.IO) {
-                Database.getAllProductosByCategoria()
+        viewModelScope.launch(Dispatchers.IO) {
+            val productosPorCategoria = Database.getAllProductosByCategoria()
+
+            // actualizar desde el hilo Main el valor de _categoriasWithProductosList
+            withContext(Dispatchers.Main) {
+                _categoriasWithProductosList.value = productosPorCategoria
             }
-            _categoriasWithProductosList.value = productosPorCategoria
         }
     }
 }

@@ -12,20 +12,16 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import cafe.adriel.voyager.core.screen.Screen
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import org.ivandev.acomprar.Literals
 import org.ivandev.acomprar.Tools
 import org.ivandev.acomprar.components.CommonScreen
@@ -49,41 +45,26 @@ class SeeCategoriaAndProductsScreen(
             else it.toString()
         }
 
-        val productos: MutableState<List<ProductoEntity?>> = remember { mutableStateOf(emptyList()) }
-
-        LaunchedEffect(Unit) {
-            productos.value = withContext(Dispatchers.IO) {
-                Database.getProductosByCategoriaId(categoriaId )
-            }
-        }
-
         val screen = CommonScreen(title = categoriaName) {
-            MainContent(categoriaId, categoriaNombre)
+            MainContent(categoriaId)
         }
 
         screen.Render()
     }
 
     @Composable
-    private fun MainContent(categoriaId: Int, categoriaNombre: String) {
-        val productoStore: ProductoStore = viewModel()
+    private fun MainContent(categoriaId: Int) {
+        val productoStore: ProductoStore = viewModel(LocalContext.current as ViewModelStoreOwner)
+        productoStore.getProductosByCategoriaId(categoriaId)
 
-        val selectedProduct = productoStore.editProductoEntityPopup
-        val productosList: State<List<ProductoEntity>?> = productoStore.productosByCategoria
-        var showAddProductoPopup = productoStore.showAddProductoPopup
-
-        LaunchedEffect(categoriaId) {
-            productoStore.getProductosByCategoriaId(categoriaId)
-        }
+        val productosByCategoria: SnapshotStateList<ProductoEntity> = productoStore.productosByCategoria
 
         Column {
             Column(Modifier.weight(1f)) {
-                val productos = productosList.value
-
-                if (!productos.isNullOrEmpty()) {
+                if (productosByCategoria.isNotEmpty()) {
                     MyScrollableColumn {
-                        productos.forEach { producto ->
-                            ProductInfo(producto, selectedProduct)
+                        productosByCategoria.forEach { producto: ProductoEntity ->
+                            ProductInfo(producto)
                         }
                     }
                 } else {
@@ -91,24 +72,22 @@ class SeeCategoriaAndProductsScreen(
                 }
             }
 
-            ButtonsPanel(productoStore)
-
+            ButtonsPanel()
         }
 
-        // Mostrar el popup si hay una categoría seleccionada
-        selectedProduct.value?.let { productoEntity: ProductoEntity ->
-            if (productoEntity != null) {
-                EditProductoPopup(productoEntity)
-            }
+        if (productoStore.showEditProductoPopup.value && productoStore.editProductoEntityPopup.value != null) {
+            EditProductoPopup(productoStore.editProductoEntityPopup.value!!)
         }
 
-        if (showAddProductoPopup.value) {
+        if (productoStore.showAddProductoPopup.value) {
             AddProductoPopup(categoriaId)
         }
     }
 
     @Composable
-    private fun ButtonsPanel(productoStore: ProductoStore) {
+    private fun ButtonsPanel() {
+        val productoStore: ProductoStore = viewModel(LocalContext.current as ViewModelStoreOwner)
+
         Row(
             Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.End,
@@ -116,6 +95,7 @@ class SeeCategoriaAndProductsScreen(
         ) {
             Button(onClick = {
                 productoStore.setAddProductoPopup(true)
+                productoStore.setShowAddProductoPopup(true)
             }) {
                 Text(Literals.ButtonsText.ADD_PRODUCTO)
             }
@@ -123,23 +103,25 @@ class SeeCategoriaAndProductsScreen(
     }
 
     @Composable
-    private fun ProductInfo(productoEntity: ProductoEntity, selectedProduct: State<ProductoEntity?>) {
-        val productoStore: ProductoStore = viewModel()
+    private fun ProductInfo(productoEntity: ProductoEntity) {
+        val productoStore: ProductoStore = viewModel(LocalContext.current as ViewModelStoreOwner)
 
-        Column(Modifier.border(1.dp, Color.Black)) {
+        Column(Tools.styleBorderBlack) {
             Row(Modifier.border(1.dp, Color.Black).padding(8.dp), Arrangement.SpaceBetween) {
-                Column(Modifier.weight(1f)) {
+                Row(Modifier.weight(1f)) {
                     Text(productoEntity.nombre, style = TextStyle(fontSize = Tools.titleFontSize))
                 }
 
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    MyIcons.EditIcon { productoStore.setEditProductoPopup(productoEntity) }
-
+                    MyIcons.EditIcon {
+                        productoStore.setEditProductoPopup(productoEntity)
+                        productoStore.setShowEditProductoPopup(true)
+                    }
                     Spacer(Modifier.width(Tools.buttonsSpacer8dp))
-
                     MyIcons.TrashIcon { deleteProducto(productoEntity) }
                 }
             }
+
             Row {
                 Column(Modifier.padding(Tools.padding8dp)) {
                     val cantidad: String = if(! productoEntity.cantidad.isNullOrEmpty()) productoEntity.cantidad else Literals.SIN_CANTIDAD_TEXT
