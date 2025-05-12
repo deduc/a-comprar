@@ -12,15 +12,21 @@ import org.ivandev.acomprar.models.Categoria
 
 class CategoriaStore : ViewModel() {
     // valor modificable
-    private val _categorias = mutableStateOf(Database.getAllCategoria())
+    private var _categorias = mutableStateOf(Database.getAllCategoria())
     // valor para obtener
     val categorias: State<List<CategoriaEntity>> = _categorias
 
-    private val _categoriaEntityToDelete = mutableStateOf<CategoriaEntity?>(null)
+    private var _categoriaEntityToDelete = mutableStateOf<CategoriaEntity?>(null)
     val categoriaEntityToDelete: State<CategoriaEntity?> = _categoriaEntityToDelete
 
-    private val _categoriaEntityToEdit = mutableStateOf<CategoriaEntity?>(null)
+    private var _categoriaEntityToEdit = mutableStateOf<CategoriaEntity?>(null)
     val categoriaEntityToEdit: State<CategoriaEntity?> = _categoriaEntityToEdit
+
+    private var _showEditCategoriaPopup = mutableStateOf<Boolean>(false)
+    val showEditCategoriaPopup: State<Boolean> = _showEditCategoriaPopup
+
+    private var _showDeleteCategoriaPopup = mutableStateOf<Boolean>(false)
+    val showDeleteCategoriaPopup: State<Boolean> = _showDeleteCategoriaPopup
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
@@ -59,4 +65,11 @@ class CategoriaStore : ViewModel() {
         _categoriaEntityToEdit.value = categoriaEntity
     }
 
+    fun setShowEditCategoriaPopup(newValue: Boolean) {
+        _showEditCategoriaPopup.value = newValue
+    }
+
+    fun setShowDeleteCategoriaPopup(newValue: Boolean) {
+        _showDeleteCategoriaPopup.value = newValue
+    }
 }

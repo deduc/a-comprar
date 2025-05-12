@@ -82,7 +82,7 @@ class ProductosScreen: Screen {
         if (productoStore.showAddProductoPopup.value) {
             AddProductoPopup(productoStore.productoToAdd.value!!.idCategoria!!)
         }
-        if (productoStore.showEditProductoPopup.value && productoStore.editProductoEntityPopup.value != null) {
+        if (productoStore.showEditProductoPopup.value) {
             EditProductoPopup(productoStore.editProductoEntityPopup.value!!)
         }
         if (productoStore.deleteProductoEntityPopup.value != null) {

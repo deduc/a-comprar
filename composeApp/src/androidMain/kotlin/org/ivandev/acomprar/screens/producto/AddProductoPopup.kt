@@ -52,7 +52,10 @@ fun AddProductoPopup(idCategoria: Int) {
 
     if (productoStore.showAddProductoPopup.value) {
         AlertDialog(
-            onDismissRequest = { productoStore.setAddProductoPopup(false) },
+            onDismissRequest = {
+                productoStore.setAddProductoPopup(false)
+                productoStore.setShowAddProductoPopup(false)
+           },
             confirmButton = {
                 TextButton(
                     onClick = {
@@ -70,6 +73,7 @@ fun AddProductoPopup(idCategoria: Int) {
                         else {
                             productoStore.addProducto(newProducto)
                             productoStore.setAddProductoPopup(false)
+                            productoStore.setShowAddProductoPopup(false)
                         }
                     }
                 ) {

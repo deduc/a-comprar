@@ -75,7 +75,7 @@ class SeeCategoriaAndProductsScreen(
             ButtonsPanel()
         }
 
-        if (productoStore.showEditProductoPopup.value && productoStore.editProductoEntityPopup.value != null) {
+        if (productoStore.showEditProductoPopup.value) {
             EditProductoPopup(productoStore.editProductoEntityPopup.value!!)
         }
 

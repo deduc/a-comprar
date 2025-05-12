@@ -51,7 +51,7 @@ fun EditProductoPopup(productoEntity: ProductoEntity) {
     val cantidad = remember { mutableStateOf(productoEntity.getCantidadFixed()) }
     val marca = remember { mutableStateOf(productoEntity.getMarcaFixed()) }
 
-    if (productoStore.showEditProductoPopup.value && productoStore.editProductoEntityPopup.value != null) {
+    if (productoStore.showEditProductoPopup.value) {
         AlertDialog(
             onDismissRequest = {
                 productoStore.setEditProductoPopup(null)
@@ -69,6 +69,7 @@ fun EditProductoPopup(productoEntity: ProductoEntity) {
                         )
                         productoStore.updateProductoById(newProductoEntity)
                         productoStore.setEditProductoPopup(null)
+                        productoStore.setShowEditProductoPopup(false)
                     }
                 ) {
                     Text("Aceptar")
@@ -78,6 +79,7 @@ fun EditProductoPopup(productoEntity: ProductoEntity) {
                 TextButton(
                     onClick = {
                         productoStore.setEditProductoPopup(null)
+                        productoStore.setShowEditProductoPopup(false)
                         productoStore.setShowEditProductoPopup(false)
                     }
                 ) {

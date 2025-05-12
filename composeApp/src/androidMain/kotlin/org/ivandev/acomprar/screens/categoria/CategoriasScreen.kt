@@ -91,8 +91,14 @@ class CategoriasScreen : Screen {
                             MyIcons.ViewIcon { seeCategoriaById(categoriaEntity, navigator) }
 
                             if(categoriaEntity.id != Literals.Database.ID_SIN_CATEGORIA_VALUE) {
-                                MyIcons.EditIcon { categoriaStore.updateCategoriaToEdit(categoriaEntity) }
-                                MyIcons.TrashIcon { categoriaStore.updateCategoriaToDelete(categoriaEntity) }
+                                MyIcons.EditIcon {
+                                    categoriaStore.updateCategoriaToEdit(categoriaEntity)
+                                    categoriaStore.setShowEditCategoriaPopup(true)
+                                }
+                                MyIcons.TrashIcon {
+                                    categoriaStore.updateCategoriaToDelete(categoriaEntity)
+                                    categoriaStore.setShowDeleteCategoriaPopup(true)
+                                }
                             }
                         }
                     }
@@ -101,13 +107,13 @@ class CategoriasScreen : Screen {
         }
 
         // Mostrar el popup si hay una categoría seleccionada
-        if (categoriaEntityToEdit.value != null) {
+        if (categoriaStore.showEditCategoriaPopup.value) {
             EditCategoriaPopup(categoriaEntityToEdit)
         }
 
 
         // Mostrar el popup si hay una categoría seleccionada
-        if (categoriaEntityToDelete.value != null) {
+        if (categoriaStore.showDeleteCategoriaPopup.value) {
             DeleteCategoriaPopup(categoriaEntityToDelete)
         }
     }
