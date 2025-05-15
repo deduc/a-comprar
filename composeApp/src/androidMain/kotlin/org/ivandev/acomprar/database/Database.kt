@@ -19,7 +19,7 @@ import org.ivandev.acomprar.models.Producto
 
 object Database {
     lateinit var mySQLiteDatabase: MySQLiteDatabase
-    private val dbVersion: Int = 13
+    private val dbVersion: Int = 14
 
     fun initializeDatabase(context: Context) {
         mySQLiteDatabase = MySQLiteDatabase(context, dbVersion)
@@ -108,6 +108,10 @@ object Database {
 
     fun updateCategoriaById(categoriaEntity: CategoriaEntity): Boolean {
         return mySQLiteDatabase.updateCategoriaById(categoriaEntity)
+    }
+
+    fun updateComidaById(comida: ComidaEntity): Boolean {
+        return mySQLiteDatabase.updateComidaById(comida)
     }
 
     fun updateProductoById(productoEntity: ProductoEntity): Boolean {

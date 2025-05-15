@@ -21,8 +21,11 @@ class ComidaStore: ViewModel() {
     private var _comidasByTipo = mutableStateListOf<SnapshotStateList<ComidaEntity>>()
     val comidasByTipo: SnapshotStateList<SnapshotStateList<ComidaEntity>> get() = _comidasByTipo
 
-    private var _showAddComidaPopup = mutableStateOf<Boolean>(false)
-    val showAddComidaPopup: State<Boolean> = _showAddComidaPopup
+    private var _comidaToEdit = mutableStateOf<ComidaEntity?>(null)
+    val comidaToEdit: State<ComidaEntity?> = _comidaToEdit
+
+    private var _showAddOrEditComidaPopup = mutableStateOf<Boolean>(false)
+    val showAddOrEditComidaPopup: State<Boolean> = _showAddOrEditComidaPopup
 
     fun addComida(comida: Comida): Boolean {
         var result = false
@@ -39,8 +42,32 @@ class ComidaStore: ViewModel() {
         return result
     }
 
-    fun setShowAddComidaPopup(newValue: Boolean) {
-        _showAddComidaPopup.value = newValue
+    fun clearComidaToEdit() {
+        _comidaToEdit.value = null
+    }
+
+    fun updateComida(comida: ComidaEntity): Boolean {
+        if (!Database.updateComidaById(comida)) {
+            println("Error de algún tipo")
+            return false
+        }
+
+        val index = _comidasList.indexOfFirst { it.id == comida.id }
+        if (index != -1) {
+            _comidasList[index] = comida.copy() // sustituimos el objeto: Compose se entera y actualiza datos
+        }
+
+        _comidasByTipo = getComidasFilteredByTipo()
+
+        return true
+    }
+
+    fun setShowAddOrEditComidaPopup(newValue: Boolean) {
+        _showAddOrEditComidaPopup.value = newValue
+    }
+
+    fun setComidaToEdit(comida: ComidaEntity) {
+        _comidaToEdit.value = comida
     }
 
     fun getAndSetAllComidasFromDb() {
@@ -59,6 +86,17 @@ class ComidaStore: ViewModel() {
         _comidasByTipo = comidasByTipoAux
 
         return comidasByTipo
+    }
+
+    fun getComidaToEditValues(): State<ComidaEntity?> {
+        if (comidaToEdit.value != null) {
+            return mutableStateOf(
+                ComidaEntity(comidaToEdit.value!!.id, comidaToEdit.value!!.nombre, comidaToEdit.value!!.tipo)
+            )
+        }
+        else {
+            return mutableStateOf(null)
+        }
     }
 
     fun deleteComidaById(comidaId: Int): Boolean {

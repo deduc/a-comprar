@@ -174,6 +174,10 @@ class MySQLiteDatabase(context: Context, version: Int) : SQLiteOpenHelper(
         return result
     }
 
+    fun updateComidaById(comida: ComidaEntity): Boolean {
+        return ComidaHandler.updateById(writableDatabase, comida)
+    }
+
     fun updateProductoById(productoEntity: ProductoEntity): Boolean {
         val db = writableDatabase
         val result = ProductoHandler.updateById(db, productoEntity)

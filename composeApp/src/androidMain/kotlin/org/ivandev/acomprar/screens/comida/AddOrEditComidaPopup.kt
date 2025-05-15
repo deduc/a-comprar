@@ -15,43 +15,55 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import org.ivandev.acomprar.Tools
+import org.ivandev.acomprar.database.entities.ComidaEntity
 import org.ivandev.acomprar.enumeration.TipoComidaEnum
 import org.ivandev.acomprar.models.Comida
 import org.ivandev.acomprar.stores.ComidaStore
 
 @Composable
-fun AddComidaPopup() {
+fun AddOrEditComidaPopup() {
     val comidaStore: ComidaStore = viewModel(LocalContext.current as ViewModelStoreOwner)
 
-    val showAddComidaPopup by remember { mutableStateOf(comidaStore.showAddComidaPopup) }
-    var nombre by remember { mutableStateOf("") }
-    val tipo = remember { mutableStateOf(TipoComidaEnum.COMIDA) }
+    val showAddOrEditComidaPopup by remember { mutableStateOf(comidaStore.showAddOrEditComidaPopup) }
+    val comidaToEdit: State<ComidaEntity?> = comidaStore.getComidaToEditValues()
+    var comidaNombre = remember { mutableStateOf(comidaToEdit.value?.nombre ?: "") }
+    val comidaTipo = remember { mutableIntStateOf(comidaToEdit.value?.tipo ?: TipoComidaEnum.COMIDA) }
 
-    if (showAddComidaPopup.value) {
+    if (showAddOrEditComidaPopup.value) {
         AlertDialog(
-            onDismissRequest = { comidaStore.setShowAddComidaPopup(false) },
+            onDismissRequest = { comidaStore.setShowAddOrEditComidaPopup(false) },
             confirmButton = {
                 TextButton(onClick = {
-                    comidaStore.addComida(
-                        Comida(null, nombre, tipo.value)
-                    )
-                    comidaStore.setShowAddComidaPopup(false)
+                    if (comidaToEdit.value == null) {
+                        comidaStore.addComida(
+                            Comida(null, comidaNombre.value, comidaTipo.value)
+                        )
+                    }
+                    else {
+                        comidaToEdit.value?.nombre = comidaNombre.value
+                        comidaToEdit.value?.tipo = comidaTipo.value
+
+                        comidaStore.updateComida(comidaToEdit.value!!)
+                    }
+
+                    comidaStore.setShowAddOrEditComidaPopup(false)
                 }) {
                     Text("Aceptar")
                 }
             },
             dismissButton = {
-                TextButton(onClick = { comidaStore.setShowAddComidaPopup(false) }) { Text("Cancelar") }
+                TextButton(onClick = { comidaStore.setShowAddOrEditComidaPopup(false) }) { Text("Cancelar") }
             },
             title = { Text("Añadir comida") },
             text = {
@@ -59,19 +71,22 @@ fun AddComidaPopup() {
                     modifier = Modifier.fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    TextField(
-                        value = nombre,
-                        onValueChange = { nombre = it },
-                        label = { Text("Nombre de la comida") }
-                    )
-
+                    NombreComidaTextField(comidaNombre)
                     Spacer(Tools.spacer8dpHeight)
-
-                    TipoComidaDropdown(tipo)
+                    TipoComidaDropdown(comidaTipo)
                 }
             }
         )
     }
+}
+
+@Composable
+fun NombreComidaTextField(comidaNombre: MutableState<String>) {
+    TextField(
+        value = comidaNombre.value,
+        onValueChange = { comidaNombre.value = it },
+        label = { Text("Nombre de la comida") }
+    )
 }
 
 @OptIn(ExperimentalMaterialApi::class)

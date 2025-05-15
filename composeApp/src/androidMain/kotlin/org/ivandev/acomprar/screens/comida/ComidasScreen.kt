@@ -48,8 +48,8 @@ class ComidasScreen: Screen {
 
             ButtonsPanel(comidaStore)
 
-            if (comidaStore.showAddComidaPopup.value) {
-                AddComidaPopup()
+            if (comidaStore.showAddOrEditComidaPopup.value) {
+                AddOrEditComidaPopup()
             }
         }
     }
@@ -89,7 +89,10 @@ class ComidasScreen: Screen {
             }
             Column(Tools.styleBorderBlack.then(Modifier.padding(Tools.padding8dp))) {
                 Row {
-                    MyIcons.EditIcon {  }
+                    MyIcons.EditIcon {
+                        comidaStore.setShowAddOrEditComidaPopup(true)
+                        comidaStore.setComidaToEdit(comida)
+                    }
                     Spacer(Tools.spacer8dpWidth)
                     MyIcons.TrashIcon { comidaStore.deleteComidaById(comida.id) }
                 }
@@ -101,7 +104,8 @@ class ComidasScreen: Screen {
     fun ButtonsPanel(comidaStore: ComidaStore) {
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
             Button(onClick = {
-                comidaStore.setShowAddComidaPopup(true)
+                comidaStore.setShowAddOrEditComidaPopup(true)
+                comidaStore.clearComidaToEdit()
             }) {
                 Text("Añadir comida")
             }

@@ -87,6 +87,19 @@ object ComidaHandler {
         return result
     }
 
+    fun updateById(db: SQLiteDatabase, comida: ComidaEntity): Boolean {
+        val row = ContentValues()
+        row.put(Literals.Database.NOMBRE_COLUMN, comida.nombre)
+        row.put(Literals.Database.TIPO_COLUMN, comida.tipo)
+
+        return db.update(
+            Literals.Database.COMIDA_TABLE,
+            row,
+            "${Literals.Database.ID_COLUMN} = ?",
+            arrayOf(comida.id.toString())
+        ) == 1
+    }
+
     fun insertComidasYCenasByMenuId(db: SQLiteDatabase, menuId: Int): Boolean {
         var result = false
 
