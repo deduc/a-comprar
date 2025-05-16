@@ -144,7 +144,7 @@ object ComidaHandler {
 
     fun deleteAllComidasByMenuId(db: SQLiteDatabase, menuId: Int): Boolean {
         val result = db.delete(
-            Literals.Database.COMIDA_TABLE,
+            Literals.Database.MENU_COMIDA_TABLE,
             "${Literals.Database.ID_MENU_COLUMN} = ?",
             arrayOf(menuId.toString())
         )

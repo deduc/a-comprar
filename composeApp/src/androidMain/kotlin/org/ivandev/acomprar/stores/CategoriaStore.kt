@@ -22,6 +22,9 @@ class CategoriaStore : ViewModel() {
     private var _categoriaEntityToEdit = mutableStateOf<CategoriaEntity?>(null)
     val categoriaEntityToEdit: State<CategoriaEntity?> = _categoriaEntityToEdit
 
+    private var _showAddPopup = mutableStateOf<Boolean>(false)
+    val showAddPopup: State<Boolean> = _showAddPopup
+
     private var _showEditCategoriaPopup = mutableStateOf<Boolean>(false)
     val showEditCategoriaPopup: State<Boolean> = _showEditCategoriaPopup
 
@@ -63,6 +66,10 @@ class CategoriaStore : ViewModel() {
 
     fun updateCategoriaToEdit(categoriaEntity: CategoriaEntity?) {
         _categoriaEntityToEdit.value = categoriaEntity
+    }
+
+    fun setShowAddPopup(newValue: Boolean) {
+        _showAddPopup.value = newValue
     }
 
     fun setShowEditCategoriaPopup(newValue: Boolean) {

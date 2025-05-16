@@ -10,10 +10,6 @@ import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -41,7 +37,7 @@ class CategoriasScreen : Screen {
 
     @Composable
     fun MainContent() {
-        var showPopup by remember { mutableStateOf(false) }
+        val categoriaStore: CategoriaStore = viewModel(LocalContext.current as ViewModelStoreOwner)
 
         Column {
             Row(Modifier.weight(1f)) {
@@ -55,13 +51,13 @@ class CategoriasScreen : Screen {
                 horizontalArrangement = Arrangement.End,
                 verticalAlignment = Alignment.Bottom
             ) {
-                Button(onClick = { showPopup = true }) {
+                Button(onClick = { categoriaStore.setShowAddPopup(true) }) {
                     Text(Literals.ButtonsText.ADD_CATEGORIA)
                 }
             }
         }
 
-        if (showPopup) {
+        if (categoriaStore.showAddPopup.value) {
             AddCategoriaPopup()
         }
     }
@@ -110,7 +106,6 @@ class CategoriasScreen : Screen {
         if (categoriaStore.showEditCategoriaPopup.value) {
             EditCategoriaPopup(categoriaEntityToEdit)
         }
-
 
         // Mostrar el popup si hay una categoría seleccionada
         if (categoriaStore.showDeleteCategoriaPopup.value) {
