@@ -82,13 +82,12 @@ object CreateTables {
     val CREATE_TABLE_MENU_DAY_OF_WEEK = """
         CREATE TABLE IF NOT EXISTS $tableMenuDayOfWeek (
             $idColumn INTEGER PRIMARY KEY,
-            $idMenuColumn INTEGER NOT NULL,
+            $idMenuColumn INTEGER,
             $idComidaColumn INTEGER,
-            $idCenaColumn INTEGER,
             $diaColumn TEXT NOT NULL,
+            $tipoColumn Text,
             FOREIGN KEY ($idMenuColumn) REFERENCES $tableMenu($idColumn) ON DELETE CASCADE,
-            FOREIGN KEY ($idComidaColumn) REFERENCES $tableComida($idColumn),
-            FOREIGN KEY ($idCenaColumn) REFERENCES $tableComida($idColumn)
+            FOREIGN KEY ($idComidaColumn) REFERENCES $tableComida($idColumn)
         );
     """.trimIndent()
 

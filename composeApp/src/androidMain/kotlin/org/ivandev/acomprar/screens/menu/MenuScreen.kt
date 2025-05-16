@@ -79,6 +79,7 @@ class MenuScreen: Screen {
             AddMenuPopup(onDismiss = {
                 menuStore.toggleShowAddMenuPopup(false)
                 menuStore.deleteCheckedData()
+                menuStore.setShowAddMenuPopup(false)
             })
         }
     }

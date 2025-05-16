@@ -15,14 +15,15 @@ object MenuHandler  {
 
         for (menuDay in menuDays) {
             val datos = ContentValues().apply {
-                put(Literals.Database.ID_MENU_COLUMN, menuId)
+                put(Literals.Database.ID_COLUMN, menuDay.id)
+                put(Literals.Database.ID_MENU_COLUMN, menuDay.idMenu)
+                put(Literals.Database.ID_COMIDA_COLUMN, menuDay.idComida)
+                put(Literals.Database.TIPO_COLUMN, menuDay.tipoComida)
                 put(Literals.Database.DIA_COLUMN, menuDay.day)
-                // Si en el futuro quieres añadir idComida o idCena, descomenta:
-                // put("idComida", menuDay.idComida)
-                // put("idCena", menuDay.idCena)
             }
 
             val insertResult = db.insert(Literals.Database.MENU_DAYS_OF_WEEK, null, datos)
+
             if (insertResult == -1L) {
                 result = false
                 break
@@ -83,7 +84,7 @@ object MenuHandler  {
                             cursor.getInt(cursor.getColumnIndexOrThrow(Literals.Database.ID_COLUMN)),
                             cursor.getInt(cursor.getColumnIndexOrThrow(Literals.Database.ID_MENU_COLUMN)),
                             cursor.getIntOrNull(cursor.getColumnIndexOrThrow(Literals.Database.ID_COMIDA_COLUMN)),
-                            cursor.getIntOrNull(cursor.getColumnIndexOrThrow(Literals.Database.ID_CENA_COLUMN)),
+                            cursor.getInt(cursor.getColumnIndexOrThrow(Literals.Database.TIPO_COLUMN)),
                             cursor.getString(cursor.getColumnIndexOrThrow(Literals.Database.DIA_COLUMN))
                         )
                     )

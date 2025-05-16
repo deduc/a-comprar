@@ -14,9 +14,11 @@ import androidx.compose.material.TextButton
 import androidx.compose.material.TextField
 import androidx.compose.material3.Checkbox
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -32,6 +34,13 @@ import org.ivandev.acomprar.stores.MenuStore
 fun AddMenuPopup(onDismiss: () -> Unit) {
     val menuStore: MenuStore = viewModel(LocalContext.current as ViewModelStoreOwner)
     var menuName = remember { mutableStateOf("") }
+    val checkedList: SnapshotStateList<MutableState<Boolean>> = menuStore.checkedList
+
+    LaunchedEffect(menuStore.showAddMenuPopup.value) {
+        if (! menuStore.showAddMenuPopup.value) {
+            menuStore.setShowAddMenuPopup(false)
+        }
+    }
 
     if (menuStore.showAddMenuPopup.value) {
         AlertDialog(
@@ -39,19 +48,15 @@ fun AddMenuPopup(onDismiss: () -> Unit) {
             confirmButton = {
                 TextButton(
                     onClick = {
-                        val result: Boolean = menuStore.addMenuAndItsDays(
-                            Menu(null, menuName.value),
-                            menuStore.checkedList
-                        )
-
-                        if (result) onDismiss()
+                        val menu = Menu(null, menuName.value)
+                        menuStore.onConfirmAddMenu(menu, checkedList)
                     }
                 ) {
                     Text(Literals.ButtonsText.ADD_MENU)
                 }
             },
             dismissButton = {
-                TextButton(onClick = { onDismiss() }) {
+                TextButton(onClick = onDismiss) {
                     Text(Literals.ButtonsText.CANEL_ACTION)
                 }
             },
@@ -67,7 +72,7 @@ fun AddMenuPopup(onDismiss: () -> Unit) {
                             label = { Text("Nombre del menú") }
                         )
 
-                        DaysOfWeekFormulary(menuStore)
+                        DaysOfWeekFormulary(menuStore, checkedList)
                         SelectionDaysButtons(menuStore)
                     }
                 }
@@ -77,14 +82,15 @@ fun AddMenuPopup(onDismiss: () -> Unit) {
 }
 
 @Composable
-private fun DaysOfWeekFormulary(menuStore: MenuStore) {
-    val checkedList = menuStore.checkedList
+private fun DaysOfWeekFormulary(menuStore: MenuStore, checkedList: SnapshotStateList<MutableState<Boolean>>) {
     val rows = menuStore.daysOfWeek.chunked(2)
 
     Column {
         rows.forEachIndexed { rowIndex, rowItems ->
             Row(
-                Modifier.fillMaxWidth().padding(vertical = 4.dp),
+                Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 4.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -93,7 +99,10 @@ private fun DaysOfWeekFormulary(menuStore: MenuStore) {
                     val checkedState = checkedList[index]
 
                     Row(
-                        Modifier.weight(1f).padding(8.dp).clickable { checkedState.value = !checkedState.value },
+                        Modifier
+                            .weight(1f)
+                            .padding(8.dp)
+                            .clickable { checkedState.value = !checkedState.value },
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Checkbox(

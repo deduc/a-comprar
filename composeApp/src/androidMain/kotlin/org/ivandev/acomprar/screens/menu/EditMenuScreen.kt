@@ -45,11 +45,7 @@ class EditMenuScreen(
     @Composable
     override fun Content() {
         val menu = MenuEntity(menuId, menuName)
-        val screen = CommonScreen(title = menuName) {
-            MainContent(menu)
-        }
-
-        screen.Render()
+        CommonScreen(title = menuName) { MainContent(menu) }.Render()
     }
 
     @Composable
@@ -142,7 +138,8 @@ class EditMenuScreen(
 
             menuDaysOfWeek.forEach { menuDaysOfWeek: MenuDaysOfWeekEntity ->
                 val comida: ComidaEntity? = menuStore.getComidaById(menuDaysOfWeek.idComida)
-                val cena: ComidaEntity? = menuStore.getCenaById(menuDaysOfWeek.idCena)
+                // temporal
+                val cena: ComidaEntity? = comida
 
                 Row(Tools.styleBorderBlack, verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
                     Column(columnModifier) {

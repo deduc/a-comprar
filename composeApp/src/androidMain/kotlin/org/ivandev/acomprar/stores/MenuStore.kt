@@ -9,7 +9,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import org.ivandev.acomprar.Literals
 import org.ivandev.acomprar.Tools
@@ -20,7 +19,6 @@ import org.ivandev.acomprar.database.entities.MenuEntity
 import org.ivandev.acomprar.enumeration.TipoComidaEnum
 import org.ivandev.acomprar.models.Menu
 import org.ivandev.acomprar.models.MenuDaysOfWeek
-import org.ivandev.acomprar.screens.menu.classes.MyMenuComidas
 
 class MenuStore : ViewModel() {
     val daysOfWeek: List<String> = Literals.DaysOfWeek.getDaysOfWeek()
@@ -36,6 +34,9 @@ class MenuStore : ViewModel() {
 
     private var _editingMenu = mutableStateOf<MenuEntity?>(null)
     val editingMenu: State<MenuEntity?> = _editingMenu
+
+    private var _addedMenu = mutableStateOf<Boolean>(false)
+    var addedMenu: State<Boolean> = _addedMenu
 
     private val _comidasYCenasByMenuId = mutableStateListOf<ComidaEntity?>()
     val comidasYCenasByMenuId: SnapshotStateList<ComidaEntity?> = _comidasYCenasByMenuId
@@ -61,26 +62,36 @@ class MenuStore : ViewModel() {
         initializeCheckedList()
     }
 
-    fun addMenuAndItsDays(menu: Menu, checkedList: SnapshotStateList<MutableState<Boolean>>): Boolean {
+
+    fun onConfirmAddMenu(menu: Menu, checkedList: SnapshotStateList<MutableState<Boolean>>) {
+        viewModelScope.launch {
+            val added = addMenuAndItsDays(menu, checkedList)
+            setShowAddMenuPopup(added)
+        }
+    }
+    suspend fun addMenuAndItsDays(menu: Menu, checkedList: SnapshotStateList<MutableState<Boolean>>): Boolean {
         if (!validateMenuAndItsDays(menu.nombre, checkedList)) {
             Tools.Notifier.showToast(Literals.ToastText.ERROR_VOID_DATA)
             return false
         }
 
-        if (!addMenu(menu)) {
+        val added = withContext(Dispatchers.IO) { Database.addMenu(menu) }
+        if (!added) {
             Tools.Notifier.showToast(Literals.ToastText.ERROR_ADDING_MENU)
             return false
         }
 
-        val currentMenuAdded: MenuEntity? = Database.getLastMenu()
+        val currentMenuAdded = withContext(Dispatchers.IO) { Database.getLastMenu() }
         if (currentMenuAdded == null) {
             Tools.Notifier.showToast(Literals.ToastText.ERROR_ADDING_MENU)
             return false
+        } else {
+            _menusList.value += currentMenuAdded
         }
-        else _menusList.value += currentMenuAdded
 
-        if (!addMenuDays(currentMenuAdded)) {
-            Database.deleteLastMenu()
+        val daysAdded = withContext(Dispatchers.IO) { addMenuDays(currentMenuAdded) }
+        if (!daysAdded) {
+            withContext(Dispatchers.IO) { Database.deleteLastMenu() }
             Tools.Notifier.showToast(Literals.ToastText.ERROR_ADDING_MENU_DAYS)
             return false
         }
@@ -100,18 +111,6 @@ class MenuStore : ViewModel() {
 
     fun deleteCheckedData() {
         initializeCheckedList()
-    }
-
-    fun getComidasYCenasByMenuId(menuEntity: MenuEntity): MyMenuComidas {
-        var myComidasYCenas: MyMenuComidas
-
-        // Ejecutar la consulta en un hilo de fondo (IO) para no bloquear el hilo principal
-        runBlocking(Dispatchers.IO) {
-            val comidaEntities: List<ComidaEntity> = Database.getComidasByTipoId(TipoComidaEnum.COMIDA)
-            myComidasYCenas = MyMenuComidas(menuEntity.id, menuEntity.nombre, comidaEntities)
-        }
-
-        return myComidasYCenas
     }
 
     fun getComidasYCenasByMenuIdFormatted(idMenu: Int): List<ComidaEntity?> {
@@ -134,13 +133,6 @@ class MenuStore : ViewModel() {
             null
     }
 
-    fun getCenaById(idCena: Int?): ComidaEntity? {
-        return if (idCena != null)
-            _comidasYCenasByMenuId.find { it?.id == idCena && it.tipo ==  TipoComidaEnum.CENA }
-        else
-            null
-    }
-
     fun setAddOrChangeComida(newValue: Boolean) {
         _addOrChangeComida.value = newValue
     }
@@ -159,6 +151,15 @@ class MenuStore : ViewModel() {
 
     fun setMenuDaysOfWeekClicked(menuDaysOfWeekEntity: MenuDaysOfWeekEntity?) {
         _menuDaysOfWeekClicked.value = menuDaysOfWeekEntity
+    }
+
+    fun setShowAddMenuPopup(newValue: Boolean) {
+        _showAddMenuPopup.value = !newValue
+        setAddedMenu(!newValue)
+    }
+
+    fun setAddedMenu(newValue: Boolean) {
+        _addedMenu.value = newValue
     }
 
     fun toggleShowAddMenuPopup(newValue: Boolean) {
@@ -187,10 +188,6 @@ class MenuStore : ViewModel() {
         return menuName.isNotEmpty() && checkedList.any { it.value }
     }
 
-    private fun addMenu(menu: Menu): Boolean {
-        return Database.addMenu(menu)
-    }
-
     private fun addMenuDays(currentMenuAdded: MenuEntity): Boolean {
         var result = false
         var menuDaysOfWeek: MutableList<MenuDaysOfWeek> = mutableListOf()
@@ -198,7 +195,7 @@ class MenuStore : ViewModel() {
         _checkedList.forEachIndexed {index: Int, selectedDay: State<Boolean> ->
             if (selectedDay.value) {
                 menuDaysOfWeek.add(
-                    MenuDaysOfWeek(day = daysOfWeek[index], idMenu = currentMenuAdded.id)
+                    MenuDaysOfWeek(null, currentMenuAdded.id, null, null, daysOfWeek[index])
                 )
             }
         }
@@ -215,7 +212,9 @@ class MenuStore : ViewModel() {
     }
 
     private fun initializeCheckedList() {
+        // all false by default
         _checkedList.clear()
         _checkedList.addAll(daysOfWeek.map { mutableStateOf(false) })
+
     }
 }
