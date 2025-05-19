@@ -88,9 +88,7 @@ private fun DaysOfWeekFormulary(menuStore: MenuStore, checkedList: SnapshotState
     Column {
         rows.forEachIndexed { rowIndex, rowItems ->
             Row(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 4.dp),
+                Modifier.fillMaxWidth().padding(vertical = 4.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -99,10 +97,7 @@ private fun DaysOfWeekFormulary(menuStore: MenuStore, checkedList: SnapshotState
                     val checkedState = checkedList[index]
 
                     Row(
-                        Modifier
-                            .weight(1f)
-                            .padding(8.dp)
-                            .clickable { checkedState.value = !checkedState.value },
+                        Modifier.weight(1f).padding(8.dp).clickable { checkedState.value = !checkedState.value },
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Checkbox(

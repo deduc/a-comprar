@@ -90,6 +90,10 @@ object Literals {
         const val DIA_COLUMN: String = "Día"
         const val COMIDA_COLUMN: String = "Comida"
         const val CENA_COLUMN: String = "Cena"
+
+        fun getComidasYCenasTableHeaders(): List<String> {
+            return listOf(DIA_COLUMN, COMIDA_COLUMN, CENA_COLUMN)
+        }
     }
 
     object DaysOfWeek {

@@ -19,6 +19,7 @@ import org.ivandev.acomprar.database.entities.MenuEntity
 import org.ivandev.acomprar.enumeration.TipoComidaEnum
 import org.ivandev.acomprar.models.Menu
 import org.ivandev.acomprar.models.MenuDaysOfWeek
+import org.ivandev.acomprar.screens.comida.classes.ComidasYCenasSeparatedLists
 
 class MenuStore : ViewModel() {
     val daysOfWeek: List<String> = Literals.DaysOfWeek.getDaysOfWeek()
@@ -44,24 +45,29 @@ class MenuStore : ViewModel() {
     private val _addOrChangeProductoPopup = mutableStateOf<Boolean>(false)
     val addOrChangeProductoPopup: State<Boolean> = _addOrChangeProductoPopup
 
-    private val _addOrChangeComida = mutableStateOf<Boolean>(false)
-    val addOrChangeComida: State<Boolean> = _addOrChangeComida
+    private var _menuDaysOfWeekClicked = mutableStateOf<MenuDaysOfWeek?>(null)
+    val menuDaysOfWeekClicked: State<MenuDaysOfWeek?> = _menuDaysOfWeekClicked
 
-    private val _addOrChangeCena = mutableStateOf<Boolean>(false)
-    val addOrChangeCena: State<Boolean> = _addOrChangeCena
+    var _menuDaysOfWeekList = mutableStateListOf<MenuDaysOfWeek>()
+    val menuDaysOfWeekList: SnapshotStateList<MenuDaysOfWeek> = _menuDaysOfWeekList
 
-    private var _menuDaysOfWeekClicked = mutableStateOf<MenuDaysOfWeekEntity?>(null)
-    val menuDaysOfWeekClicked: State<MenuDaysOfWeekEntity?> = _menuDaysOfWeekClicked
+    private var _comidasYCenasSeparatedLists = mutableStateOf<ComidasYCenasSeparatedLists>(ComidasYCenasSeparatedLists())
+    val comidasYCenasSeparatedLists: State<ComidasYCenasSeparatedLists> = _comidasYCenasSeparatedLists
 
+    var isComidaClickedAux = mutableStateOf(true)
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
             getAllMenus()
+            getComidasYCenasSeparatedFromDB()
         }
 
         initializeCheckedList()
     }
 
+    fun clearMenuDaysOfWeekList() {
+        _menuDaysOfWeekList.clear()
+    }
 
     fun onConfirmAddMenu(menu: Menu, checkedList: SnapshotStateList<MutableState<Boolean>>) {
         viewModelScope.launch {
@@ -113,32 +119,27 @@ class MenuStore : ViewModel() {
         initializeCheckedList()
     }
 
-    fun getComidasYCenasByMenuIdFormatted(idMenu: Int): List<ComidaEntity?> {
-        val comidasYCenas = mutableListOf<ComidaEntity?>()
-        val comidasList = Database.getComidasByTipoId(TipoComidaEnum.COMIDA)
-        val cenasList = Database.getComidasByTipoId(TipoComidaEnum.CENA)
+    fun getComidaById(idComida: Int?): ComidaEntity? {
+        var comida: ComidaEntity? = null
 
-        comidasYCenas.add(null)
-        (comidasList + cenasList).forEach { comida ->
-            comidasYCenas.add(ComidaEntity(comida.id, comida.nombre, comida.tipo))
+        if (idComida != null) {
+            comida = (_comidasYCenasSeparatedLists.value.comidas + _comidasYCenasSeparatedLists.value.cenas).find { it?.id == idComida }
         }
 
-        return comidasYCenas
+        return comida
     }
 
-    fun getComidaById(idComida: Int?): ComidaEntity? {
-        return if (idComida != null)
-            _comidasYCenasByMenuId.find { it?.id == idComida && it.tipo ==  TipoComidaEnum.COMIDA }
-        else
-            null
+    fun getComidasYCenasSeparatedFromDB() {
+        initializeComidasYCenasSeparatedLists()
+        _comidasYCenasSeparatedLists.value.comidas = Database.getComidasByTipoId(TipoComidaEnum.COMIDA)
+        _comidasYCenasSeparatedLists.value.cenas = Database.getComidasByTipoId(TipoComidaEnum.CENA)
     }
 
-    fun setAddOrChangeComida(newValue: Boolean) {
-        _addOrChangeComida.value = newValue
-    }
-
-    fun setAddOrChangeCena(newValue: Boolean) {
-        _addOrChangeCena.value = newValue
+    suspend fun menuDaysOfWeekListAddAll(menuDaysOfWeekListAux: MutableList<MenuDaysOfWeek>) {
+        withContext(Dispatchers.IO) {
+            _menuDaysOfWeekList.clear()
+            _menuDaysOfWeekList.addAll(menuDaysOfWeekListAux)
+        }
     }
 
     fun setAddOrChangeProductoPopup(newValue: Boolean) {
@@ -149,8 +150,8 @@ class MenuStore : ViewModel() {
         _editingMenu.value = menuEntity
     }
 
-    fun setMenuDaysOfWeekClicked(menuDaysOfWeekEntity: MenuDaysOfWeekEntity?) {
-        _menuDaysOfWeekClicked.value = menuDaysOfWeekEntity
+    fun setMenuDaysOfWeekClicked(menuDaysOfWeek: MenuDaysOfWeek?) {
+        _menuDaysOfWeekClicked.value = menuDaysOfWeek
     }
 
     fun setShowAddMenuPopup(newValue: Boolean) {
@@ -178,10 +179,20 @@ class MenuStore : ViewModel() {
         }
     }
 
-    suspend fun getMenuDaysOfWeekByMenuId(menuId: Int): MutableList<MenuDaysOfWeekEntity> {
+    suspend fun getMenuDaysOfWeekByMenuId(menuId: Int): MutableList<MenuDaysOfWeek> {
         return withContext(Dispatchers.IO) {
-            Database.getMenuDaysOfWeekByMenuId(menuId)
+            val data: MutableList<MenuDaysOfWeekEntity> = Database.getMenuDaysOfWeekByMenuId(menuId)
+            val dataConverted = doConvertMenuDaysOfWeekToMutable(data)
+
+            _menuDaysOfWeekList.clear()
+            _menuDaysOfWeekList.addAll(dataConverted)
+
+            menuDaysOfWeekList
         }
+    }
+
+    private fun doConvertMenuDaysOfWeekToMutable(data: MutableList<MenuDaysOfWeekEntity>): MutableList<MenuDaysOfWeek> {
+        return data.map { MenuDaysOfWeek(it.id, it.idMenu, it.idComida, it.tipoComida, it.day) }.toMutableList()
     }
 
     private fun validateMenuAndItsDays(menuName: String, checkedList: SnapshotStateList<MutableState<Boolean>>): Boolean {
@@ -209,6 +220,11 @@ class MenuStore : ViewModel() {
 
     private fun getAllMenus() {
         _menusList.value = Database.getAllMenu()
+    }
+
+    private fun initializeComidasYCenasSeparatedLists() {
+        _comidasYCenasSeparatedLists.value.comidas = listOf(null)
+        _comidasYCenasSeparatedLists.value.cenas = listOf(null)
     }
 
     private fun initializeCheckedList() {

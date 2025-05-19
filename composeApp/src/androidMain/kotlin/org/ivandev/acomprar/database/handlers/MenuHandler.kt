@@ -17,14 +17,15 @@ object MenuHandler  {
             val datos = ContentValues().apply {
                 put(Literals.Database.ID_COLUMN, menuDay.id)
                 put(Literals.Database.ID_MENU_COLUMN, menuDay.idMenu)
-                put(Literals.Database.ID_COMIDA_COLUMN, menuDay.idComida)
+                put(Literals.Database.ID_COMIDA_COLUMN, menuDay.idComida.value)
                 put(Literals.Database.TIPO_COLUMN, menuDay.tipoComida)
                 put(Literals.Database.DIA_COLUMN, menuDay.day)
             }
 
             val insertResult = db.insert(Literals.Database.MENU_DAYS_OF_WEEK, null, datos)
+            val insertResult2 = db.insert(Literals.Database.MENU_DAYS_OF_WEEK, null, datos)
 
-            if (insertResult == -1L) {
+            if (insertResult == -1L && insertResult2 == -1L) {
                 result = false
                 break
             }

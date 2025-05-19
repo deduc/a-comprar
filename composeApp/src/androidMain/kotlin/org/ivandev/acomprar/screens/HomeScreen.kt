@@ -21,6 +21,7 @@ import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import org.ivandev.acomprar.Literals
 import org.ivandev.acomprar.components.CommonScreen
+import org.ivandev.acomprar.screens.Pruebas.PruebasScreen
 import org.ivandev.acomprar.screens.categoria.CategoriasScreen
 import org.ivandev.acomprar.screens.comida.ComidasScreen
 import org.ivandev.acomprar.screens.menu.MenuScreen
@@ -78,6 +79,7 @@ class HomeScreen: Screen {
             MyNavButton(title = Literals.CATEGORIAS_TITLE) { navigator.push(CategoriasScreen()) }
             MyNavButton(title = Literals.PRODUCTOS_TITLE) { navigator.push(ProductosScreen()) }
             MyNavButton(title = Literals.COMIDAS_Y_CENAS_TITLE) { navigator.push(ComidasScreen()) }
+            MyNavButton(title = "Pantalla de pruebas") { navigator.push(PruebasScreen()) }
         }
     }
 

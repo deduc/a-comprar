@@ -18,6 +18,7 @@ object Tools {
     var height8dp = 8.dp
     var height10dp = 10.dp
     var height16dp = 16.dp
+    var height32dp = 32.dp
 
     var padding8dp = 8.dp
     var padding16dp = 16.dp
@@ -31,8 +32,10 @@ object Tools {
     var styleBorderBlack = Modifier.border(1.dp, Color.Black)
 
     var spacer8dpWidth = Modifier.width(height8dp)
+
     var spacer8dpHeight = Modifier.height(height8dp)
     var spacer16dpHeight = Modifier.height(height16dp)
+    var spacer32dpHeight = Modifier.height(height32dp)
 
     object Notifier {
         private var appContext: Context? = null
