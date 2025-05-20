@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.TextField
+import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -58,10 +59,7 @@ class EditMenuScreen(
         var menuName: MutableState<String> = remember { mutableStateOf(editingMenu.value!!.nombre) }
 
         LaunchedEffect(menuEntity.id) {
-            Tools.Notifier.showToast("Lala")
             menuStore.getMenuDaysOfWeekByMenuId(menuEntity.id)
-            menuStore._menuDaysOfWeekList[0].idComida.value = 1
-            menuStore._menuDaysOfWeekList[0].tipoComida = 0
         }
 
         MyScrollableColumn {
@@ -70,16 +68,7 @@ class EditMenuScreen(
             MenuComidasYCenasTable(menuDaysOfWeekList)
         }
 
-        // popups
-        if (menuStore.addOrChangeProductoPopup.value) {
-            AddOrEditComidaInMenuPopup(
-                menuDaysOfWeekEntity = menuDaysOfWeekList.find { it.id == menuStore.menuDaysOfWeekClicked.value!!.id }!!,
-                onDismiss = {
-                    menuStore.setAddOrChangeProductoPopup(false)
-                    menuStore.setMenuDaysOfWeekClicked(null)
-                }
-            )
-        }
+        Popups(menuStore, menuDaysOfWeekList)
     }
 
     @Composable
@@ -112,44 +101,52 @@ class EditMenuScreen(
         val menuStore: MenuStore = viewModel(LocalContext.current as ViewModelStoreOwner)
 
         val headers: List<String> = Literals.UITables.getComidasYCenasTableHeaders()
+        val days: List<String> = menuDaysOfWeekList.map { it.day!! }.toSet().toList()
 
         Column(Tools.styleBorderBlack) {
             val rowModifier = Modifier.weight(1f).border(1.dp, Color.Black).padding(8.dp)
+            var isComida = true
 
             TableHeaders(headers)
 
-            menuDaysOfWeekList.forEach { menuDaysOfWeek: MenuDaysOfWeek ->
+            days.forEach { currentDay: String ->
+                val menuDOWCurrentDay = menuDaysOfWeekList.filter { it.day == currentDay }
+
                 Row(Tools.styleBorderBlack, verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
-                    Text(menuDaysOfWeek.day!!, rowModifier)
+                    Text(currentDay, rowModifier)
 
-                    Column(rowModifier) {
-                        ComidaCell(menuStore, menuDaysOfWeek, true)
-                    }
+                    menuDOWCurrentDay.forEach { menuDaysOfWeek: MenuDaysOfWeek ->
 
-                    Column(rowModifier) {
-                        ComidaCell(menuStore, menuDaysOfWeek, false)
+                        Column(rowModifier) {
+                            ComidaCell(menuStore, menuDaysOfWeek, isComida)
+                        }
+                        isComida = !isComida
                     }
                 }
             }
         }
+
+        Button(onClick = {
+            menuDaysOfWeekList.first().idComida = 1
+        }) { Text("LALA") }
     }
 
     @Composable
     fun ComidaCell(menuStore: MenuStore, menuDaysOfWeek: MenuDaysOfWeek, isComida: Boolean) {
-        val comida: ComidaEntity? = menuStore.getComidaById(menuDaysOfWeek.idComida.value)
+        val comida: ComidaEntity? = menuStore.getComidaById(menuDaysOfWeek.idComida)
 
-        val addOrChangeComida: () -> Unit = {
+        val addOrChangeComidaClickableFun: () -> Unit = {
             menuStore.setAddOrChangeProductoPopup(true)
             menuStore.isComidaClickedAux.value = isComida
             menuStore.setMenuDaysOfWeekClicked(menuDaysOfWeek)
         }
 
-        Row(Modifier.fillMaxSize().clickable { addOrChangeComida() }, horizontalArrangement = Arrangement.Center) {
-            if (comida != null) {
+        Row(Modifier.fillMaxSize().clickable { addOrChangeComidaClickableFun() }, horizontalArrangement = Arrangement.Center) {
+            if (comida != null && comida.id != 0) {
                 Text(comida.nombre)
             }
             else {
-                MyIcons.AddIcon { addOrChangeComida() }
+                MyIcons.AddIcon { addOrChangeComidaClickableFun() }
             }
         }
     }
@@ -160,6 +157,19 @@ class EditMenuScreen(
             headers.forEach { header ->
                 Text(header, Modifier.weight(1f).border(1.dp, Color.Black).padding(8.dp), style = Tools.styleTableHeader)
             }
+        }
+    }
+
+    @Composable
+    fun Popups(menuStore: MenuStore, menuDaysOfWeekList: SnapshotStateList<MenuDaysOfWeek>){
+        if (menuStore.addOrChangeProductoPopup.value) {
+            AddOrEditComidaInMenuPopup(
+                menuDaysOfWeekEntity = menuDaysOfWeekList.find { it.id == menuStore.menuDaysOfWeekClicked.value!!.id }!!,
+                onDismiss = {
+                    menuStore.setAddOrChangeProductoPopup(false)
+                    menuStore.setMenuDaysOfWeekClicked(null)
+                }
+            )
         }
     }
 }

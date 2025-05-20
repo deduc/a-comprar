@@ -19,7 +19,7 @@ import org.ivandev.acomprar.models.Producto
 
 object Database {
     lateinit var mySQLiteDatabase: MySQLiteDatabase
-    private val dbVersion: Int = 17
+    private val dbVersion: Int = 20
 
     fun initializeDatabase(context: Context) {
         mySQLiteDatabase = MySQLiteDatabase(context, dbVersion)
@@ -120,6 +120,10 @@ object Database {
 
     fun updateMenuNameById(menu: MenuEntity): Boolean {
         return mySQLiteDatabase.updateMenuNameById(menu)
+    }
+
+    fun updateMenuDaysOfWeekById(menuDaysOfWeek: MenuDaysOfWeek): Boolean {
+        return mySQLiteDatabase.updateMenuDaysOfWeekById(menuDaysOfWeek)
     }
 
 

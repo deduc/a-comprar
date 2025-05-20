@@ -13,18 +13,16 @@ import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import org.ivandev.acomprar.Literals
 import org.ivandev.acomprar.Tools
+import org.ivandev.acomprar.database.Database
 import org.ivandev.acomprar.database.entities.ComidaEntity
 import org.ivandev.acomprar.enumeration.TipoComidaEnum
 import org.ivandev.acomprar.models.MenuDaysOfWeek
@@ -38,35 +36,22 @@ fun AddOrEditComidaInMenuPopup(menuDaysOfWeekEntity: MenuDaysOfWeek, onDismiss: 
     menuStore.getComidasYCenasSeparatedFromDB()
 
     val comidasYCenasSeparatedLists: State<ComidasYCenasSeparatedLists> = menuStore.comidasYCenasSeparatedLists
-    var comidasYCenasFullList: SnapshotStateList<ComidaEntity?> = remember { mutableStateListOf() }
-
     val popupTitle: String = getPopupTitle(menuDaysOfWeekEntity)
 
-    val expandedComida = remember { mutableStateOf<Boolean>(false) }
-    val expandedCena = remember { mutableStateOf<Boolean>(false) }
-    val comidaSelected = remember { mutableStateOf<ComidaEntity?>(null) }
-    val cenaSelected = remember { mutableStateOf<ComidaEntity?>(null) }
-
     val myDropdownMenuDataComidas = MyDropdownMenuData(
-        "Comidas",
-        expandedComida,
-        comidaSelected,
-        true,
-        comidasYCenasSeparatedLists.value.comidas
+        comidaOrCenaTitle = "Comidas",
+        expanded = remember { mutableStateOf<Boolean>(false) },
+        comidaSelected = remember { mutableStateOf<ComidaEntity?>(null) },
+        isComida = true,
+        comidasByTipo = comidasYCenasSeparatedLists.value.comidas
     )
     val myDropdownMenuDataCenas = MyDropdownMenuData(
-        "Cenas",
-        expandedCena,
-        cenaSelected,
-        false,
-        comidasYCenasSeparatedLists.value.cenas
+        comidaOrCenaTitle = "Cenas",
+        expanded = remember { mutableStateOf<Boolean>(false) },
+        comidaSelected = remember { mutableStateOf<ComidaEntity?>(null) },
+        isComida = false,
+        comidasByTipo = comidasYCenasSeparatedLists.value.cenas
     )
-
-    LaunchedEffect(comidasYCenasSeparatedLists) {
-        comidasYCenasFullList.clear()
-        comidasYCenasFullList.addAll(comidasYCenasSeparatedLists.value.comidas)
-        comidasYCenasFullList.addAll(comidasYCenasSeparatedLists.value.cenas)
-    }
 
     if (menuStore.addOrChangeProductoPopup.value) {
         AlertDialog(
@@ -74,9 +59,27 @@ fun AddOrEditComidaInMenuPopup(menuDaysOfWeekEntity: MenuDaysOfWeek, onDismiss: 
             confirmButton = {
                 TextButton(
                     onClick = {
-                        menuStore.menuDaysOfWeekClicked
+                        var updatedMenuDOW: MenuDaysOfWeek? = null
+                        val selected = myDropdownMenuDataComidas.comidaSelected.value
+                            ?: myDropdownMenuDataCenas.comidaSelected.value
+
+                        selected?.let { comida ->
+                            menuStore.menuDaysOfWeekClicked.value?.let { clicked ->
+                                updatedMenuDOW = menuStore._menuDaysOfWeekList.find { it.id == clicked.id }
+                                updatedMenuDOW?.idComida = comida.id
+                                clicked.idComida = comida.id
+                            }
+                        }
+
+                        if (updatedMenuDOW != null && updatedMenuDOW?.idComida != 0) {
+                            Database.updateMenuDaysOfWeekById(updatedMenuDOW!!)
+                        }
+                        else {
+                            menuStore.menuDaysOfWeekClicked.value!!.idComida = null
+                            Database.updateMenuDaysOfWeekById(menuStore.menuDaysOfWeekClicked.value!!)
+                        }
+
                         menuStore.setAddOrChangeProductoPopup(false)
-                        menuStore._menuDaysOfWeekList[0].idComida.value = 1
                     }
                 ) {
                     Text("Confirmar")
@@ -90,12 +93,9 @@ fun AddOrEditComidaInMenuPopup(menuDaysOfWeekEntity: MenuDaysOfWeek, onDismiss: 
             title = { Text(popupTitle) },
             text = {
                 Column {
-                    Text("${comidaSelected.value?.id}, ${comidaSelected.value?.nombre}, ${comidaSelected.value?.tipo}")
-                    Text("${cenaSelected.value?.id}, ${cenaSelected.value?.nombre}, ${cenaSelected.value?.tipo}")
-
-                    MyDropdownMenu(myDropdownMenuDataComidas, cenaSelected)
+                    MyDropdownMenu(myDropdownMenuDataComidas, myDropdownMenuDataCenas.comidaSelected)
                     Spacer(Tools.spacer32dpHeight)
-                    MyDropdownMenu(myDropdownMenuDataCenas, comidaSelected)
+                    MyDropdownMenu(myDropdownMenuDataCenas, myDropdownMenuDataComidas.comidaSelected)
                 }
             }
         )

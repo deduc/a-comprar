@@ -17,15 +17,14 @@ object MenuHandler  {
             val datos = ContentValues().apply {
                 put(Literals.Database.ID_COLUMN, menuDay.id)
                 put(Literals.Database.ID_MENU_COLUMN, menuDay.idMenu)
-                put(Literals.Database.ID_COMIDA_COLUMN, menuDay.idComida.value)
+                put(Literals.Database.ID_COMIDA_COLUMN, menuDay.idComida)
                 put(Literals.Database.TIPO_COLUMN, menuDay.tipoComida)
                 put(Literals.Database.DIA_COLUMN, menuDay.day)
             }
 
             val insertResult = db.insert(Literals.Database.MENU_DAYS_OF_WEEK, null, datos)
-            val insertResult2 = db.insert(Literals.Database.MENU_DAYS_OF_WEEK, null, datos)
 
-            if (insertResult == -1L && insertResult2 == -1L) {
+            if (insertResult == -1L) {
                 result = false
                 break
             }
@@ -150,5 +149,25 @@ object MenuHandler  {
         )
 
         return result == 1
+    }
+
+    fun updateMenuDaysOfWeekById(db: SQLiteDatabase, menuDaysOfWeek: MenuDaysOfWeek): Boolean {
+        val litDb = Literals.Database
+        val datos = ContentValues()
+
+        datos.put(litDb.ID_COLUMN, menuDaysOfWeek.id)
+        datos.put(litDb.ID_MENU_COLUMN, menuDaysOfWeek.idMenu)
+        datos.put(litDb.ID_COMIDA_COLUMN, menuDaysOfWeek.idComida)
+        datos.put(litDb.TIPO_COLUMN, menuDaysOfWeek.tipoComida)
+        datos.put(litDb.DIA_COLUMN, menuDaysOfWeek.day)
+
+        val updatedRows = db.update(
+            litDb.MENU_DAYS_OF_WEEK,
+            datos,
+            "${litDb.ID_COLUMN} = ?",
+            arrayOf(menuDaysOfWeek.id!!.toString())
+        )
+
+        return updatedRows == 1
     }
 }

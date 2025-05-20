@@ -202,7 +202,9 @@ class MySQLiteDatabase(context: Context, version: Int) : SQLiteOpenHelper(
         return result
     }
 
-
+    fun updateMenuDaysOfWeekById(menuDaysOfWeek: MenuDaysOfWeek): Boolean {
+        return MenuHandler.updateMenuDaysOfWeekById(writableDatabase, menuDaysOfWeek)
+    }
 
     fun deleteAllProducto(): Boolean {
         val db = writableDatabase

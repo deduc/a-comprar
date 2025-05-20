@@ -3,11 +3,11 @@ package org.ivandev.acomprar.screens.comida.classes
 import org.ivandev.acomprar.database.entities.ComidaEntity
 
 class ComidasYCenasSeparatedLists(
-    _comidas: List<ComidaEntity?> = listOf(),
-    _cenas: List<ComidaEntity?> = listOf()
+    _comidas: MutableList<ComidaEntity?> = mutableListOf(),
+    _cenas: MutableList<ComidaEntity?> = mutableListOf()
 ) {
-    var comidas: List<ComidaEntity?>
-    var cenas: List<ComidaEntity?>
+    var comidas: MutableList<ComidaEntity?>
+    var cenas: MutableList<ComidaEntity?>
 
     init {
         comidas = _comidas

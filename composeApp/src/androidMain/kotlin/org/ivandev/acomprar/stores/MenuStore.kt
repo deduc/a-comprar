@@ -131,8 +131,8 @@ class MenuStore : ViewModel() {
 
     fun getComidasYCenasSeparatedFromDB() {
         initializeComidasYCenasSeparatedLists()
-        _comidasYCenasSeparatedLists.value.comidas = Database.getComidasByTipoId(TipoComidaEnum.COMIDA)
-        _comidasYCenasSeparatedLists.value.cenas = Database.getComidasByTipoId(TipoComidaEnum.CENA)
+        _comidasYCenasSeparatedLists.value.comidas.addAll(Database.getComidasByTipoId(TipoComidaEnum.COMIDA))
+        _comidasYCenasSeparatedLists.value.cenas.addAll(Database.getComidasByTipoId(TipoComidaEnum.CENA))
     }
 
     suspend fun menuDaysOfWeekListAddAll(menuDaysOfWeekListAux: MutableList<MenuDaysOfWeek>) {
@@ -206,7 +206,10 @@ class MenuStore : ViewModel() {
         _checkedList.forEachIndexed {index: Int, selectedDay: State<Boolean> ->
             if (selectedDay.value) {
                 menuDaysOfWeek.add(
-                    MenuDaysOfWeek(null, currentMenuAdded.id, null, null, daysOfWeek[index])
+                    MenuDaysOfWeek(null, currentMenuAdded.id, null, TipoComidaEnum.COMIDA, daysOfWeek[index])
+                )
+                menuDaysOfWeek.add(
+                    MenuDaysOfWeek(null, currentMenuAdded.id, null, TipoComidaEnum.CENA, daysOfWeek[index])
                 )
             }
         }
@@ -223,8 +226,15 @@ class MenuStore : ViewModel() {
     }
 
     private fun initializeComidasYCenasSeparatedLists() {
-        _comidasYCenasSeparatedLists.value.comidas = listOf(null)
-        _comidasYCenasSeparatedLists.value.cenas = listOf(null)
+        _comidasYCenasSeparatedLists.value.comidas = mutableListOf()
+        _comidasYCenasSeparatedLists.value.cenas = mutableListOf()
+
+        _comidasYCenasSeparatedLists.value.comidas.add(
+            ComidaEntity(0, "Sin valor", 0)
+        )
+        _comidasYCenasSeparatedLists.value.cenas.add(
+            ComidaEntity(0, "Sin valor", 0)
+        )
     }
 
     private fun initializeCheckedList() {

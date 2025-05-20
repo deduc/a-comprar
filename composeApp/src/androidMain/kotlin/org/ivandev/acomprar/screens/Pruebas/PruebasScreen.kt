@@ -139,11 +139,11 @@ class PruebasScreen: Screen {
                             menuDOW.forEach { menuRow ->
                                 Row(Modifier.fillMaxWidth()) {
                                     Column(Modifier.weight(1f)) {
-                                        Text("${menuRow.id} - ${menuRow.idMenu} - ${menuRow.idComida.value} - ${menuRow.tipoComida} - ${menuRow.day}")
+                                        Text("${menuRow.id} - ${menuRow.idMenu} - ${menuRow.idComida} - ${menuRow.tipoComida} - ${menuRow.day}")
                                     }
 
                                     Button(onClick = {
-                                        menuDOW.find { it.id == menuRow.id }!!.idComida.value = 47
+                                        menuDOW.find { it.id == menuRow.id }!!.idComida = 47
                                     }) { Text("Cambiar") }
                                 }
                             }

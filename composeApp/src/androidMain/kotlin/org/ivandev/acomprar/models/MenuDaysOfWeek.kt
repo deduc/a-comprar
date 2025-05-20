@@ -1,6 +1,8 @@
 package org.ivandev.acomprar.models
 
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 
 class MenuDaysOfWeek(
     id: Int? = null,
@@ -11,7 +13,7 @@ class MenuDaysOfWeek(
 ) {
     val id: Int? = id
     val idMenu: Int? = idMenu
-    var idComida = mutableStateOf(idComida)
+    var idComida by mutableStateOf<Int?>(idComida)
     var tipoComida: Int? = tipoComida
     val day: String? = day
 }
