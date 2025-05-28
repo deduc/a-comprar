@@ -119,7 +119,7 @@ class MenuStore : ViewModel() {
         initializeCheckedList()
     }
 
-    fun getComidaById(idComida: Int?): ComidaEntity? {
+    fun getComidaByComidaId(idComida: Int?): ComidaEntity? {
         var comida: ComidaEntity? = null
 
         if (idComida != null) {

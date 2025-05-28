@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.Button
 import androidx.compose.material.TextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -32,9 +33,12 @@ import org.ivandev.acomprar.Tools
 import org.ivandev.acomprar.components.CommonScreen
 import org.ivandev.acomprar.components.MyIcons
 import org.ivandev.acomprar.components.MyScrollableColumn
+import org.ivandev.acomprar.components.TextWhite
 import org.ivandev.acomprar.database.entities.ComidaEntity
 import org.ivandev.acomprar.database.entities.MenuEntity
 import org.ivandev.acomprar.models.MenuDaysOfWeek
+import org.ivandev.acomprar.screens.comida.AddComidaPopup
+import org.ivandev.acomprar.stores.ComidaStore
 import org.ivandev.acomprar.stores.MenuStore
 
 class EditMenuScreen(
@@ -51,6 +55,7 @@ class EditMenuScreen(
     fun MainContent(menuEntity: MenuEntity) {
         // instancia única de menuStore en toda la app
         val menuStore: MenuStore = viewModel(LocalContext.current as ViewModelStoreOwner)
+        val comidaStore: ComidaStore = viewModel(LocalContext.current as ViewModelStoreOwner)
         menuStore.setEditingMenu(menuEntity)
 
         var editingMenu: State<MenuEntity?> = menuStore.editingMenu
@@ -61,13 +66,17 @@ class EditMenuScreen(
             menuStore.getMenuDaysOfWeekByMenuId(menuEntity.id)
         }
 
-        MyScrollableColumn {
-            MenuTitleFormulary(menuName, editingMenu.value!!)
-            Spacer(Modifier.height(Tools.height16dp))
-            MenuComidasYCenasTable(menuDaysOfWeekList)
-        }
+        Column {
+            MyScrollableColumn(Modifier.weight(1f)) {
+                MenuTitleFormulary(menuName, editingMenu.value!!)
+                Spacer(Modifier.height(Tools.height16dp))
+                MenuComidasYCenasTable(menuDaysOfWeekList)
+            }
 
-        Popups(menuStore, menuDaysOfWeekList)
+            ButtonsPanel(comidaStore)
+
+            Popups(menuStore, comidaStore, menuDaysOfWeekList)
+        }
     }
 
     @Composable
@@ -128,7 +137,7 @@ class EditMenuScreen(
 
     @Composable
     fun ComidaCell(menuStore: MenuStore, menuDaysOfWeek: MenuDaysOfWeek, isComida: Boolean) {
-        val comida: ComidaEntity? = menuStore.getComidaById(menuDaysOfWeek.idComida)
+        val comida: ComidaEntity? = menuStore.getComidaByComidaId(menuDaysOfWeek.idComida)
 
         val addOrChangeComidaClickableFun: () -> Unit = {
             menuStore.setAddOrChangeProductoPopup(true)
@@ -156,7 +165,7 @@ class EditMenuScreen(
     }
 
     @Composable
-    fun Popups(menuStore: MenuStore, menuDaysOfWeekList: SnapshotStateList<MenuDaysOfWeek>){
+    fun Popups(menuStore: MenuStore, comidaStore: ComidaStore, menuDaysOfWeekList: SnapshotStateList<MenuDaysOfWeek>){
         if (menuStore.addOrChangeProductoPopup.value) {
             AddOrEditComidaInMenuPopup(
                 menuDaysOfWeekEntity = menuDaysOfWeekList.find { it.id == menuStore.menuDaysOfWeekClicked.value!!.id }!!,
@@ -165,6 +174,19 @@ class EditMenuScreen(
                     menuStore.setMenuDaysOfWeekClicked(null)
                 }
             )
+        }
+
+        if (comidaStore.showAddComidaPopup.value) {
+            AddComidaPopup()
+        }
+    }
+
+    @Composable
+    fun ButtonsPanel(comidaStore: ComidaStore) {
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+            Button(onClick = { comidaStore.setShowAddComidaPopup(true) }) {
+                TextWhite(Literals.ButtonsText.ADD_COMIDA)
+            }
         }
     }
 }

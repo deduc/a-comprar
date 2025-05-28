@@ -60,8 +60,7 @@ fun AddOrEditComidaInMenuPopup(menuDaysOfWeekEntity: MenuDaysOfWeek, onDismiss: 
                 TextButton(
                     onClick = {
                         var updatedMenuDOW: MenuDaysOfWeek? = null
-                        val selected = myDropdownMenuDataComidas.comidaSelected.value
-                            ?: myDropdownMenuDataCenas.comidaSelected.value
+                        val selected = myDropdownMenuDataComidas.comidaSelected.value ?: myDropdownMenuDataCenas.comidaSelected.value
 
                         selected?.let { comida ->
                             menuStore.menuDaysOfWeekClicked.value?.let { clicked ->
