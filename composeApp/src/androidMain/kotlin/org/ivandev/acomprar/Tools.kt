@@ -18,6 +18,7 @@ object Tools {
     var height8dp = 8.dp
     var height10dp = 10.dp
     var height16dp = 16.dp
+    var height24dp = 24.dp
     var height32dp = 32.dp
 
     var padding8dp = 8.dp
@@ -35,6 +36,7 @@ object Tools {
 
     var spacer8dpHeight = Modifier.height(height8dp)
     var spacer16dpHeight = Modifier.height(height16dp)
+    var spacer24dpHeight = Modifier.height(height24dp)
     var spacer32dpHeight = Modifier.height(height32dp)
 
     object Notifier {

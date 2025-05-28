@@ -10,7 +10,9 @@ import org.ivandev.acomprar.database.entities.ComidaEntity
 import org.ivandev.acomprar.database.entities.MenuDaysOfWeekEntity
 import org.ivandev.acomprar.database.entities.MenuEntity
 import org.ivandev.acomprar.database.entities.ProductoEntity
+import org.ivandev.acomprar.database.special_classes.CarritoAndProductsData
 import org.ivandev.acomprar.database.special_classes.CategoriaWithProductos
+import org.ivandev.acomprar.models.Carrito
 import org.ivandev.acomprar.models.Categoria
 import org.ivandev.acomprar.models.Comida
 import org.ivandev.acomprar.models.Menu
@@ -19,7 +21,7 @@ import org.ivandev.acomprar.models.Producto
 
 object Database {
     lateinit var mySQLiteDatabase: MySQLiteDatabase
-    private val dbVersion: Int = 20
+    private val dbVersion: Int = 22
 
     fun initializeDatabase(context: Context) {
         mySQLiteDatabase = MySQLiteDatabase(context, dbVersion)
@@ -34,6 +36,9 @@ object Database {
         return mySQLiteDatabase.deleteAllProducto()
     }
 
+    fun addCarrito(carrito: Carrito): Boolean {
+        return mySQLiteDatabase.addCarrito(carrito)
+    }
 
     fun addCategoria(categoriaEntity: Categoria): Boolean {
         return mySQLiteDatabase.addCategoria(categoriaEntity)
@@ -60,12 +65,16 @@ object Database {
     }
 
 
+    fun getCarritoAndProductosByCarritoId(id: Int): CarritoAndProductsData {
+        return mySQLiteDatabase.getCarritoAndProductosByCarritoId(id)
+    }
+
     fun getLastMenu(): MenuEntity? {
         return mySQLiteDatabase.getLastMenu()
     }
 
     fun getAllCarrito(): List<CarritoEntity> {
-        return listOf()
+        return mySQLiteDatabase.getAllCarrito()
     }
 
     fun getAllComidas(): MutableList<ComidaEntity> {
@@ -86,6 +95,10 @@ object Database {
 
     fun getAllProductosByCategoria(): List<CategoriaWithProductos> {
         return mySQLiteDatabase.getAllProductosByCategoria()
+    }
+
+    fun getProductoById(id: Int): ProductoEntity? {
+        return mySQLiteDatabase.getProductoById(id)
     }
 
     fun getProductosByCategoriaId(id: Int): List<ProductoEntity> {
@@ -136,6 +149,10 @@ object Database {
         }
 
         return result
+    }
+
+    fun deleteCarritoById(id: Int): Boolean {
+        return mySQLiteDatabase.deleteCarritoById(id)
     }
 
     fun deleteComidaById(comidaId: Int): Boolean {

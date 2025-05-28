@@ -27,6 +27,7 @@ object Literals {
 
     object ButtonsText {
         const val ADD_CATEGORIA: String = "Añadir categoría"
+        const val ADD_CARRITO: String = "Añadir carrito"
         const val ADD_COMIDA: String = "Añadir comida"
         const val ADD_PRODUCTO: String = "Añadir producto"
         const val ADD_MENU: String = "Añadir menú"

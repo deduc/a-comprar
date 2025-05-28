@@ -4,18 +4,22 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import org.ivandev.acomprar.Literals
+import org.ivandev.acomprar.database.entities.CarritoEntity
 import org.ivandev.acomprar.database.entities.CategoriaEntity
 import org.ivandev.acomprar.database.entities.ComidaEntity
 import org.ivandev.acomprar.database.entities.MenuDaysOfWeekEntity
 import org.ivandev.acomprar.database.entities.MenuEntity
 import org.ivandev.acomprar.database.entities.ProductoEntity
+import org.ivandev.acomprar.database.handlers.CarritoHandler
 import org.ivandev.acomprar.database.handlers.CategoriaHandler
 import org.ivandev.acomprar.database.handlers.ComidaHandler
 import org.ivandev.acomprar.database.handlers.MenuHandler
 import org.ivandev.acomprar.database.handlers.ProductoHandler
 import org.ivandev.acomprar.database.scripts.CreateTables
 import org.ivandev.acomprar.database.scripts.DropTables
+import org.ivandev.acomprar.database.special_classes.CarritoAndProductsData
 import org.ivandev.acomprar.database.special_classes.CategoriaWithProductos
+import org.ivandev.acomprar.models.Carrito
 import org.ivandev.acomprar.models.Categoria
 import org.ivandev.acomprar.models.Comida
 import org.ivandev.acomprar.models.Menu
@@ -44,6 +48,10 @@ class MySQLiteDatabase(context: Context, version: Int) : SQLiteOpenHelper(
         }
     }
 
+    fun addCarrito(carrito: Carrito): Boolean {
+        val db = writableDatabase
+        return CarritoHandler.add(db, carrito)
+    }
 
     fun addCategoria(categoria: Categoria): Boolean {
         val db = writableDatabase
@@ -132,6 +140,9 @@ class MySQLiteDatabase(context: Context, version: Int) : SQLiteOpenHelper(
         return result
     }
 
+    fun getProductoById(id: Int): ProductoEntity? {
+        return ProductoHandler.getById(readableDatabase, id)
+    }
 
     fun getProductosByCategoriaId(id: Int): List<ProductoEntity> {
         val db = readableDatabase
@@ -149,12 +160,23 @@ class MySQLiteDatabase(context: Context, version: Int) : SQLiteOpenHelper(
         return result
     }
 
+    fun getCarritoAndProductosByCarritoId(id: Int): CarritoAndProductsData {
+        return CarritoHandler.getCarritoAndProductosByCarritoId(readableDatabase, id)
+    }
+
     fun getLastMenu(): MenuEntity? {
         val db = readableDatabase
         val lastMenu: MenuEntity? = MenuHandler.getLast(db)
 
         //db.close()
         return lastMenu
+    }
+
+    fun getAllCarrito(): List<CarritoEntity> {
+        val db = readableDatabase
+        val carritos: List<CarritoEntity> = CarritoHandler.getAll(db)
+
+        return carritos
     }
 
     fun getMenuDaysOfWeekByMenuId(menuId: Int): MutableList<MenuDaysOfWeekEntity> {
@@ -226,6 +248,10 @@ class MySQLiteDatabase(context: Context, version: Int) : SQLiteOpenHelper(
         val result = CategoriaHandler.deleteById(db, id)
         //db.close()
         return result
+    }
+
+    fun deleteCarritoById(id: Int): Boolean {
+        return CarritoHandler.deleteById(writableDatabase, id)
     }
 
     fun deleteComidaById(comidaId: Int): Boolean {

@@ -59,6 +59,34 @@ object ProductoHandler {
         return result
     }
 
+    fun getById(db: SQLiteDatabase, id: Int): ProductoEntity? {
+        var producto: ProductoEntity? = null
+
+        val queryResult = db.query(
+            Literals.Database.PRODUCTO_TABLE,
+            null,
+            "${Literals.Database.ID_COLUMN} = ?",
+            arrayOf(id.toString()),
+            null,
+            null,
+            null
+        )
+
+        queryResult.use {
+            if (it.moveToFirst()) {
+                producto = ProductoEntity(
+                    id = it.getInt(it.getColumnIndexOrThrow(Literals.Database.ID_COLUMN)),
+                    idCategoria = it.getInt(it.getColumnIndexOrThrow(Literals.Database.ID_CATEGORIA_COLUMN)),
+                    nombre = it.getString(it.getColumnIndexOrThrow(Literals.Database.NOMBRE_COLUMN)),
+                    cantidad = it.getString(it.getColumnIndexOrThrow(Literals.Database.CANTIDAD_COLUMN)),
+                    marca = it.getString(it.getColumnIndexOrThrow(Literals.Database.MARCA_COLUMN))
+                )
+            }
+        }
+
+        return producto
+    }
+
     fun getProductosByCategoriaId(db: SQLiteDatabase, id: Int): List<ProductoEntity> {
         val productoEntities = mutableListOf<ProductoEntity>()
 
