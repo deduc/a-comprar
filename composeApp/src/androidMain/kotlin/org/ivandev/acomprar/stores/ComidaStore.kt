@@ -24,8 +24,17 @@ class ComidaStore: ViewModel() {
     private var _comidaToEdit = mutableStateOf<ComidaEntity?>(null)
     val comidaToEdit: State<ComidaEntity?> = _comidaToEdit
 
-    private var _showAddOrEditComidaPopup = mutableStateOf<Boolean>(false)
-    val showAddOrEditComidaPopup: State<Boolean> = _showAddOrEditComidaPopup
+    private var _comidaToDelete = mutableStateOf<ComidaEntity?>(null)
+    val comidaToDelete: State<ComidaEntity?> = _comidaToDelete
+
+    private var _tipoComidaToAdd = mutableStateOf<Int>(TipoComidaEnum.COMIDA)
+    val tipoComidaToAdd: State<Int> = _tipoComidaToAdd
+
+    private var _showAddComidaPopup = mutableStateOf<Boolean>(false)
+    val showAddComidaPopup: State<Boolean> = _showAddComidaPopup
+
+    private var _showDeleteComidaPopup = mutableStateOf<Boolean>(false)
+    val showDeleteComidaPopup: State<Boolean> = _showDeleteComidaPopup
 
     fun addComida(comida: Comida): Boolean {
         var result = false
@@ -62,12 +71,28 @@ class ComidaStore: ViewModel() {
         return true
     }
 
-    fun setShowAddOrEditComidaPopup(newValue: Boolean) {
-        _showAddOrEditComidaPopup.value = newValue
+    fun updateComidaNombreById(comida: ComidaEntity): Boolean {
+        return Database.updateComidaById(comida)
+    }
+
+    fun setTipoComidaToAdd(newValue: Int) {
+        _tipoComidaToAdd.value = newValue
+    }
+
+    fun setShowAddComidaPopup(newValue: Boolean) {
+        _showAddComidaPopup.value = newValue
+    }
+
+    fun setShowDeleteComidaPopup(newValue: Boolean) {
+        _showDeleteComidaPopup.value = newValue
     }
 
     fun setComidaToEdit(comida: ComidaEntity) {
         _comidaToEdit.value = comida
+    }
+
+    fun setComidaToDelete(comida: ComidaEntity?) {
+        _comidaToDelete.value = comida
     }
 
     fun getAndSetAllComidasFromDb() {
@@ -103,7 +128,9 @@ class ComidaStore: ViewModel() {
         var result = false
         val deleted = Database.deleteComidaById(comidaId)
 
-        if (deleted) _comidasList.removeAll { it.id == comidaId }
+        if (deleted) {
+            _comidasList.removeAll { it.id == comidaId }
+        }
 
         return result
     }

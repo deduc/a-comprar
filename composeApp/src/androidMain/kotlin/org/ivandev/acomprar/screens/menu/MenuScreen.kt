@@ -12,6 +12,10 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -26,6 +30,7 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import org.ivandev.acomprar.Literals
 import org.ivandev.acomprar.Tools
 import org.ivandev.acomprar.components.CommonScreen
+import org.ivandev.acomprar.components.ConfirmationPopup
 import org.ivandev.acomprar.components.MyIcons
 import org.ivandev.acomprar.components.MyScrollableColumn
 import org.ivandev.acomprar.database.entities.MenuEntity
@@ -86,6 +91,8 @@ class MenuScreen: Screen {
 
     @Composable
     fun MenuRow(menuEntity: MenuEntity, navigator: Navigator, menuStore: MenuStore) {
+        var showDeleteConfirmation by remember { mutableStateOf(false) }
+
         Row(
             modifier = Modifier.fillMaxWidth().border(1.dp, Color.Black).padding(8.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -99,8 +106,16 @@ class MenuScreen: Screen {
             Row {
                 MyIcons.EditIcon { navigator.push(EditMenuScreen(menuEntity.id, menuEntity.nombre)) }
                 Spacer(Modifier.width(Tools.buttonsSpacer8dp))
-                MyIcons.TrashIcon { menuStore.deleteMenu(menuEntity) }
+                MyIcons.TrashIcon { showDeleteConfirmation = true }
             }
+        }
+
+        if (showDeleteConfirmation) {
+            ConfirmationPopup(
+                text = Literals.ConfirmationText.BORRAR_MENU(menuEntity.nombre),
+                onAcceptMethod = { menuStore.deleteMenu(menuEntity) },
+                onDismiss = { showDeleteConfirmation = false }
+            )
         }
     }
 }

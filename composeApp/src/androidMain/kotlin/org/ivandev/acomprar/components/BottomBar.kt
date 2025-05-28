@@ -38,7 +38,7 @@ class BottomBar(val backgroundColor: Color? = null) {
             backgroundColor = this.backgroundColor
 
         Row(
-            modifier = Modifier.fillMaxWidth().background(backgroundColor),
+            modifier = Modifier.fillMaxWidth()/*.background(backgroundColor)*/,
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {

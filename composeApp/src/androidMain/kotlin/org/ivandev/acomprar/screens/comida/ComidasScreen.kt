@@ -17,10 +17,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.Navigator
+import cafe.adriel.voyager.navigator.currentOrThrow
 import kotlinx.coroutines.Dispatchers
 import org.ivandev.acomprar.Literals
 import org.ivandev.acomprar.Tools
 import org.ivandev.acomprar.components.CommonScreen
+import org.ivandev.acomprar.components.ConfirmationPopup
 import org.ivandev.acomprar.components.MyIcons
 import org.ivandev.acomprar.components.MyScrollableColumn
 import org.ivandev.acomprar.database.entities.ComidaEntity
@@ -48,9 +52,7 @@ class ComidasScreen: Screen {
 
             ButtonsPanel(comidaStore)
 
-            if (comidaStore.showAddOrEditComidaPopup.value) {
-                AddOrEditComidaPopup()
-            }
+            PopupsAddDelete(comidaStore)
         }
     }
 
@@ -60,18 +62,26 @@ class ComidasScreen: Screen {
 
         comidasByTipo.forEachIndexed { index: Int, listaTipoComidas: MutableList<ComidaEntity> ->
             val tipoComida: String = TipoComidaEnum.getTipoComidaPluralById(index)
-            Text(tipoComida, style = Tools.styleTitleBlack)
+
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(tipoComida, style = Tools.styleTitleBlack)
+
+                Spacer(Tools.spacer8dpWidth)
+
+                MyIcons.AddIcon {
+                    comidaStore.setShowAddComidaPopup(true)
+                    comidaStore.setTipoComidaToAdd(index)
+                }
+            }
 
             Spacer(Tools.spacer8dpHeight)
 
-            if (listaTipoComidas.isEmpty()) {
-                Text("No hay ${tipoComida}.")
-            }
-            else {
+            if (listaTipoComidas.isNotEmpty()) {
                 listaTipoComidas.forEach { comida: ComidaEntity ->
                     ComidaRowIteration(comida, comidaStore)
                 }
             }
+            else Text("No hay ${tipoComida}.")
 
             Spacer(Tools.spacer16dpHeight)
         }
@@ -79,6 +89,8 @@ class ComidasScreen: Screen {
 
     @Composable
     fun ComidaRowIteration(comida: ComidaEntity, comidaStore: ComidaStore) {
+        val navigator: Navigator = LocalNavigator.currentOrThrow
+
         Row(
             Modifier.fillMaxWidth().then(Tools.styleBorderBlack),
             verticalAlignment = Alignment.CenterVertically,
@@ -90,11 +102,15 @@ class ComidasScreen: Screen {
             Column(Tools.styleBorderBlack.then(Modifier.padding(Tools.padding8dp))) {
                 Row {
                     MyIcons.EditIcon {
-                        comidaStore.setShowAddOrEditComidaPopup(true)
-                        comidaStore.setComidaToEdit(comida)
+//                        comidaStore.setShowAddOrEditComidaPopup(true)
+//                        comidaStore.setComidaToEdit(comida)
+                        navigator.push(EditComidaScreen(comida.id, comida.nombre, comida.tipo))
                     }
                     Spacer(Tools.spacer8dpWidth)
-                    MyIcons.TrashIcon { comidaStore.deleteComidaById(comida.id) }
+                    MyIcons.TrashIcon {
+                        comidaStore.setShowDeleteComidaPopup(true)
+                        comidaStore.setComidaToDelete(comida)
+                    }
                 }
             }
         }
@@ -104,11 +120,30 @@ class ComidasScreen: Screen {
     fun ButtonsPanel(comidaStore: ComidaStore) {
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
             Button(onClick = {
-                comidaStore.setShowAddOrEditComidaPopup(true)
-                comidaStore.clearComidaToEdit()
+                comidaStore.setShowAddComidaPopup(true)
             }) {
                 Text("Añadir comida")
             }
+        }
+    }
+
+    @Composable
+    private fun PopupsAddDelete(comidaStore: ComidaStore) {
+        if (comidaStore.showAddComidaPopup.value) {
+            AddComidaPopup()
+        }
+
+        if (comidaStore.showDeleteComidaPopup.value && comidaStore.comidaToDelete.value != null) {
+            val comidaToDelete: ComidaEntity = comidaStore.comidaToDelete.value!!
+
+            ConfirmationPopup(
+                text = "¿Quieres borrar la comida ${comidaToDelete.nombre}?",
+                onAcceptMethod = { comidaStore.deleteComidaById(comidaToDelete.id) },
+                onDismiss = {
+                    comidaStore.setShowDeleteComidaPopup(false)
+                    comidaStore.setComidaToDelete(null)
+                }
+            )
         }
     }
 }

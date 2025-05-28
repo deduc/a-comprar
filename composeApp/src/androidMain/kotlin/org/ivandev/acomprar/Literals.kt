@@ -25,6 +25,36 @@ object Literals {
     const val MENU_TITLE: String = "Menús"
     const val PRODUCTOS_TITLE: String = "Productos"
 
+    object ButtonsText {
+        const val ADD_CATEGORIA: String = "Añadir categoría"
+        const val ADD_PRODUCTO: String = "Añadir producto"
+        const val ADD_MENU: String = "Añadir menú"
+        const val ADD_TEST_DATA: String = "Añadir datos de prueba"
+        const val CANEL_ACTION: String = "Cancelar"
+        const val DELETE_ALL_PRODUCTS: String = "Borrar todos los productos"
+        const val INITIALIZE_APP: String = "Restablecer datos de fábrica"
+    }
+
+    object ConfirmationText {
+        fun BORRAR_MENU(menuName: String): String {
+            return "¿Confirmas que vas a borrar el menú '$menuName'?"
+        }
+    }
+
+    object DaysOfWeek {
+        const val LUNES: String = "Lunes"
+        const val MARTES: String = "Martes"
+        const val MIERCOLES: String = "Miércoles"
+        const val JUEVES: String = "Jueves"
+        const val VIERNES: String = "Viernes"
+        const val SABADO: String = "Sábado"
+
+        const val DOMINGO: String = "Domingo"
+        fun getDaysOfWeek(): List<String> {
+            return listOf(LUNES, MARTES, MIERCOLES, JUEVES, VIERNES, SABADO, DOMINGO)
+        }
+    }
+
     object Database {
         // DATABASE
         // Base directory for app A Comprar
@@ -81,43 +111,14 @@ object Literals {
         }
     }
 
-    // No SQL tables, just for UI "tables"
-    object UITables {
-        const val NOMBRE_COLUMN: String = "Nombre"
-        const val CANTIDAD_COLUMN: String = "Cantidad"
-        const val OPCIONES_COLUMN: String = "Opciones"
-        const val MARCA_COLUMN: String = "Marca"
-        const val DIA_COLUMN: String = "Día"
-        const val COMIDA_COLUMN: String = "Comida"
-        const val CENA_COLUMN: String = "Cena"
-
-        fun getComidasYCenasTableHeaders(): List<String> {
-            return listOf(DIA_COLUMN, COMIDA_COLUMN, CENA_COLUMN)
-        }
+    object Errors {
+        const val NO_NAME_PROVIDED: String = "ERROR: El campo Nombre no puede estar vacío."
     }
 
-    object DaysOfWeek {
-        const val LUNES: String = "Lunes"
-        const val MARTES: String = "Martes"
-        const val MIERCOLES: String = "Miércoles"
-        const val JUEVES: String = "Jueves"
-        const val VIERNES: String = "Viernes"
-        const val SABADO: String = "Sábado"
-        const val DOMINGO: String = "Domingo"
-
-        fun getDaysOfWeek(): List<String> {
-            return listOf(LUNES, MARTES, MIERCOLES, JUEVES, VIERNES, SABADO, DOMINGO)
+    object ScreenTitles {
+        fun editComidaTitle(nombreComida: String): String {
+            return "Editar $nombreComida"
         }
-    }
-
-    object ButtonsText {
-        const val ADD_CATEGORIA: String = "Añadir categoría"
-        const val ADD_PRODUCTO: String = "Añadir producto"
-        const val ADD_MENU: String = "Añadir menú"
-        const val ADD_TEST_DATA: String = "Añadir datos de prueba"
-        const val CANEL_ACTION: String = "Cancelar"
-        const val DELETE_ALL_PRODUCTS: String = "Borrar todos los productos"
-        const val INITIALIZE_APP: String = "Restablecer datos de fábrica"
     }
 
     object ToastText {
@@ -134,7 +135,18 @@ object Literals {
         const val ERROR_DELETING_ALL_PRODUCTOS = "Error al añadir registros de prueba."
     }
 
-    object Errors {
-        const val NO_NAME_PROVIDED: String = "ERROR: El campo Nombre no puede estar vacío."
+    // No SQL tables, just for UI "tables"
+    object UITables {
+        const val NOMBRE_COLUMN: String = "Nombre"
+        const val CANTIDAD_COLUMN: String = "Cantidad"
+        const val OPCIONES_COLUMN: String = "Opciones"
+        const val MARCA_COLUMN: String = "Marca"
+        const val DIA_COLUMN: String = "Día"
+        const val COMIDA_COLUMN: String = "Comida"
+        const val CENA_COLUMN: String = "Cena"
+
+        fun getComidasYCenasTableHeaders(): List<String> {
+            return listOf(DIA_COLUMN, COMIDA_COLUMN, CENA_COLUMN)
+        }
     }
 }

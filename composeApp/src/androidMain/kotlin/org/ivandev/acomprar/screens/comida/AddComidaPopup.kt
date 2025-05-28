@@ -15,7 +15,6 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -26,44 +25,34 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import org.ivandev.acomprar.Tools
-import org.ivandev.acomprar.database.entities.ComidaEntity
 import org.ivandev.acomprar.enumeration.TipoComidaEnum
 import org.ivandev.acomprar.models.Comida
 import org.ivandev.acomprar.stores.ComidaStore
 
 @Composable
-fun AddOrEditComidaPopup() {
+fun AddComidaPopup() {
     val comidaStore: ComidaStore = viewModel(LocalContext.current as ViewModelStoreOwner)
 
-    val showAddOrEditComidaPopup by remember { mutableStateOf(comidaStore.showAddOrEditComidaPopup) }
-    val comidaToEdit: State<ComidaEntity?> = comidaStore.getComidaToEditValues()
-    var comidaNombre = remember { mutableStateOf(comidaToEdit.value?.nombre ?: "") }
-    val comidaTipo = remember { mutableIntStateOf(comidaToEdit.value?.tipo ?: TipoComidaEnum.COMIDA) }
+    val showAddComidaPopup by remember { mutableStateOf(comidaStore.showAddComidaPopup) }
+    var comidaNombre = remember { mutableStateOf("") }
+    val comidaTipo = remember { mutableIntStateOf(comidaStore.tipoComidaToAdd.value) }
 
-    if (showAddOrEditComidaPopup.value) {
+    if (showAddComidaPopup.value) {
         AlertDialog(
-            onDismissRequest = { comidaStore.setShowAddOrEditComidaPopup(false) },
+            onDismissRequest = { comidaStore.setShowAddComidaPopup(false) },
             confirmButton = {
                 TextButton(onClick = {
-                    if (comidaToEdit.value == null) {
-                        comidaStore.addComida(
-                            Comida(null, comidaNombre.value, comidaTipo.value)
-                        )
-                    }
-                    else {
-                        comidaToEdit.value?.nombre = comidaNombre.value
-                        comidaToEdit.value?.tipo = comidaTipo.value
+                    comidaStore.addComida(
+                        Comida(null, comidaNombre.value, comidaTipo.value)
+                    )
 
-                        comidaStore.updateComida(comidaToEdit.value!!)
-                    }
-
-                    comidaStore.setShowAddOrEditComidaPopup(false)
+                    comidaStore.setShowAddComidaPopup(false)
                 }) {
                     Text("Aceptar")
                 }
             },
             dismissButton = {
-                TextButton(onClick = { comidaStore.setShowAddOrEditComidaPopup(false) }) { Text("Cancelar") }
+                TextButton(onClick = { comidaStore.setShowAddComidaPopup(false) }) { Text("Cancelar") }
             },
             title = { Text("Añadir comida") },
             text = {
