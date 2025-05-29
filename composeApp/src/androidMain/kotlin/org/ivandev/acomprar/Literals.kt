@@ -1,5 +1,7 @@
 package org.ivandev.acomprar
 
+import org.ivandev.acomprar.database.entities.ProductoEntity
+
 object Literals {
     const val APP_NAME: String = "A Comprar!"
     const val ADD_MENU_TITLE: String = "Añadir menú"
@@ -50,8 +52,8 @@ object Literals {
         const val JUEVES: String = "Jueves"
         const val VIERNES: String = "Viernes"
         const val SABADO: String = "Sábado"
-
         const val DOMINGO: String = "Domingo"
+
         fun getDaysOfWeek(): List<String> {
             return listOf(LUNES, MARTES, MIERCOLES, JUEVES, VIERNES, SABADO, DOMINGO)
         }
@@ -103,12 +105,151 @@ object Literals {
             const val FRIGORIFICOS: String = "Frigoríficos"
             const val CONGELADOS: String = "Congelados"
             const val LIMPIEZA: String = "Limpieza"
-            const val COMIDAS: String = "Comidas"
-            const val CENAS: String = "Cenas"
             const val POSTRES: String = "Postres"
+            const val PANADERIA_BOLLERIA: String = "Panadería y bollería"
+            const val PESCADO: String = "Pescado"
+            const val FRUTOS_SECOS: String = "Frutos secos"
+            const val DESAYUNOS: String = "Desayunos"
 
             fun getDefaultCategorias(): List<String> {
-                return listOf(SIN_CATEGORIA, CARNE, PASTA, LACTEOS, FRUTA, VERDURA, FRIGORIFICOS, CONGELADOS, LIMPIEZA, COMIDAS, CENAS, POSTRES)
+                return listOf(
+                    SIN_CATEGORIA, CARNE, PASTA, LACTEOS, FRUTA, VERDURA,
+                    PANADERIA_BOLLERIA, FRIGORIFICOS, CONGELADOS, LIMPIEZA,
+                    POSTRES, PESCADO, FRUTOS_SECOS, DESAYUNOS
+                )
+            }
+        }
+
+        object Productos {
+            val LISTA_PRODUCTOS_BRUTO: List<String> = listOf(
+                "queso lonchas", "bacon lonchas", "pan burger x1", "mini taquitos jamon", "jamon lonchas",
+                "taco jamon", "macarrones", "naranjas", "platanos", "pilas aa", "botes fanta limon",
+                "botes cocacola", "vino", "calabacin x2", "cuerda de atar carnes", "cervezas", "anchoas",
+                "masa empanadillas x2", "judias verdes bote", "patatas", "huevos", "pimientos verdes x5",
+                "pimiento rojo", "cebollas", "ajos", "cuña queso semi curado", "fuet", "pimientos padron dulces",
+                "jamon", "limon x1", "zanahorias", "tomates x3", "papel horno", "pañuelos", "pan bimbo",
+                "pan burger x2", "croisanes x2", "salsa barbacoa", "atun en aceite (no marca didi)",
+                "placas de lasaña verde (directa al horno)", "barra de pan x2", "salchichas", "bacon",
+                "jamon de york", "4 quesos rayado", "brocoli", "puerro", "desodorante papa", "cereales oscar",
+                "papel film transparente", "alcachofas bote x2", "pimientos del piquillo en tiras", "harina",
+                "soja", "leche", "nueces", "natillas", "cafe descafeinado", "calabacin x3", "queso feta",
+                "servilletas", "leche de soja", "caldo de pollo", "pasta pajaritas de colores",
+                "tomate triturado natural", "guantes de latex", "colonia 43", "azucar", "tomate frito",
+                "croisanes rellenos x2", "queso en lonchas x2", "lechuga"
+            )
+
+            val PALABRAS_CLAVE_PRODUCTO_CATEGORIA: Map<String, String> = mapOf(
+                "azucar" to "Sin categoría",
+                "barbacoa" to "Sin categoría",
+                "caldo" to "Sin categoría",
+                "harina" to "Sin categoría",
+                "tomate triturado" to "Sin categoría",
+                "tomate frito" to "Sin categoría",
+                "masa empanadillas" to "Sin categoría",
+
+                "jamon" to "Carne",
+                "bacon" to "Carne",
+                "salchicha" to "Carne",
+                "fuet" to "Carne",
+                "pollo" to "Carne",
+
+                "macarrones" to "Pasta",
+                "pasta" to "Pasta",
+                "lasaña" to "Pasta",
+
+                "queso" to "Lácteos",
+                "leche" to "Lácteos",
+                "soja" to "Lácteos",
+                "yogur" to "Lácteos",
+                "huevos" to "Lácteos",
+                "queso feta" to "Lácteos",
+                "queso en lonchas" to "Lácteos",
+                "queso lonchas" to "Lácteos",
+                "cuña queso semi curado" to "Lácteos",
+                "4 quesos rayado" to "Lácteos",
+
+                "naranja" to "Fruta",
+                "platano" to "Fruta",
+                "limon" to "Fruta",
+                "manzana" to "Fruta",
+
+                "lechuga" to "Verdura",
+                "tomate" to "Verdura",
+                "zanahoria" to "Verdura",
+                "calabacin" to "Verdura",
+                "cebolla" to "Verdura",
+                "pimiento" to "Verdura",
+                "brocoli" to "Verdura",
+                "puerro" to "Verdura",
+                "judia" to "Verdura",
+                "alcachofa" to "Verdura",
+                "piquillo" to "Verdura",
+                "patata" to "Verdura",
+                "ajo" to "Verdura",
+
+                "pan" to "Panadería y bollería",
+                "croisanes" to "Panadería y bollería",
+                "bollería" to "Panadería y bollería",
+                "bollo" to "Panadería y bollería",
+                "pan bimbo" to "Panadería y bollería",
+                "barra de pan" to "Panadería y bollería",
+                "pan burger" to "Panadería y bollería",
+                "croisanes rellenos" to "Panadería y bollería",
+
+                "fanta" to "Frigoríficos",
+                "cocacola" to "Frigoríficos",
+                "cerveza" to "Frigoríficos",
+                "vino" to "Frigoríficos",
+
+                "anchoas" to "Pescado",
+                "atun" to "Pescado",
+
+                "congelado" to "Congelados",
+
+                "desodorante" to "Limpieza",
+                "pañuelo" to "Limpieza",
+                "servilleta" to "Limpieza",
+                "guantes" to "Limpieza",
+                "papel" to "Limpieza",
+                "film" to "Limpieza",
+                "cuerda" to "Limpieza",
+                "colonia" to "Limpieza",
+
+                "nuez" to "Frutos secos",
+                "nueces" to "Frutos secos",
+
+                "cereal" to "Desayunos",
+                "cereales" to "Desayunos",
+                "cafe" to "Desayunos",
+                "cafe descafeinado" to "Desayunos",
+
+                "natilla" to "Postres"
+            )
+
+            fun doBuildProductoEntityList(lista: List<String>): List<ProductoEntity> {
+                val categorias = Categorias.getDefaultCategorias()
+
+                return lista.map { item ->
+                    val regex = Regex("^(.*?)(?:\\s+x?(\\d+))?$")
+                    val match = regex.find(item.trim())
+
+                    val nombreLimpio = match?.groupValues?.get(1)?.trim()?.lowercase() ?: item.lowercase()
+                    val cantidadExtraida = match?.groupValues?.get(2)?.takeIf { it.isNotEmpty() }?.let { "$it ud" } ?: "1 ud"
+
+                    // Buscar la categoría por palabra clave
+                    val categoria = PALABRAS_CLAVE_PRODUCTO_CATEGORIA.entries.firstOrNull { (clave, _) -> nombreLimpio.contains(clave) }?.value ?: Categorias.SIN_CATEGORIA
+
+                    val idCategoria = categorias.indexOfFirst { it.equals(categoria, ignoreCase = true) }
+                        .takeIf { it >= 0 } ?: 0
+
+                    ProductoEntity(
+                        id = 0,
+                        idCategoria = idCategoria,
+                        nombre = nombreLimpio.replaceFirstChar { it.uppercase() },
+                        cantidad = cantidadExtraida,
+                        marca = null
+                    )
+                }
             }
         }
     }

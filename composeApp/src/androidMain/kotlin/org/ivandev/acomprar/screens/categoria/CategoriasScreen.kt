@@ -79,7 +79,7 @@ class CategoriasScreen : Screen {
                 Row(Modifier.fillMaxWidth().border(1.dp, Color.Black), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
 
                     Column(Modifier.weight(0.65f)) {
-                        Text(categoriaEntity.nombre, Modifier.padding(Tools.padding8dp))
+                        Text("${categoriaEntity.id} - ${categoriaEntity.nombre}", Modifier.padding(Tools.padding8dp))
                     }
 
                     Column(Modifier.weight(0.35f).border(1.dp, Color.Black)) {

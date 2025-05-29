@@ -21,10 +21,14 @@ import org.ivandev.acomprar.models.Producto
 
 object Database {
     lateinit var mySQLiteDatabase: MySQLiteDatabase
-    private val dbVersion: Int = 22
+    private val dbVersion: Int = 23
 
     fun initializeDatabase(context: Context) {
         mySQLiteDatabase = MySQLiteDatabase(context, dbVersion)
+    }
+
+    fun pruebas() {
+        mySQLiteDatabase.pruebas()
     }
 
     fun importJsonData() {}

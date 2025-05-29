@@ -25,6 +25,8 @@ class MainActivity : ComponentActivity() {
         Database.initializeDatabase(context)
         Tools.Notifier.init(context)
 
+        Database.pruebas()
+
         val screenToShow = remember { HomeScreen() }
         MaterialTheme {
 //            Navigator(screen = screenToShow) { navigator ->

@@ -311,6 +311,12 @@ class MySQLiteDatabase(context: Context, version: Int) : SQLiteOpenHelper(
     private fun initializeData(db: SQLiteDatabase) {
         println("Inicializando base de datos")
         CategoriaHandler.initialize(db)
+        ProductoHandler.initialize(db)
+    }
+
+    fun pruebas() {
+        dropTables(writableDatabase)
+        setupDatabase(writableDatabase)
     }
 
     private fun dropTables(db: SQLiteDatabase){

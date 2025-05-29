@@ -25,6 +25,21 @@ object ProductoHandler {
             return true
     }
 
+    fun initialize(database: SQLiteDatabase) {
+        val productos = Literals.Database.Productos.doBuildProductoEntityList(
+            Literals.Database.Productos.LISTA_PRODUCTOS_BRUTO
+        )
+
+        productos.forEach { producto ->
+            database.insert(Literals.Database.PRODUCTO_TABLE, null, ContentValues().apply {
+                put(Literals.Database.ID_CATEGORIA_COLUMN, producto.idCategoria)
+                put(Literals.Database.NOMBRE_COLUMN, producto.nombre)
+                put(Literals.Database.CANTIDAD_COLUMN, producto.cantidad)
+                put(Literals.Database.MARCA_COLUMN, producto.marca)
+            })
+        }
+    }
+
     fun deleteById(db: SQLiteDatabase, id: Int): Boolean {
         val deletedRows: Int = db.delete(
             Literals.Database.PRODUCTO_TABLE,
