@@ -31,7 +31,7 @@ import org.ivandev.acomprar.models.Menu
 import org.ivandev.acomprar.stores.MenuStore
 
 @Composable
-fun AddMenuPopup(onDismiss: () -> Unit) {
+fun AddMenuPopup() {
     val menuStore: MenuStore = viewModel(LocalContext.current as ViewModelStoreOwner)
     var menuName = remember { mutableStateOf("") }
     val checkedList: SnapshotStateList<MutableState<Boolean>> = menuStore.checkedList
@@ -44,7 +44,10 @@ fun AddMenuPopup(onDismiss: () -> Unit) {
 
     if (menuStore.showAddMenuPopup.value) {
         AlertDialog(
-            onDismissRequest = onDismiss,
+            onDismissRequest = {
+                menuStore.deleteCheckedData()
+                menuStore.setShowAddMenuPopup(false)
+            },
             confirmButton = {
                 TextButton(
                     onClick = {
@@ -56,13 +59,16 @@ fun AddMenuPopup(onDismiss: () -> Unit) {
                 }
             },
             dismissButton = {
-                TextButton(onClick = onDismiss) {
+                TextButton(onClick = {
+                    menuStore.deleteCheckedData()
+                    menuStore.setShowAddMenuPopup(false)
+                }) {
                     Text(Literals.ButtonsText.CANEL_ACTION)
                 }
             },
+            title = { Text(Literals.ADD_MENU_TITLE, style = Tools.styleTitleUnderlineBlack) },
             text = {
                 Column {
-                    Text(Literals.ADD_MENU_TITLE, style = Tools.styleTitleUnderlineBlack)
                     Spacer(Tools.spacer8dpHeight)
 
                     Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
@@ -88,7 +94,9 @@ private fun DaysOfWeekFormulary(menuStore: MenuStore, checkedList: SnapshotState
     Column {
         rows.forEachIndexed { rowIndex, rowItems ->
             Row(
-                Modifier.fillMaxWidth().padding(vertical = 4.dp),
+                Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 4.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -97,7 +105,10 @@ private fun DaysOfWeekFormulary(menuStore: MenuStore, checkedList: SnapshotState
                     val checkedState = checkedList[index]
 
                     Row(
-                        Modifier.weight(1f).padding(8.dp).clickable { checkedState.value = !checkedState.value },
+                        Modifier
+                            .weight(1f)
+                            .padding(8.dp)
+                            .clickable { checkedState.value = !checkedState.value },
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Checkbox(

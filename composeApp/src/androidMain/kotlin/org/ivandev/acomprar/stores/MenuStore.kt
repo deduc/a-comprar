@@ -36,9 +36,6 @@ class MenuStore : ViewModel() {
     private var _editingMenu = mutableStateOf<MenuEntity?>(null)
     val editingMenu: State<MenuEntity?> = _editingMenu
 
-    private var _addedMenu = mutableStateOf<Boolean>(false)
-    var addedMenu: State<Boolean> = _addedMenu
-
     private val _comidasYCenasByMenuId = mutableStateListOf<ComidaEntity?>()
     val comidasYCenasByMenuId: SnapshotStateList<ComidaEntity?> = _comidasYCenasByMenuId
 
@@ -65,14 +62,10 @@ class MenuStore : ViewModel() {
         initializeCheckedList()
     }
 
-    fun clearMenuDaysOfWeekList() {
-        _menuDaysOfWeekList.clear()
-    }
-
     fun onConfirmAddMenu(menu: Menu, checkedList: SnapshotStateList<MutableState<Boolean>>) {
         viewModelScope.launch {
             val added = addMenuAndItsDays(menu, checkedList)
-            setShowAddMenuPopup(added)
+            if (added) setShowAddMenuPopup(false)
         }
     }
     suspend fun addMenuAndItsDays(menu: Menu, checkedList: SnapshotStateList<MutableState<Boolean>>): Boolean {
@@ -155,12 +148,7 @@ class MenuStore : ViewModel() {
     }
 
     fun setShowAddMenuPopup(newValue: Boolean) {
-        _showAddMenuPopup.value = !newValue
-        setAddedMenu(!newValue)
-    }
-
-    fun setAddedMenu(newValue: Boolean) {
-        _addedMenu.value = newValue
+        _showAddMenuPopup.value = newValue
     }
 
     fun toggleShowAddMenuPopup(newValue: Boolean) {

@@ -74,18 +74,15 @@ class MenuScreen: Screen {
                 horizontalArrangement = Arrangement.End,
                 verticalAlignment = Alignment.Bottom
             ) {
-                Button(onClick = { menuStore.toggleShowAddMenuPopup(true) }) {
+                Button(onClick = { menuStore.setShowAddMenuPopup(true) }) {
                     Text(Literals.ButtonsText.ADD_MENU)
                 }
             }
         }
 
+        /* Popups */
         if (menuStore.showAddMenuPopup.value) {
-            AddMenuPopup(onDismiss = {
-                menuStore.toggleShowAddMenuPopup(false)
-                menuStore.deleteCheckedData()
-                menuStore.setShowAddMenuPopup(false)
-            })
+            AddMenuPopup()
         }
     }
 
