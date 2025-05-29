@@ -167,13 +167,7 @@ class EditMenuScreen(
     @Composable
     fun Popups(menuStore: MenuStore, comidaStore: ComidaStore, menuDaysOfWeekList: SnapshotStateList<MenuDaysOfWeek>){
         if (menuStore.addOrChangeProductoPopup.value) {
-            AddOrEditComidaInMenuPopup(
-                menuDaysOfWeekEntity = menuDaysOfWeekList.find { it.id == menuStore.menuDaysOfWeekClicked.value!!.id }!!,
-                onDismiss = {
-                    menuStore.setAddOrChangeProductoPopup(false)
-                    menuStore.setMenuDaysOfWeekClicked(null)
-                }
-            )
+            AddOrEditComidaInMenuPopup(menuDaysOfWeekList.find { it.id == menuStore.menuDaysOfWeekClicked.value!!.id }!!, menuStore)
         }
 
         if (comidaStore.showAddComidaPopup.value) {
