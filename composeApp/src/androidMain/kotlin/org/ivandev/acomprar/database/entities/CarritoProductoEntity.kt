@@ -2,5 +2,6 @@ package org.ivandev.acomprar.database.entities
 
 class CarritoProductoEntity(
     val idCarrito: Int,
-    val idProducto: Int
+    val idProducto: Int,
+    val cantidad: Int
 )

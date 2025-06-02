@@ -40,23 +40,35 @@ class TopBar(
         val settingsIcon: VectorPainter = rememberVectorPainter(Icons.Default.Settings)
         val arrowBackIcon: VectorPainter = rememberVectorPainter(Icons.AutoMirrored.Filled.ArrowBack)
 
-        Row(
-            modifier = Modifier.fillMaxWidth().background(backgroundColor).height(56.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = title,
-                color = Color.White,
-                modifier = Modifier.padding(16.dp),
-                style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold)
-            )
+        if (title == Literals.HOME_TITLE) {
+            Row(
+                modifier = Modifier.fillMaxWidth().background(backgroundColor).height(56.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = title,
+                    color = Color.White,
+                    modifier = Modifier.padding(16.dp),
+                    style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                )
 
-            if (title == Literals.HOME_TITLE) {
                 ConfigButton(navigator, settingsIcon)
             }
-            else {
+
+        }
+        else {
+            Row(
+                modifier = Modifier.fillMaxWidth().background(backgroundColor).height(56.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 GoBackButton(navigator, arrowBackIcon)
+
+                Text(
+                    text = title,
+                    color = Color.White,
+                    style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                )
             }
         }
     }

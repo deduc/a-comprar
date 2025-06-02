@@ -77,7 +77,7 @@ class CarritosScreen(): Screen {
                     }
 
                     Row(Modifier.padding(8.dp).weight(0.2f)) {
-                        MyIcons.ViewIcon { navigator.push(SeeOrEditCarritoScreen(it.id)) }
+                        MyIcons.EditIcon { navigator.push(EditCarritoScreen(it.id)) }
                         Spacer(Tools.spacer8dpWidth)
                         MyIcons.TrashIcon { carritoStore.deleteCarritoById(it.id) }
                     }

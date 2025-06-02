@@ -267,6 +267,7 @@ object Literals {
     object ToastText {
         const val ADDED_DATA_TEST = "Datos de prueba añadidos."
         const val ADDED_MENU = "Menú añadido."
+        const val ADDED_PRODUCTO = "Producto añadido."
 
         const val DELETED_ALL_PRODUCTOS = "Productos borrados."
 
@@ -274,6 +275,7 @@ object Literals {
         const val ERROR_ADDING_MENU = "Error al añadir el menú."
         const val ERROR_ADDING_MENU_DAYS = "Error al añadir los días del menú."
         const val ERROR_VOID_DATA = "Error no has rellenado suficientes datos."
+        const val ERROR_ADDING_PRODUCTO_TO_UNKNOWN_CARRITO = "Error añadiendo el producto a un carrito desconocido"
 
         const val ERROR_DELETING_ALL_PRODUCTOS = "Error al añadir registros de prueba."
     }
