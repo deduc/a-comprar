@@ -9,6 +9,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.runtime.Composable
@@ -37,12 +38,15 @@ object MyIcons {
     }
 
     @Composable
-    fun EditIcon(onClick: () -> Unit) {
+    fun EditIcon(
+        modifier: Modifier = Modifier,
+        onClick: () -> Unit)
+    {
         val icon: VectorPainter = rememberVectorPainter(Icons.Default.Edit)
         Icon(
             painter = icon,
             contentDescription = "Edit",
-            modifier = Modifier.size(24.dp).clickable { onClick() },
+            modifier = Modifier.size(24.dp).clickable { onClick() }.then(modifier),
             tint = Color.Black
         )
     }
@@ -72,6 +76,17 @@ object MyIcons {
     @Composable
     fun SaveIcon(onClick: () -> Unit) {
         val icon: VectorPainter = rememberVectorPainter(Icons.Default.Save)
+        Icon(
+            painter = icon,
+            contentDescription = "Save",
+            modifier = Modifier.size(24.dp).clickable { onClick() },
+            tint = Color.Black
+        )
+    }
+
+    @Composable
+    fun RemoveIcon(onClick: () -> Unit) {
+        val icon: VectorPainter = rememberVectorPainter(Icons.Default.Remove)
         Icon(
             painter = icon,
             contentDescription = "Save",

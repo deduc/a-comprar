@@ -143,6 +143,10 @@ class MySQLiteDatabase(context: Context, version: Int) : SQLiteOpenHelper(
         return result
     }
 
+    fun getCategoriaIdByProductoId(producto: Producto): Int {
+        return ProductoHandler.getCategoriaIdByProductoId(readableDatabase, producto)
+    }
+
     fun getProductoById(id: Int): ProductoEntity? {
         return ProductoHandler.getById(readableDatabase, id)
     }

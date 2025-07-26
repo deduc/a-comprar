@@ -24,6 +24,7 @@ import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import org.ivandev.acomprar.Literals
 import org.ivandev.acomprar.components.CommonScreen
+import org.ivandev.acomprar.components.MyScrollableColumn
 import org.ivandev.acomprar.database.entities.CategoriaEntity
 import org.ivandev.acomprar.stores.CarritoStore
 import org.ivandev.acomprar.stores.CategoriaStore
@@ -45,33 +46,33 @@ class SeeCategoriasScreen: Screen {
         val categoriasGrouped: List<List<CategoriaEntity>> = categorias.chunked(2)
         val navigator: Navigator = LocalNavigator.currentOrThrow
 
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+        MyScrollableColumn(
         ) {
-            categoriasGrouped.forEach { categorias ->
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    categorias.forEach { categoria ->
-                        Text(
-                            text = categoria.nombre,
-                            modifier = Modifier.border(1.dp, Color.Black).padding(16.dp).weight(1f).clickable { goAddProductos(categoria.id, navigator) },
-                            style = TextStyle(textAlign = TextAlign.Center),
-                        )
-                    }
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                categoriasGrouped.forEach { categorias ->
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        categorias.forEach { categoria ->
+                            Text(
+                                text = categoria.nombre,
+                                modifier = Modifier.border(1.dp, Color.Black).padding(16.dp).weight(1f)
+                                    .clickable { navigator.push(SeeProductosToAddByCategoria(categoria.id)) },
+                                style = TextStyle(textAlign = TextAlign.Center),
+                            )
+                        }
 
-                    // Si hay solo una categoría en la fila (cuando el número es impar), añadimos un Spacer
-                    if (categorias.size == 1) {
-                        Spacer(modifier = Modifier.weight(1f)) // Ocupa el hueco del segundo texto
+                        // Si hay solo una categoría en la fila (cuando el número es impar), añadimos un Spacer
+                        if (categorias.size == 1) {
+                            Spacer(modifier = Modifier.weight(1f)) // Ocupa el hueco del segundo texto
+                        }
                     }
                 }
             }
         }
-    }
-
-    fun goAddProductos(idCategoria: Int, navigator: Navigator) {
-        navigator.push(SeeProductosToAddByCategoria(idCategoria))
     }
 }

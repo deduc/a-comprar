@@ -1,6 +1,5 @@
 package org.ivandev.acomprar.components
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -44,7 +43,7 @@ class BottomBar(val backgroundColor: Color? = null) {
         ) {
             Button(
                 onClick = { navigator.popUntilRoot()},
-                modifier = Modifier.background(Color.Red).fillMaxWidth()
+                modifier = Modifier.fillMaxWidth()
             ) {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,

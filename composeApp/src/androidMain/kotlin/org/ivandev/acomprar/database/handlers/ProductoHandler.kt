@@ -150,6 +150,27 @@ object ProductoHandler {
         return productsByCategoria
     }
 
+    fun getCategoriaIdByProductoId(db: SQLiteDatabase, producto: Producto): Int {
+        var idCategoria = 0
+
+        val cursor = db.query(
+            Literals.Database.PRODUCTO_TABLE,
+            arrayOf(Literals.Database.ID_CATEGORIA_COLUMN),
+            "id = ?",
+            arrayOf(producto.id.toString()),
+            null,
+            null,
+            null
+        )
+
+        if (cursor.moveToFirst()) {
+            idCategoria = cursor.getInt(cursor.getColumnIndexOrThrow(Literals.Database.ID_CATEGORIA_COLUMN))
+        }
+
+        cursor.close()
+        return idCategoria
+    }
+
     fun updateById(db: SQLiteDatabase, productoEntity: ProductoEntity): Boolean {
         var productKeyValueColumn = ContentValues()
         productKeyValueColumn.put(Literals.Database.ID_COLUMN, productoEntity.id)

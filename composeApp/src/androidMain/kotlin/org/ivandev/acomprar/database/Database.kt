@@ -105,6 +105,11 @@ object Database {
         return mySQLiteDatabase.getAllProductosByCategoria()
     }
 
+    fun getCategoriaIdByProductoId(producto: Producto): Int {
+        return mySQLiteDatabase.getCategoriaIdByProductoId(producto)
+    }
+
+
     fun getProductoById(id: Int): ProductoEntity? {
         return mySQLiteDatabase.getProductoById(id)
     }

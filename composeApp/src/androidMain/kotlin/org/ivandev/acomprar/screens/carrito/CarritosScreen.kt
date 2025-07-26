@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -72,12 +73,22 @@ class CarritosScreen(): Screen {
         else {
             carritos.forEach {
                 Row(Modifier.fillMaxWidth().then(Tools.styleBorderBlack), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
-                    Row(Modifier.padding(8.dp).weight(0.8f)) {
-                        Text("${it.name}\n   ${it.description}")
+                    Column(Modifier.padding(8.dp).weight(1f)) {
+                        Text(it.name, style = Tools.styleTitleBlack)
+
+                        Row(Modifier.padding(4.dp)) {
+                            Spacer(Modifier.width(8.dp))
+                            Text(it.description)
+                        }
                     }
 
-                    Row(Modifier.padding(8.dp).weight(0.2f)) {
-                        MyIcons.EditIcon { navigator.push(EditCarritoScreen(it.id)) }
+                    Row(Modifier.padding(8.dp)) {
+                        MyIcons.ViewIcon { navigator.push(EditCarritoScreen(it.id)) }
+                        Spacer(Tools.spacer8dpWidth)
+                        MyIcons.EditIcon {
+                            // todo: asignar el nombre y descripcion de ESTE carrito a los datos iniciales del popup
+                            carritoStore.setShowAddCarritoPopup(true)
+                        }
                         Spacer(Tools.spacer8dpWidth)
                         MyIcons.TrashIcon { carritoStore.deleteCarritoById(it.id) }
                     }

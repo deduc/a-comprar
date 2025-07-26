@@ -72,6 +72,12 @@ class ProductoStore : ViewModel() {
         }
     }
 
+    suspend fun getCategoriaIdByProductoId(producto: Producto): Int {
+        return withContext(Dispatchers.IO) {
+            Database.getCategoriaIdByProductoId(producto)
+        }
+    }
+
     fun updateProductoById(productoEntity: ProductoEntity) {
         val updated = Database.updateProductoById(productoEntity)
 

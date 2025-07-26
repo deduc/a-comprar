@@ -73,6 +73,25 @@ class CarritoStore: ViewModel() {
         }
     }
 
+    fun doFixCantidadStr(str: String?, cantidad: Int): String {
+        if (str == null)
+            return ""
+
+        val regex = Regex("""^(\d+(?:[.,]\d+)?)(\s*\D.*)?$""")
+        val match = regex.find(str.trim())
+
+        return if (match != null) {
+            val numberStr = match.groupValues[1].replace(",", ".")
+            val unidad = match.groupValues.getOrNull(2)?.trimStart() ?: ""
+            val number = numberStr.toDoubleOrNull() ?: return str
+            val total = number * cantidad
+
+            val totalStr = if (numberStr.contains('.')) "%.2f".format(total) else total.toInt().toString()
+            "$totalStr$unidad"
+        } else {
+            str
+        }
+    }
 
     fun deleteCarritoById(id: Int) {
         if (Database.deleteCarritoById(id)) Tools.Notifier.showToast("Carrito borrado.")
