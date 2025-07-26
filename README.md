@@ -1,11 +1,9 @@
-This is a Kotlin Multiplatform project targeting Android.
+# A Comprar!
+Proyecto creado con kotlin multiplataforma.
 
-* `/composeApp` is for code that will be shared across your Compose Multiplatform applications.
-  It contains several subfolders:
-  - `commonMain` is for code that’s common for all targets.
-  - Other folders are for Kotlin code that will be compiled for only the platform indicated in the folder name.
-    For example, if you want to use Apple’s CoreCrypto for the iOS part of your Kotlin app,
-    `iosMain` would be the right folder for such calls.
+Aplicación Android que permite a los usuarios gestionar listas de la compra y carritos para saber qué comprar.
+¿Harto de apuntar "huevos pan leche azucar" 500 veces al año? Con esta aplicación podrás configurar varias listas de la compra y con un click saber qué tienes que comprar para esa cena de navidad o la compra de la semana.
 
+Kotlin + Jetpack Compose + SQLite.
 
-Learn more about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html)…
+Proximamente en la app store.
