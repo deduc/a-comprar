@@ -86,6 +86,11 @@ class MySQLiteDatabase(context: Context, version: Int) : SQLiteOpenHelper(
         return CarritoHandler.addProductoToCurrentCarrito(writableDatabase, carrito, producto)
     }
 
+    fun substractProductoToCurrentCarrito(carrito: CarritoEntity, producto: ProductoEntity): Boolean {
+        return CarritoHandler.substractProductoToCurrentCarrito(writableDatabase, carrito, producto)
+    }
+
+
     fun addMenuAndComidasYCenas(menu: Menu): Boolean {
         val db = writableDatabase
         val result = MenuHandler.insert(db, menu)

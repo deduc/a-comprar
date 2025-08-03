@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -17,6 +18,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -26,7 +29,7 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import org.ivandev.acomprar.Literals
 import org.ivandev.acomprar.Tools
 import org.ivandev.acomprar.components.CommonScreen
-import org.ivandev.acomprar.components.MyIcons
+import org.ivandev.acomprar.components.MyScrollableColumn
 import org.ivandev.acomprar.database.entities.CarritoEntity
 import org.ivandev.acomprar.database.entities.ProductoEntity
 import org.ivandev.acomprar.database.special_classes.CarritoAndProductsData
@@ -70,7 +73,7 @@ class EditCarritoScreen(val idCarrito: Int): Screen {
 
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
             Button(onClick = { navigator.push(SeeCategoriasScreen()) }) {
-                Text("Añadir productos")
+                Text(Literals.ButtonsText.MANAGE_PRODUCTS)
             }
         }
     }
@@ -94,37 +97,54 @@ class EditCarritoScreen(val idCarrito: Int): Screen {
     }
 
     @Composable
-    fun CarritoProductsData(carritoAndProductos: CarritoAndProductsData, carritoStore: CarritoStore) {
+    fun CarritoProductsData(
+        carritoAndProductos: CarritoAndProductsData,
+        carritoStore: CarritoStore
+    ) {
         val categoriaStore: CategoriaStore = viewModel(LocalContext.current as ViewModelStoreOwner)
-        val productosAndCantidades: MutableList<Pair<ProductoEntity, Int>> = carritoAndProductos.productosAndCantidades
+        val productosAndCantidades: List<Pair<ProductoEntity, Int>> = carritoAndProductos.productosAndCantidades
 
-        Column {
-            if (productosAndCantidades.isNotEmpty()) {
-                Column {
-                    productosAndCantidades.forEach { it: Pair<ProductoEntity, Int> ->
-                        var newCantidad = carritoStore.doFixCantidadStr(it.first.cantidad, it.second)
+        // Agrupar productos por categoría
+        val productosPorCategoria: Map<Int, List<Pair<ProductoEntity, Int>>> = productosAndCantidades.groupBy { it.first.idCategoria }
 
-                        Row(
-                            Modifier.border(1.dp, Color.Black).padding(4.dp).fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Row {
-                                Text(it.first.nombre, Modifier.weight(0.6f))
-                                Text(newCantidad, Modifier.weight(0.4f))
+        MyScrollableColumn {
+            Column {
+                if (productosAndCantidades.isEmpty()) {
+                    Text("Sin productos.")
+                }
+                else {
+                    productosPorCategoria.forEach { (categoriaId: Int, productosAndCantidades: List<Pair<ProductoEntity, Int>>) ->
+                        val categoriaNombre = categoriaStore.getCategoriaNameById(categoriaId, categoriaStore.categorias.value)
+
+                        Text(
+                            categoriaNombre,
+                            Modifier.padding(vertical = 8.dp),
+                            style = TextStyle(fontSize = Tools.titleFontSize)
+                        )
+
+                        productosAndCantidades.forEach { (producto: ProductoEntity, cantidad: Int) ->
+                            val cantidadFixed = carritoStore.doFixCantidadStr(producto.cantidad, cantidad)
+
+                            Row(Modifier.fillMaxWidth(0.7f), verticalAlignment = Alignment.CenterVertically) {
+                                Text(
+                                    text = producto.nombre,
+                                    modifier = Modifier.weight(1f),
+                                    maxLines = Int.MAX_VALUE,
+                                    overflow = TextOverflow.Clip
+                                )
+
+                                Spacer(modifier = Modifier.width(8.dp))
+
+                                Text(cantidadFixed, Modifier.align(Alignment.CenterVertically))
                             }
-
-                            Row {
-                                MyIcons.AddIcon {  }
-                                MyIcons.RemoveIcon {  }
-                            }
+                            Spacer(Modifier.height(Tools.height8dp))
                         }
                         Spacer(Modifier.height(Tools.height8dp))
                     }
                 }
             }
-            else {
-                Text("Sin productos.")
-            }
+            //fin column
         }
+        // fin MyScrollableColumn
     }
 }

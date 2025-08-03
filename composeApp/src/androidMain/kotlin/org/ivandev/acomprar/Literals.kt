@@ -37,6 +37,7 @@ object Literals {
         const val CANEL_ACTION: String = "Cancelar"
         const val DELETE_ALL_PRODUCTS: String = "Borrar todos los productos"
         const val INITIALIZE_APP: String = "Restablecer datos de fábrica"
+        const val MANAGE_PRODUCTS: String = "Gestionar productos"
     }
 
     object ConfirmationText {
@@ -269,11 +270,15 @@ object Literals {
         const val ADDED_MENU = "Menú añadido."
         const val ADDED_PRODUCTO = "Producto añadido."
 
+        const val REMOVED_PRODUCTO = "Producto restado."
+
         const val DELETED_ALL_PRODUCTOS = "Productos borrados."
 
         const val ERROR_ADDING_DATA_TEST = "Error al añadir registros de prueba."
+        const val ERROR_ADDING_PRODUCTO = "Error al manejar el producto."
         const val ERROR_ADDING_MENU = "Error al añadir el menú."
         const val ERROR_ADDING_MENU_DAYS = "Error al añadir los días del menú."
+        const val ERROR_MANAGING_PRODUCTO = "Error inesperado al sumar o restar producto."
         const val ERROR_VOID_DATA = "Error no has rellenado suficientes datos."
         const val ERROR_ADDING_PRODUCTO_TO_UNKNOWN_CARRITO = "Error añadiendo el producto a un carrito desconocido"
 

@@ -60,7 +60,12 @@ object Database {
         return mySQLiteDatabase.addProductoToCurrentCarrito(carrito, producto)
     }
 
-        fun addMenu(menu: Menu): Boolean {
+    fun substractProductoToCurrentCarrito(carrito: CarritoEntity, producto: ProductoEntity): Boolean {
+        return mySQLiteDatabase.substractProductoToCurrentCarrito(carrito, producto)
+    }
+
+
+    fun addMenu(menu: Menu): Boolean {
         return mySQLiteDatabase.addMenuAndComidasYCenas(menu)
     }
 
