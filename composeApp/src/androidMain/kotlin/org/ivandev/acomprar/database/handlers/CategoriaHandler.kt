@@ -16,34 +16,34 @@ object CategoriaHandler {
     }
 
     fun getAll(db: SQLiteDatabase): MutableList<CategoriaEntity> {
-        val command = "SELECT * FROM ${Literals.Database.CATEGORIA_TABLE}"
         val result = mutableListOf<CategoriaEntity>()
 
-        db.rawQuery(command, null).use { cursor ->
-            if (cursor.moveToFirst()) {
-                do {
-                    result.add(
-                        CategoriaEntity(
-                            cursor.getInt(0),
-                            cursor.getString(1)
+        db.rawQuery(
+            "SELECT * FROM ${Literals.Database.CATEGORIA_TABLE}",
+            null
+        )
+            .use { cursor ->
+                if (cursor.moveToFirst()) {
+                    do {
+                        result.add(
+                            CategoriaEntity(
+                                cursor.getInt(0),
+                                cursor.getString(1)
+                            )
                         )
-                    )
-                } while (cursor.moveToNext())
+                    } while (cursor.moveToNext())
+                }
             }
-        }
         return result
     }
 
     fun deleteById(db: SQLiteDatabase, id: Int): Boolean {
-        val deletedRows: Int = db.delete(
+        return db.delete(
             Literals.Database.CATEGORIA_TABLE,
             "${Literals.Database.ID_COLUMN} = ?",
             arrayOf("${id}")
-        )
-
-        return deletedRows == 1
+        ) == 1
     }
-
 
     fun initialize(db: SQLiteDatabase) {
         val categoriasList: List<String> = Literals.Database.Categorias.getDefaultCategorias()
@@ -64,20 +64,16 @@ object CategoriaHandler {
         }
     }
 
-
-
     fun updateCategoriaById(db: SQLiteDatabase, categoriaEntity: CategoriaEntity): Boolean {
         var categoriaNameColumn = ContentValues()
         categoriaNameColumn.put(Literals.Database.NOMBRE_COLUMN, categoriaEntity.nombre)
 
-        val updatedRows: Int = db.update(
+        return db.update(
             Literals.Database.CATEGORIA_TABLE,
             categoriaNameColumn,
             "${Literals.Database.ID_COLUMN} = ?",
             arrayOf("${categoriaEntity.id}"),
-        )
-
-        return updatedRows == 1
+        ) == 1
     }
 
     private fun checkIfCategoriaWasInserted(db: SQLiteDatabase, categoria: Categoria): Boolean {

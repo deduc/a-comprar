@@ -34,10 +34,12 @@ object MenuHandler  {
     }
 
     fun getAll(db: SQLiteDatabase): List<MenuEntity> {
-        val command = "SELECT * FROM ${Literals.Database.MENU_TABLE}"
         val result = mutableListOf<MenuEntity>()
 
-        db.rawQuery(command, null).use { cursor ->
+        db.rawQuery(
+            "SELECT * FROM ${Literals.Database.MENU_TABLE}",
+            null
+        ).use { cursor ->
             if (cursor.moveToFirst()) {
                 do {
                     result.add(
@@ -54,10 +56,12 @@ object MenuHandler  {
     }
 
     fun getLast(db: SQLiteDatabase): MenuEntity? {
-        val command = "SELECT * FROM ${Literals.Database.MENU_TABLE} ORDER BY ${Literals.Database.ID_COLUMN} DESC LIMIT 1"
         var result: MenuEntity? = null
 
-        db.rawQuery(command, null).use { cursor ->
+        db.rawQuery(
+            "SELECT * FROM ${Literals.Database.MENU_TABLE} ORDER BY ${Literals.Database.ID_COLUMN} DESC LIMIT 1",
+            null
+        ).use { cursor ->
             if (cursor.moveToFirst()) {
                 result = MenuEntity(
                     cursor.getInt(cursor.getColumnIndexOrThrow(Literals.Database.ID_COLUMN)),
@@ -99,24 +103,20 @@ object MenuHandler  {
         val datos = ContentValues()
         datos.put(Literals.Database.NOMBRE_COLUMN, menu.nombre)
 
-        val result = db.insert(
+        return db.insert(
             Literals.Database.MENU_TABLE,
             null,
             datos
-        )
-
-        return result >= 1
+        ) >= 1
     }
 
 
     fun delete(db: SQLiteDatabase, menuEntity: MenuEntity): Boolean {
-        val result =  db.delete(
+        return db.delete(
             Literals.Database.MENU_TABLE,
             "${Literals.Database.ID_COLUMN} = ?",
             arrayOf(menuEntity.id.toString())
-        )
-
-        return result == 1
+        ) == 1
     }
 
     fun deleteLast(db: SQLiteDatabase): Boolean {
@@ -141,30 +141,27 @@ object MenuHandler  {
         datos.put(Literals.Database.ID_COLUMN, menu.id)
         datos.put(Literals.Database.NOMBRE_COLUMN, menu.nombre)
 
-        val result = db.update(
+        return db.update(
             Literals.Database.MENU_TABLE,
             datos,
             "${Literals.Database.ID_COLUMN} = ?",
             arrayOf(menu.id.toString())
-        )
-
-        return result == 1
+        ) == 1
     }
 
     fun updateMenuDaysOfWeekById(db: SQLiteDatabase, menuDaysOfWeek: MenuDaysOfWeek): Boolean {
-        val litDb = Literals.Database
         val datos = ContentValues()
 
-        datos.put(litDb.ID_COLUMN, menuDaysOfWeek.id)
-        datos.put(litDb.ID_MENU_COLUMN, menuDaysOfWeek.idMenu)
-        datos.put(litDb.ID_COMIDA_COLUMN, menuDaysOfWeek.idComida)
-        datos.put(litDb.TIPO_COLUMN, menuDaysOfWeek.tipoComida)
-        datos.put(litDb.DIA_COLUMN, menuDaysOfWeek.day)
+        datos.put(Literals.Database.ID_COLUMN, menuDaysOfWeek.id)
+        datos.put(Literals.Database.ID_MENU_COLUMN, menuDaysOfWeek.idMenu)
+        datos.put(Literals.Database.ID_COMIDA_COLUMN, menuDaysOfWeek.idComida)
+        datos.put(Literals.Database.TIPO_COLUMN, menuDaysOfWeek.tipoComida)
+        datos.put(Literals.Database.DIA_COLUMN, menuDaysOfWeek.day)
 
         val updatedRows = db.update(
-            litDb.MENU_DAYS_OF_WEEK,
+            Literals.Database.MENU_DAYS_OF_WEEK,
             datos,
-            "${litDb.ID_COLUMN} = ?",
+            "${Literals.Database.ID_COLUMN} = ?",
             arrayOf(menuDaysOfWeek.id!!.toString())
         )
 

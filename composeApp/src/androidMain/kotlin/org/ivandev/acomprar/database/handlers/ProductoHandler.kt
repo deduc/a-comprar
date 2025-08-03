@@ -31,7 +31,8 @@ object ProductoHandler {
         )
 
         productos.forEach { producto ->
-            database.insert(Literals.Database.PRODUCTO_TABLE, null, ContentValues().apply {
+            database.insert(
+                Literals.Database.PRODUCTO_TABLE, null, ContentValues().apply {
                 put(Literals.Database.ID_CATEGORIA_COLUMN, producto.idCategoria)
                 put(Literals.Database.NOMBRE_COLUMN, producto.nombre)
                 put(Literals.Database.CANTIDAD_COLUMN, producto.cantidad)
@@ -41,23 +42,19 @@ object ProductoHandler {
     }
 
     fun deleteById(db: SQLiteDatabase, id: Int): Boolean {
-        val deletedRows: Int = db.delete(
+        return db.delete(
             Literals.Database.PRODUCTO_TABLE,
             "${Literals.Database.ID_COLUMN} = ?",
             arrayOf("${id}")
-        )
-
-        return deletedRows == 1
+        ) == 1
     }
 
     fun getAll(db: SQLiteDatabase): MutableList<ProductoEntity> {
         val result: MutableList<ProductoEntity> = mutableListOf()
 
-        val cursor = db.query(
+        db.query(
             Literals.Database.PRODUCTO_TABLE, null,null,null,null,null,null
-        )
-
-        cursor.use {
+        ).use {
             while (it.moveToNext()) {
                 val productoEntity = ProductoEntity(
                     id = it.getInt(it.getColumnIndexOrThrow(Literals.Database.ID_COLUMN)),
@@ -77,7 +74,7 @@ object ProductoHandler {
     fun getById(db: SQLiteDatabase, id: Int): ProductoEntity? {
         var producto: ProductoEntity? = null
 
-        val queryResult = db.query(
+        db.query(
             Literals.Database.PRODUCTO_TABLE,
             null,
             "${Literals.Database.ID_COLUMN} = ?",
@@ -85,9 +82,7 @@ object ProductoHandler {
             null,
             null,
             null
-        )
-
-        queryResult.use {
+        ).use {
             if (it.moveToFirst()) {
                 producto = ProductoEntity(
                     id = it.getInt(it.getColumnIndexOrThrow(Literals.Database.ID_COLUMN)),

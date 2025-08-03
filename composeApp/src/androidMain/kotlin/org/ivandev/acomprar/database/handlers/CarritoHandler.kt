@@ -3,8 +3,6 @@ package org.ivandev.acomprar.database.handlers
 import android.content.ContentValues
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import org.ivandev.acomprar.Literals
 import org.ivandev.acomprar.database.entities.CarritoEntity
 import org.ivandev.acomprar.database.entities.CarritoProductoEntity
@@ -20,13 +18,9 @@ object CarritoHandler {
         values.put(Literals.Database.NOMBRE_COLUMN, carrito.name)
         values.put(Literals.Database.DESCRIPTION_COLUMN, carrito.description)
 
-        val inserted: Long = db.insert(
-            Literals.Database.CARRITO_TABLE,
-            null,
-            values
-        )
-
-        return inserted != -1L
+        return db.insert(
+            Literals.Database.CARRITO_TABLE, null, values
+        ) != -1L
     }
 
     fun addProductoToCurrentCarrito(db: SQLiteDatabase, carrito: CarritoEntity, producto: ProductoEntity): Boolean {
@@ -43,12 +37,40 @@ object CarritoHandler {
             // Actualizar registro existente
             val whereClause = "${Literals.Database.ID_CARRITO_COLUMN} = ? AND ${Literals.Database.ID_PRODUCTO_COLUMN} = ?"
             val whereArgs = arrayOf(carrito.id.toString(), producto.id.toString())
+
             db.update(Literals.Database.CARRITO_PRODUCTO_TABLE, row, whereClause, whereArgs) > 0
         } else {
             // Insertar nuevo registro
             db.insert(Literals.Database.CARRITO_PRODUCTO_TABLE, null, row) != -1L
         }
     }
+
+    fun substractProductoToCurrentCarrito(db: SQLiteDatabase, carrito: CarritoEntity, producto: ProductoEntity): Boolean {
+        val carritoProductoFiltered: CarritoProductoEntity? = getCarritoProductoFiltered(db, carrito.id, producto.id)
+        val newCantidad = if (carritoProductoFiltered != null) carritoProductoFiltered.cantidad - 1 else 0
+
+        if (newCantidad <= 0) return deleteProductFromCarritoById(db, carrito.id, producto.id)
+
+        val row = ContentValues().apply {
+            put(Literals.Database.ID_CARRITO_COLUMN, carrito.id)
+            put(Literals.Database.ID_PRODUCTO_COLUMN, producto.id)
+            put(Literals.Database.CANTIDAD_COLUMN, newCantidad)
+        }
+
+        return if (carritoProductoFiltered != null) {
+            // Actualizar registro existente
+            db.update(
+                Literals.Database.CARRITO_PRODUCTO_TABLE,
+                row,
+                "${Literals.Database.ID_CARRITO_COLUMN} = ? AND ${Literals.Database.ID_PRODUCTO_COLUMN} = ?",
+                arrayOf(carrito.id.toString(), producto.id.toString())
+            ) > 0
+        } else {
+            // Insertar nuevo registro
+            db.insert(Literals.Database.CARRITO_PRODUCTO_TABLE, null, row) != -1L
+        }
+    }
+
 
     fun deleteById(db: SQLiteDatabase, id: Int): Boolean {
         return db.delete(
@@ -81,7 +103,7 @@ object CarritoHandler {
     }
 
     fun getById(db: SQLiteDatabase, id: Int): CarritoEntity? {
-        val resultQuery = db.query(
+        return db.query(
             Literals.Database.CARRITO_TABLE,
             null,
             "${Literals.Database.ID_COLUMN} = ?",
@@ -89,9 +111,7 @@ object CarritoHandler {
             null,
             null,
             null
-        )
-
-        return resultQuery.use {
+        ).use {
             if (it.moveToFirst()) {
                 CarritoEntity(
                     id = it.getInt(it.getColumnIndexOrThrow(Literals.Database.ID_COLUMN)),
@@ -119,21 +139,29 @@ object CarritoHandler {
         return CarritoAndProductsData(carrito, productosAndCantidades)
     }
 
+    fun deleteProductFromCarritoById(db: SQLiteDatabase, idCarrito: Int, idProducto: Int): Boolean {
+        return db.delete(
+            Literals.Database.CARRITO_PRODUCTO_TABLE,
+            "${Literals.Database.ID_CARRITO_COLUMN} = ? AND ${Literals.Database.ID_PRODUCTO_COLUMN} = ?",
+            arrayOf(idCarrito.toString(), idProducto.toString())
+        ) == 1
+    }
+
     private fun getProductosByIds(db: SQLiteDatabase, idProductosByCarrito: List<Int>): List<ProductoEntity> {
-        val result = mutableListOf<ProductoEntity>()
+        val productos = mutableListOf<ProductoEntity>()
 
         idProductosByCarrito.forEach {
             val producto: ProductoEntity? = ProductoHandler.getById(db, it)
-            if (producto != null) result.add(producto)
+            if (producto != null) productos.add(producto)
         }
-
-        return result
+        return productos
     }
 
     private fun getProductosIdByCarritoId(db: SQLiteDatabase, carrito: CarritoEntity): List<Int> {
-        val getAllProductosIdQuery = "SELECT * FROM ${Literals.Database.CARRITO_PRODUCTO_TABLE} where ${Literals.Database.ID_CARRITO_COLUMN} == ${carrito.id}"
-
-        val idProductos = db.rawQuery(getAllProductosIdQuery, null)
+        return db.rawQuery(
+            "SELECT * FROM ${Literals.Database.CARRITO_PRODUCTO_TABLE} where ${Literals.Database.ID_CARRITO_COLUMN} == ${carrito.id}",
+            null
+        )
             .use {
                 var idProductosList: MutableList<Int> = mutableListOf()
 
@@ -145,19 +173,14 @@ object CarritoHandler {
 
                 idProductosList
             }
-
-        return idProductos
     }
 
     private fun getCarritoProductoFiltered(db: SQLiteDatabase, carritoId: Int, productoId: Int): CarritoProductoEntity? {
-        val selectionFilter = "${Literals.Database.ID_CARRITO_COLUMN} = ? AND ${Literals.Database.ID_PRODUCTO_COLUMN} = ?"
-        val selectionArgs: Array<String> = arrayOf(carritoId.toString(), productoId.toString())
-
         return db.query(
             Literals.Database.CARRITO_PRODUCTO_TABLE,
             null,
-            selectionFilter,
-            selectionArgs,
+            "${Literals.Database.ID_CARRITO_COLUMN} = ? AND ${Literals.Database.ID_PRODUCTO_COLUMN} = ?",
+            arrayOf(carritoId.toString(), productoId.toString()),
             null,
             null,
             null
@@ -174,14 +197,11 @@ object CarritoHandler {
     }
 
     private fun getCarritoProductoListByCarritoId(db: SQLiteDatabase, id: Int): List<CarritoProductoEntity> {
-        val selectionFilter: String = "${Literals.Database.ID_CARRITO_COLUMN} = ?"
-        val selectionArgs: Array<String> = arrayOf(id.toString())
-
         val carritoProducto: List<CarritoProductoEntity> = db.query(
             Literals.Database.CARRITO_PRODUCTO_TABLE,
             null,
-            selectionFilter,
-            selectionArgs,
+            "${Literals.Database.ID_CARRITO_COLUMN} = ?",
+            arrayOf(id.toString()),
             null,
             null,
             null
