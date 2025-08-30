@@ -3,12 +3,15 @@ package org.ivandev.acomprar.screens.carrito
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -18,13 +21,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import org.ivandev.acomprar.Literals
 import org.ivandev.acomprar.Tools
@@ -101,6 +105,7 @@ class EditCarritoScreen(val idCarrito: Int): Screen {
         carritoAndProductos: CarritoAndProductsData,
         carritoStore: CarritoStore
     ) {
+        val navigator: Navigator = LocalNavigator.currentOrThrow
         val categoriaStore: CategoriaStore = viewModel(LocalContext.current as ViewModelStoreOwner)
         val productosAndCantidades: List<Pair<ProductoEntity, Int>> = carritoAndProductos.productosAndCantidades
 
@@ -116,25 +121,29 @@ class EditCarritoScreen(val idCarrito: Int): Screen {
                     productosPorCategoria.forEach { (categoriaId: Int, productosAndCantidades: List<Pair<ProductoEntity, Int>>) ->
                         val categoriaNombre = categoriaStore.getCategoriaNameById(categoriaId, categoriaStore.categorias.value)
 
-                        Text(
-                            categoriaNombre,
-                            Modifier.padding(vertical = 8.dp),
-                            style = TextStyle(fontSize = Tools.titleFontSize)
-                        )
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text(categoriaNombre, style = Tools.styleTitleUnderlineBlack)
+
+                            Spacer(Tools.spacer8dpWidth)
+
+                            Button(
+                                onClick = { navigator.push(SeeProductosToAddByCategoria(categoriaId)) },
+                                modifier = Modifier.height(32.dp).defaultMinSize(minWidth = 80.dp).padding(horizontal = 4.dp, vertical = 0.dp),
+                                contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp),
+                                shape = RoundedCornerShape(16.dp)
+                            ) {
+                                Text("Ver", fontSize = 12.sp)
+                            }
+                        }
+
+                        Spacer(Tools.spacer8dpHeight)
 
                         productosAndCantidades.forEach { (producto: ProductoEntity, cantidad: Int) ->
                             val cantidadFixed = carritoStore.doFixCantidadStr(producto.cantidad, cantidad)
 
                             Row(Modifier.fillMaxWidth(0.7f), verticalAlignment = Alignment.CenterVertically) {
-                                Text(
-                                    text = producto.nombre,
-                                    modifier = Modifier.weight(1f),
-                                    maxLines = Int.MAX_VALUE,
-                                    overflow = TextOverflow.Clip
-                                )
-
+                                Text(text = producto.nombre, modifier = Modifier.weight(1f), maxLines = Int.MAX_VALUE, overflow = TextOverflow.Clip)
                                 Spacer(modifier = Modifier.width(8.dp))
-
                                 Text(cantidadFixed, Modifier.align(Alignment.CenterVertically))
                             }
                             Spacer(Modifier.height(Tools.height8dp))
