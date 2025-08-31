@@ -19,6 +19,7 @@ object Literals {
     const val CATEGORIAS_TITLE: String = "Categorías"
     const val CARRITOS_TITLE: String = "Carritos de la compra"
     const val CONFIGURATION_TITLE: String = "Configuración"
+    const val USER_TABLES_TITLE: String = "Tablas de datos"
     const val COMIDAS_Y_CENAS_TITLE: String = "Comidas y cenas"
     const val EDIT_PRODUCTO_TITLE: String = "Editar producto"
     const val ESTADISTICAS_TITLE: String = "Estadísticas"
@@ -37,7 +38,6 @@ object Literals {
         const val CANEL_ACTION: String = "Cancelar"
         const val DELETE_ALL_PRODUCTS: String = "Borrar todos los productos"
         const val INITIALIZE_APP: String = "Restablecer datos de fábrica"
-        const val MANAGE_PRODUCTS: String = "Gestionar productos"
     }
 
     object ConfirmationText {
@@ -75,6 +75,10 @@ object Literals {
         const val MENU_COMIDA_TABLE: String = "menu_comida"
         const val MENU_DAYS_OF_WEEK: String = "menu_days_of_week"
         const val PRODUCTO_TABLE: String = "producto"
+
+        val USER_TABLES: List<String> = listOf(
+            CARRITO_TABLE, CARRITO_PRODUCTO_TABLE, CATEGORIA_TABLE, COMIDA_TABLE, COMIDA_PRODUCTO_TABLE, MENU_TABLE, MENU_COMIDA_TABLE, MENU_DAYS_OF_WEEK, PRODUCTO_TABLE
+        )
 
         // Database column names
         const val ID_COLUMN: String = "id"

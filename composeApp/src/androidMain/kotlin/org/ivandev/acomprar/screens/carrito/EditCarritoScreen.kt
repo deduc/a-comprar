@@ -72,12 +72,11 @@ class EditCarritoScreen(val idCarrito: Int): Screen {
 
     @Composable
     fun ButtonsPanel() {
-        val carritoStore: CarritoStore = viewModel(LocalContext.current as ViewModelStoreOwner)
         val navigator = LocalNavigator.currentOrThrow
 
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
             Button(onClick = { navigator.push(SeeCategoriasScreen()) }) {
-                Text(Literals.ButtonsText.MANAGE_PRODUCTS)
+                Text(Literals.ButtonsText.ADD_PRODUCTO)
             }
         }
     }
@@ -127,7 +126,7 @@ class EditCarritoScreen(val idCarrito: Int): Screen {
                             Spacer(Tools.spacer8dpWidth)
 
                             Button(
-                                onClick = { navigator.push(SeeProductosToAddByCategoria(categoriaId)) },
+                                onClick = { navigator.push(SeeProductosToAddByCategoria(categoriaId, order_products=true)) },
                                 modifier = Modifier.height(32.dp).defaultMinSize(minWidth = 80.dp).padding(horizontal = 4.dp, vertical = 0.dp),
                                 contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp),
                                 shape = RoundedCornerShape(16.dp)

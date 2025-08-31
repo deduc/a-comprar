@@ -31,6 +31,7 @@ object Tools {
     var styleTitleBlack = TextStyle(fontSize = this.titleFontSize, textDecoration = null, fontWeight = FontWeight.Black)
     var styleTableHeader = TextStyle(fontSize = this.titleFontSize, fontWeight = FontWeight.Bold, textDecoration = TextDecoration.Underline)
     var styleBorderBlack = Modifier.border(1.dp, Color.Black)
+    var styleColorWhite = TextStyle(color = Color.White)
 
     var spacer8dpWidth = Modifier.width(height8dp)
 
