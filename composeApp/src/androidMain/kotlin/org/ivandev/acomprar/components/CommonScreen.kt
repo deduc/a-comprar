@@ -2,6 +2,7 @@ package org.ivandev.acomprar.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -13,6 +14,7 @@ import org.ivandev.acomprar.Tools
 // Clase composable que incluye TopBar y BottomBar, y acepta contenido dinámico en el medio
 class CommonScreen(
     private val title: String,
+    private val headerContent: @Composable (() -> Unit)? = null,
     private val dynamicContent: @Composable () -> Unit
 ) {
     @Composable
@@ -21,7 +23,7 @@ class CommonScreen(
         val bottomBar = BottomBar()
 
         Column(modifier = Modifier.fillMaxSize()) {
-            topBar.Content(title = title)
+            topBar.Content(title = title, headerContent = headerContent)
 
             // Contenido dinámico (puede ser cualquier cosa que se pase a este parámetro)
             Column(
