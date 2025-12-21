@@ -21,6 +21,9 @@ class CarritoStore: ViewModel() {
     private var _carritos = mutableStateListOf<CarritoEntity>()
     val carritos: SnapshotStateList<CarritoEntity> = _carritos
 
+    private var _editingCarrito = mutableStateOf<CarritoEntity?>(null)
+    val editingCarrito: State<CarritoEntity?> = _editingCarrito
+
     private var _showAddCarritoPopup = mutableStateOf<Boolean>(false)
     val showAddCarritoPopup: State<Boolean> = _showAddCarritoPopup
 
@@ -63,7 +66,40 @@ class CarritoStore: ViewModel() {
                     Database.addProductoToCurrentCarrito(currentCarritoAndProductos.carrito, producto)
                 }
 
-                if (added) {
+//                if (added && cantidad == 1) {
+//                    Tools.Notifier.showToast(Literals.ToastText.ADDED_PRODUCTO)
+//                }
+//                else if (added && cantidad == -1) {
+//                    Tools.Notifier.showToast(Literals.ToastText.ADDED_PRODUCTO)
+//                }
+                if (!added) Tools.Notifier.showToast(Literals.ToastText.ERROR_ADDING_PRODUCTO)
+            }
+        }
+        else {
+            Tools.Notifier.showToast(Literals.ToastText.ERROR_ADDING_PRODUCTO_TO_UNKNOWN_CARRITO)
+        }
+    }
+
+    fun substractProductoToCurrentCarrito(producto: ProductoEntity) {
+        val currentCarritoAndProductos: CarritoAndProductsData? = _carritoAndProductos.value
+        val cantidad: Int = -1
+
+        if (currentCarritoAndProductos != null) {
+            // Añadir producto y cantidad a la lista mutable
+            currentCarritoAndProductos.productosAndCantidades.add(producto to cantidad)
+
+            // Forzar recomposición en Compose (opcional si necesitas que se actualice la UI)
+            _carritoAndProductos.value = currentCarritoAndProductos
+
+            viewModelScope.launch {
+                val added = withContext(Dispatchers.IO) {
+                    Database.substractProductoToCurrentCarrito(currentCarritoAndProductos.carrito, producto)
+                }
+
+                if (added && cantidad == 1) {
+                    Tools.Notifier.showToast(Literals.ToastText.ADDED_PRODUCTO)
+                }
+                else if (added && cantidad == -1) {
                     Tools.Notifier.showToast(Literals.ToastText.ADDED_PRODUCTO)
                 }
             }
@@ -71,6 +107,11 @@ class CarritoStore: ViewModel() {
         else {
             Tools.Notifier.showToast(Literals.ToastText.ERROR_ADDING_PRODUCTO_TO_UNKNOWN_CARRITO)
         }
+    }
+
+
+    fun minus1ProductoToCurrentCarrito(producto: ProductoEntity) {
+
     }
 
     fun doFixCantidadStr(str: String?, cantidad: Int): String {
@@ -116,5 +157,9 @@ class CarritoStore: ViewModel() {
 
     fun setShowAddCarritoPopup(newValue: Boolean) {
         _showAddCarritoPopup.value = newValue
+    }
+
+    fun setEditingCarrito(carritoEntity: CarritoEntity) {
+        _editingCarrito.value = carritoEntity
     }
 }

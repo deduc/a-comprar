@@ -71,7 +71,7 @@ class CarritosScreen(): Screen {
 
         if (carritos.isEmpty()) { Text("No hay carritos") }
         else {
-            carritos.forEach {
+            carritos.forEach { it: CarritoEntity ->
                 Row(Modifier.fillMaxWidth().then(Tools.styleBorderBlack), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
                     Column(Modifier.padding(8.dp).weight(1f)) {
                         Text(it.name, style = Tools.styleTitleBlack)
@@ -83,13 +83,18 @@ class CarritosScreen(): Screen {
                     }
 
                     Row(Modifier.padding(8.dp)) {
-                        MyIcons.ViewIcon { navigator.push(EditCarritoScreen(it.id)) }
+                        MyIcons.ViewIcon {
+                            carritoStore.setEditingCarrito(it)
+                            navigator.push(EditCarritoScreen(it.id))
+                        }
                         Spacer(Tools.spacer8dpWidth)
+
                         MyIcons.EditIcon {
                             // todo: asignar el nombre y descripcion de ESTE carrito a los datos iniciales del popup
                             carritoStore.setShowAddCarritoPopup(true)
                         }
                         Spacer(Tools.spacer8dpWidth)
+
                         MyIcons.TrashIcon { carritoStore.deleteCarritoById(it.id) }
                     }
                 }

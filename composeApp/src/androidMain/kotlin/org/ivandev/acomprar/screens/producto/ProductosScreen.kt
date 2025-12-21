@@ -135,8 +135,8 @@ class ProductosScreen: Screen {
     ) {
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
             Row(Modifier.weight(0.8f)) {
-                //Text("${productoEntity.nombre} - ${productoEntity.getCantidadFixed()}")
-                Text(productoEntity.nombre)
+                Text("${productoEntity.nombre} - ${productoEntity.getCantidadFixed()}")
+//                Text(productoEntity.nombre)
             }
 
             Row(Modifier.weight(0.2f)) {

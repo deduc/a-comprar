@@ -37,6 +37,22 @@ object MyIcons {
         )
     }
 
+    /**
+     * Icono de restar -
+     */
+    @Composable
+    fun RemoveIcon(onClick: () -> Unit) {
+        val icon: VectorPainter = rememberVectorPainter(Icons.Default.Remove)
+        Icon(
+            painter = icon,
+            contentDescription = "Delete",
+            modifier = Modifier.size(24.dp).then(
+                borderCircle()
+            ).clickable { onClick() },
+            tint = Color.Black
+        )
+    }
+
     @Composable
     fun EditIcon(
         modifier: Modifier = Modifier,
@@ -76,17 +92,6 @@ object MyIcons {
     @Composable
     fun SaveIcon(onClick: () -> Unit) {
         val icon: VectorPainter = rememberVectorPainter(Icons.Default.Save)
-        Icon(
-            painter = icon,
-            contentDescription = "Save",
-            modifier = Modifier.size(24.dp).clickable { onClick() },
-            tint = Color.Black
-        )
-    }
-
-    @Composable
-    fun RemoveIcon(onClick: () -> Unit) {
-        val icon: VectorPainter = rememberVectorPainter(Icons.Default.Remove)
         Icon(
             painter = icon,
             contentDescription = "Save",

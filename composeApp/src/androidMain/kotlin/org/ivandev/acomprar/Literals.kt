@@ -19,6 +19,7 @@ object Literals {
     const val CATEGORIAS_TITLE: String = "Categorías"
     const val CARRITOS_TITLE: String = "Carritos de la compra"
     const val CONFIGURATION_TITLE: String = "Configuración"
+    const val USER_TABLES_TITLE: String = "Tablas de datos"
     const val COMIDAS_Y_CENAS_TITLE: String = "Comidas y cenas"
     const val EDIT_PRODUCTO_TITLE: String = "Editar producto"
     const val ESTADISTICAS_TITLE: String = "Estadísticas"
@@ -74,6 +75,10 @@ object Literals {
         const val MENU_COMIDA_TABLE: String = "menu_comida"
         const val MENU_DAYS_OF_WEEK: String = "menu_days_of_week"
         const val PRODUCTO_TABLE: String = "producto"
+
+        val USER_TABLES: List<String> = listOf(
+            CARRITO_TABLE, CARRITO_PRODUCTO_TABLE, CATEGORIA_TABLE, COMIDA_TABLE, COMIDA_PRODUCTO_TABLE, MENU_TABLE, MENU_COMIDA_TABLE, MENU_DAYS_OF_WEEK, PRODUCTO_TABLE
+        )
 
         // Database column names
         const val ID_COLUMN: String = "id"
@@ -269,11 +274,15 @@ object Literals {
         const val ADDED_MENU = "Menú añadido."
         const val ADDED_PRODUCTO = "Producto añadido."
 
+        const val REMOVED_PRODUCTO = "Producto restado."
+
         const val DELETED_ALL_PRODUCTOS = "Productos borrados."
 
         const val ERROR_ADDING_DATA_TEST = "Error al añadir registros de prueba."
+        const val ERROR_ADDING_PRODUCTO = "Error al manejar el producto."
         const val ERROR_ADDING_MENU = "Error al añadir el menú."
         const val ERROR_ADDING_MENU_DAYS = "Error al añadir los días del menú."
+        const val ERROR_MANAGING_PRODUCTO = "Error inesperado al sumar o restar producto."
         const val ERROR_VOID_DATA = "Error no has rellenado suficientes datos."
         const val ERROR_ADDING_PRODUCTO_TO_UNKNOWN_CARRITO = "Error añadiendo el producto a un carrito desconocido"
 

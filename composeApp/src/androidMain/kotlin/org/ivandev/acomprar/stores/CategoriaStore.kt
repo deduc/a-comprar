@@ -37,14 +37,6 @@ class CategoriaStore : ViewModel() {
         }
     }
 
-    fun updateCategoria(updatedCategoriaEntity: CategoriaEntity) {
-        _categorias.value = _categorias.value.map {
-            if (it.id == updatedCategoriaEntity.id) updatedCategoriaEntity else it
-        }.toList()
-
-        Database.updateCategoriaById(updatedCategoriaEntity)
-    }
-
     fun addCategoria(categoria: Categoria) {
         val added = Database.addCategoria(categoria)
 
@@ -53,6 +45,19 @@ class CategoriaStore : ViewModel() {
             _categorias.value += CategoriaEntity(newId, categoria.nombre)
         }
 
+    }
+
+    fun getCategoriaNameById(categoriaId: Int, categorias: List<CategoriaEntity>): String {
+        return categorias.firstOrNull { it.id == categoriaId }?.nombre ?: "Sin categoría"
+    }
+
+
+    fun updateCategoria(updatedCategoriaEntity: CategoriaEntity) {
+        _categorias.value = _categorias.value.map {
+            if (it.id == updatedCategoriaEntity.id) updatedCategoriaEntity else it
+        }.toList()
+
+        Database.updateCategoriaById(updatedCategoriaEntity)
     }
 
     fun deleteCategoria(deleteCategoriaEntity: CategoriaEntity) {

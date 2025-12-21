@@ -10,7 +10,6 @@ import androidx.compose.runtime.remember
 import cafe.adriel.voyager.navigator.Navigator
 import org.ivandev.acomprar.database.Database
 import org.ivandev.acomprar.screens.HomeScreen
-import org.ivandev.acomprar.screens.carrito.CarritosScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -11,12 +11,12 @@ import org.ivandev.acomprar.models.Comida
 
 object ComidaHandler {
     fun getAll(db: SQLiteDatabase): MutableList<ComidaEntity> {
-        val tableComida = Literals.Database.COMIDA_TABLE
-        val command = "SELECT * FROM $tableComida"
-
         val result: MutableList<ComidaEntity> = mutableListOf()
 
-        db.rawQuery(command, null).use { cursor ->
+        db.rawQuery(
+            "SELECT * FROM $Literals.Database.COMIDA_TABLE",
+            null
+        ).use { cursor ->
             if (cursor.moveToFirst()) {
                 do {
                     result.add(
@@ -34,10 +34,12 @@ object ComidaHandler {
     }
 
     fun getComidasByTipoId(db: SQLiteDatabase, tipoId: Int): List<ComidaEntity> {
-        val command = "SELECT * FROM ${Literals.Database.COMIDA_TABLE} where ${Literals.Database.TIPO_COLUMN} = $tipoId"
         val result = mutableListOf<ComidaEntity>()
 
-        db.rawQuery(command, null).use { cursor ->
+        db.rawQuery(
+            "SELECT * FROM ${Literals.Database.COMIDA_TABLE} where ${Literals.Database.TIPO_COLUMN} = $tipoId",
+            null
+        ).use { cursor ->
             if (cursor.moveToFirst()) {
                 do {
                     result.add(
@@ -143,22 +145,18 @@ object ComidaHandler {
     }
 
     fun deleteAllComidasByMenuId(db: SQLiteDatabase, menuId: Int): Boolean {
-        val result = db.delete(
+        return db.delete(
             Literals.Database.MENU_COMIDA_TABLE,
             "${Literals.Database.ID_MENU_COLUMN} = ?",
             arrayOf(menuId.toString())
-        )
-
-        return result >= 0
+        ) >= 0
     }
 
     fun deleteById(db: SQLiteDatabase, id: Int): Boolean {
-        val result = db.delete(
+        return db.delete(
             Literals.Database.COMIDA_TABLE,
             "${Literals.Database.ID_COLUMN} = ?",
             arrayOf(id.toString())
-        )
-
-        return result == 1
+        ) == 1
     }
 }
