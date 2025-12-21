@@ -73,7 +73,7 @@ class CarritosScreen(): Screen {
         else {
             carritos.forEach { it: CarritoEntity ->
                 Row(Modifier.fillMaxWidth().then(Tools.styleBorderBlack), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
-                    Column(Modifier.padding(8.dp).weight(1f)) {
+                    Column(Modifier.padding(8.dp).weight(1f), verticalArrangement = Arrangement.Center) {
                         Text(it.name, style = Tools.styleTitleBlack)
 
                         Row(Modifier.padding(4.dp)) {
@@ -82,20 +82,11 @@ class CarritosScreen(): Screen {
                         }
                     }
 
-                    Row(Modifier.padding(8.dp)) {
+                    Row(Modifier.padding(8.dp), verticalAlignment = Alignment.CenterVertically) {
                         MyIcons.ViewIcon {
                             carritoStore.setEditingCarrito(it)
                             navigator.push(EditCarritoScreen(it.id))
                         }
-                        Spacer(Tools.spacer8dpWidth)
-
-                        MyIcons.EditIcon {
-                            // todo: asignar el nombre y descripcion de ESTE carrito a los datos iniciales del popup
-                            carritoStore.setShowAddCarritoPopup(true)
-                        }
-                        Spacer(Tools.spacer8dpWidth)
-
-                        MyIcons.TrashIcon { carritoStore.deleteCarritoById(it.id) }
                     }
                 }
 

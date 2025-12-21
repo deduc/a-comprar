@@ -1,5 +1,6 @@
 package org.ivandev.acomprar.screens.carrito
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -92,17 +94,23 @@ class SeeProductosToAddByCategoria(val idCategoria: Int, order_products: Boolean
                 ?.find { it.first.id == producto.id }
                 ?.second ?: 0
 
+            val rowColorModifier = if (cantidad > 0) Modifier.background(Color.Green, RoundedCornerShape(8.dp)) else Modifier
+
             Row(
-                modifier = Modifier.border(1.dp, Color.Black).padding(8.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .border(1.dp, Color.Black),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Row(Modifier.weight(0.6f)) {
-                    Text(producto.nombre)
+                Row(modifier = Modifier.weight(0.6f)) {
+                    Text(producto.nombre, Modifier.padding(8.dp))
                 }
 
                 Row(
-                    Modifier.weight(0.4f),
+                    modifier = Modifier
+                        .weight(0.4f)
+                        .then(rowColorModifier),
                     horizontalArrangement = Arrangement.SpaceEvenly,
                     verticalAlignment = Alignment.CenterVertically
                 ) {

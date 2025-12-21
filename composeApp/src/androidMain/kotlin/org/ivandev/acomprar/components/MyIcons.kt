@@ -56,14 +56,15 @@ object MyIcons {
     @Composable
     fun EditIcon(
         modifier: Modifier = Modifier,
-        onClick: () -> Unit)
+        tint: Color = Color.Black,
+        onClick: () -> Unit) 
     {
         val icon: VectorPainter = rememberVectorPainter(Icons.Default.Edit)
         Icon(
             painter = icon,
             contentDescription = "Edit",
             modifier = Modifier.size(24.dp).clickable { onClick() }.then(modifier),
-            tint = Color.Black
+            tint = tint
         )
     }
 
@@ -79,13 +80,16 @@ object MyIcons {
     }
 
     @Composable
-    fun TrashIcon(onClick: () -> Unit) {
+    fun TrashIcon(
+        tint: Color = Color.Black,
+        onClick: () -> Unit) 
+    {
         val icon: VectorPainter = rememberVectorPainter(Icons.Filled.Delete)
         Icon(
             painter = icon,
             contentDescription = "Trash",
             modifier = Modifier.size(24.dp).clickable { onClick() },
-            tint = Color.Black
+            tint = tint
         )
     }
 
