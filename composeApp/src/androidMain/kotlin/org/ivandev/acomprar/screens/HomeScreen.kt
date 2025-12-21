@@ -1,16 +1,29 @@
 package org.ivandev.acomprar.screens
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.Button
+import androidx.compose.material.Icon
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AddShoppingCart
+import androidx.compose.material.icons.filled.Category
+import androidx.compose.material.icons.filled.Fastfood
+import androidx.compose.material.icons.filled.MenuBook
+import androidx.compose.material.icons.filled.Science
+import androidx.compose.material.icons.filled.ShoppingBasket
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
@@ -20,6 +33,7 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import org.ivandev.acomprar.Literals
+import org.ivandev.acomprar.Tools
 import org.ivandev.acomprar.components.CommonScreen
 import org.ivandev.acomprar.screens.Pruebas.PruebasScreen
 import org.ivandev.acomprar.screens.carrito.CarritosScreen
@@ -49,6 +63,7 @@ class HomeScreen: Screen {
             modifier = Modifier.fillMaxSize(),
         ) {
             AppTitle(title, false)
+            Spacer(Modifier.height(Tools.height16dp))
             MyNavigationButtons()
         }
     }
@@ -76,20 +91,30 @@ class HomeScreen: Screen {
         val navigator: Navigator = LocalNavigator.currentOrThrow
 
         Column {
-            MyNavButton(title = Literals.CARRITOS_TITLE) { navigator.push(CarritosScreen()) }
-            MyNavButton(title = Literals.MENU_TITLE) { navigator.push(MenuScreen()) }
-            MyNavButton(title = Literals.COMIDAS_Y_CENAS_TITLE) { navigator.push(ComidasScreen()) }
-            MyNavButton(title = Literals.CATEGORIAS_TITLE) { navigator.push(CategoriasScreen()) }
-            MyNavButton(title = Literals.PRODUCTOS_TITLE) { navigator.push(ProductosScreen()) }
+            MyNavButton(title = Literals.CARRITOS_TITLE, icon = Icons.Default.AddShoppingCart) { navigator.push(CarritosScreen()) }
+            MyNavButton(title = Literals.MENU_TITLE, icon = Icons.Default.MenuBook) { navigator.push(MenuScreen()) }
+            MyNavButton(title = Literals.COMIDAS_Y_CENAS_TITLE, icon = Icons.Default.Fastfood) { navigator.push(ComidasScreen()) }
+            MyNavButton(title = Literals.CATEGORIAS_TITLE, icon = Icons.Default.Category) { navigator.push(CategoriasScreen()) }
+            MyNavButton(title = Literals.PRODUCTOS_TITLE, icon = Icons.Default.ShoppingBasket) { navigator.push(ProductosScreen()) }
 
-            MyNavButton(title = "Pantalla de pruebas") { navigator.push(PruebasScreen()) }
+            MyNavButton(title = "Pantalla de pruebas", icon = Icons.Default.Science) { navigator.push(PruebasScreen()) }
         }
     }
 
     @Composable
-    fun MyNavButton(title: String, onClickAction: () -> Unit) {
-        Button(onClick = onClickAction, Modifier.fillMaxWidth()) {
-            Text(text = title, style = TextStyle(fontSize = 15.sp))
+    fun MyNavButton(title: String, icon: ImageVector, onClickAction: () -> Unit) {
+        Button(onClick = onClickAction, modifier = Modifier.fillMaxWidth()) {
+            Box(
+                modifier = Modifier.weight(0.3f),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(imageVector = icon, contentDescription = title, tint = Color.White)
+            }
+            Box(
+                modifier = Modifier.weight(0.7f)
+            ) {
+                Text(text = title, style = TextStyle(fontSize = 15.sp))
+            }
         }
     }
 }

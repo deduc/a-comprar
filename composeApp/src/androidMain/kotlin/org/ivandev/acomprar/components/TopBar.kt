@@ -49,7 +49,7 @@ class TopBar(
                 Text(
                     text = title,
                     color = Color.White,
-                    modifier = Modifier.padding(16.dp),
+                    modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp, bottom = 16.dp),
                     style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold)
                 )
 
@@ -67,6 +67,7 @@ class TopBar(
                 Text(
                     text = title,
                     color = Color.White,
+                    modifier = Modifier.padding(bottom = 16.dp),
                     style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold)
                 )
             }

@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import cafe.adriel.voyager.navigator.Navigator
 import org.ivandev.acomprar.database.Database
+import org.ivandev.acomprar.screens.HomeScreen
 import org.ivandev.acomprar.screens.carrito.CarritosScreen
 
 class MainActivity : ComponentActivity() {
@@ -27,8 +28,8 @@ class MainActivity : ComponentActivity() {
 
 //        Database.pruebas()
 
-//        val screenToShow = remember { HomeScreen() }
-        val screenToShow = remember { CarritosScreen() }
+        val screenToShow = remember { HomeScreen() }
+//        val screenToShow = remember { CarritosScreen() }
         MaterialTheme {
             // !!!!!!!! Esto es para los estilos. Está comentado para optimizar rendimiento en desarrollo
 //            Navigator(screen = screenToShow) { navigator ->

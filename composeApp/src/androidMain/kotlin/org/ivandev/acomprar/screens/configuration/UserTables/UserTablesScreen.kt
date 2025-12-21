@@ -11,7 +11,7 @@ object UserTablesScreen: Screen {
     @Composable
     override fun Content() {
         val screen = CommonScreen(
-            title = Literals.USER_TABLES_TITLE
+            title = "Literals.USER_TABLES_TITLE"
         ) {
             MainContent()
         }
@@ -21,7 +21,7 @@ object UserTablesScreen: Screen {
 
     @Composable
     fun MainContent() {
-        val userTables: List<String> = Literals.Database.USER_TABLES
+        val userTables: List<String> = listOf("Literals.Database.USER_TABLES")
         Column {
             userTables.forEach { table ->
                 Text(table)
