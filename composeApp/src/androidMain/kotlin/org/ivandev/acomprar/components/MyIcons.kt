@@ -7,9 +7,11 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.AddShoppingCart
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Remove
+import androidx.compose.material.icons.filled.RemoveShoppingCart
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.runtime.Composable
@@ -20,6 +22,9 @@ import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.unit.dp
 
 object MyIcons {
+    /*
+     * Icono de añadir +
+     */
     @Composable
     fun AddIcon(
         modifier: Modifier = Modifier,
@@ -53,20 +58,27 @@ object MyIcons {
         )
     }
 
+    /**
+     * Icono de lapiz
+     */
     @Composable
     fun EditIcon(
         modifier: Modifier = Modifier,
-        onClick: () -> Unit)
+        tint: Color = Color.Black,
+        onClick: () -> Unit) 
     {
         val icon: VectorPainter = rememberVectorPainter(Icons.Default.Edit)
         Icon(
             painter = icon,
             contentDescription = "Edit",
             modifier = Modifier.size(24.dp).clickable { onClick() }.then(modifier),
-            tint = Color.Black
+            tint = tint
         )
     }
 
+    /**
+     * Icono de ojo
+     */
     @Composable
     fun ViewIcon(onClick: () -> Unit) {
         val icon: VectorPainter = rememberVectorPainter(Icons.Filled.Visibility)
@@ -78,17 +90,54 @@ object MyIcons {
         )
     }
 
+    /**
+     * Icono de carrito con un + encima
+     */
     @Composable
-    fun TrashIcon(onClick: () -> Unit) {
-        val icon: VectorPainter = rememberVectorPainter(Icons.Filled.Delete)
+    fun AddShoppingCartIcon(onClick: () -> Unit) {
+        val icon: VectorPainter = rememberVectorPainter(Icons.Default.AddShoppingCart)
         Icon(
             painter = icon,
-            contentDescription = "Trash",
+            contentDescription = "Add shopping cart",
+            modifier = Modifier.size(24.dp).clickable { onClick() },
+            tint = Color.Black
+        )
+    }
+    /**
+     * Icono de carrito con un + encima
+     */
+
+    @Composable
+    fun RemoveShoppingCartIcon(onClick: () -> Unit) {
+        val icon: VectorPainter = rememberVectorPainter(Icons.Default.RemoveShoppingCart)
+        Icon(
+            painter = icon,
+            contentDescription = "Add shopping cart",
             modifier = Modifier.size(24.dp).clickable { onClick() },
             tint = Color.Black
         )
     }
 
+    /**
+     * Icono de papelera
+     */
+    @Composable
+    fun TrashIcon(
+        tint: Color = Color.Black,
+        onClick: () -> Unit) 
+    {
+        val icon: VectorPainter = rememberVectorPainter(Icons.Filled.Delete)
+        Icon(
+            painter = icon,
+            contentDescription = "Trash",
+            modifier = Modifier.size(24.dp).clickable { onClick() },
+            tint = tint
+        )
+    }
+
+    /**
+     * Icono de floppy disk
+     */
     @Composable
     fun SaveIcon(onClick: () -> Unit) {
         val icon: VectorPainter = rememberVectorPainter(Icons.Default.Save)

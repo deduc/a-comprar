@@ -61,6 +61,7 @@ object CategoriaHandler {
                 null,
                 categoriaAux
             )
+            println("[DEBUG] Categoría añadida")
         }
     }
 

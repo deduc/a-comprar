@@ -12,11 +12,15 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -33,6 +37,7 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import org.ivandev.acomprar.Literals
 import org.ivandev.acomprar.Tools
 import org.ivandev.acomprar.components.CommonScreen
+import org.ivandev.acomprar.components.MyIcons
 import org.ivandev.acomprar.components.MyScrollableColumn
 import org.ivandev.acomprar.database.entities.CarritoEntity
 import org.ivandev.acomprar.database.entities.ProductoEntity
@@ -45,8 +50,31 @@ class EditCarritoScreen(val idCarrito: Int): Screen {
     override fun Content() {
         val carritoStore: CarritoStore = viewModel(LocalContext.current as ViewModelStoreOwner)
         val carritoName = carritoStore.carritoAndProductos.value?.carrito?.name ?: Literals.CARRITOS_TITLE
+        val showDeleteConfirmationDialog = remember { mutableStateOf(false) }
 
-        CommonScreen(title = carritoName) { MainContent(carritoStore) }.Render()
+        CommonScreen(
+            title = carritoName,
+            headerContent = { HeaderButtons { showDeleteConfirmationDialog.value = true } }
+        ) { MainContent(carritoStore) }.Render()
+
+        Popups(carritoStore, showDeleteConfirmationDialog)
+    }
+
+    @Composable
+    fun HeaderButtons(onDeleteClick: () -> Unit) {
+        val carritoStore: CarritoStore = viewModel(LocalContext.current as ViewModelStoreOwner)
+
+        Row {
+            MyIcons.EditIcon(tint = Color.White) {
+                // todo: asignar el nombre y descripcion de ESTE carrito a los datos iniciales del popup
+                carritoStore._carritoName.value = carritoStore.editingCarrito.value?.name.toString()
+                carritoStore._carritoDescription.value = carritoStore.editingCarrito.value?.description.toString()
+                carritoStore.setShowEditCarritoPopup(true)
+            }
+            Spacer(Tools.spacer8dpWidth)
+
+            MyIcons.TrashIcon(tint = Color.White) { onDeleteClick() }
+        }
     }
 
     @Composable
@@ -154,5 +182,41 @@ class EditCarritoScreen(val idCarrito: Int): Screen {
             //fin column
         }
         // fin MyScrollableColumn
+    }
+
+    @Composable
+    fun Popups(carritoStore: CarritoStore, showDeleteConfirmationDialog: MutableState<Boolean>) {
+        val navigator = LocalNavigator.currentOrThrow
+
+        if (carritoStore.showAddCarritoPopup.value) {
+            AddCarritoPopup()
+        }
+
+        if (carritoStore.showEditCarritoPopup.value) {
+            EditCarritoPopup()
+        }
+
+
+        if (showDeleteConfirmationDialog.value) {
+            AlertDialog(
+                onDismissRequest = { showDeleteConfirmationDialog.value = false },
+                title = { Text("Confirmar borrado") },
+                text = { Text("¿Estás seguro de que quieres borrar el carrito?") },
+                confirmButton = {
+                    Button(onClick = {
+                        carritoStore.deleteCarritoById(idCarrito)
+                        showDeleteConfirmationDialog.value = false
+                        navigator.pop()
+                    }) {
+                        Text("Borrar")
+                    }
+                },
+                dismissButton = {
+                    Button(onClick = { showDeleteConfirmationDialog.value = false }) {
+                        Text("Cancelar")
+                    }
+                }
+            )
+        }
     }
 }

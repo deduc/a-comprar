@@ -27,8 +27,8 @@ object Database {
         mySQLiteDatabase = MySQLiteDatabase(context, dbVersion)
     }
 
-    fun pruebas() {
-        mySQLiteDatabase.pruebas()
+    fun restartDatabase() {
+        mySQLiteDatabase.restartDatabase()
     }
 
     fun importJsonData() {}
@@ -46,6 +46,10 @@ object Database {
 
     fun addCategoria(categoriaEntity: Categoria): Boolean {
         return mySQLiteDatabase.addCategoria(categoriaEntity)
+    }
+
+    fun addCarritoToMainCarrito(id: Int): Boolean {
+        return mySQLiteDatabase.addCarritoToMainCarrito(id)
     }
 
     fun addProducto(producto: Producto): Boolean {
@@ -140,6 +144,11 @@ object Database {
     fun updateCategoriaById(categoriaEntity: CategoriaEntity): Boolean {
         return mySQLiteDatabase.updateCategoriaById(categoriaEntity)
     }
+
+    fun updateCarrito(carrito: Carrito): Boolean {
+        return mySQLiteDatabase.updateCarrito(carrito)
+    }
+
 
     fun updateComidaById(comida: ComidaEntity): Boolean {
         return mySQLiteDatabase.updateComidaById(comida)

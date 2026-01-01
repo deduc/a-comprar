@@ -1,7 +1,7 @@
 package org.ivandev.acomprar.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -22,6 +22,7 @@ import androidx.compose.ui.graphics.vector.VectorPainter
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.navigator.LocalNavigator
@@ -34,42 +35,49 @@ class TopBar(
     private val backgroundColor: Color? = null
 ) {
     @Composable
-    fun Content(title: String) {
+    fun Content(title: String, headerContent: @Composable (() -> Unit)? = null) {
         val backgroundColor: Color = this.backgroundColor ?: MaterialTheme.colors.primary
         val navigator: Navigator = LocalNavigator.currentOrThrow
         val settingsIcon: VectorPainter = rememberVectorPainter(Icons.Default.Settings)
         val arrowBackIcon: VectorPainter = rememberVectorPainter(Icons.AutoMirrored.Filled.ArrowBack)
 
-        if (title == Literals.HOME_TITLE) {
-            Row(
-                modifier = Modifier.fillMaxWidth().background(backgroundColor).height(56.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(backgroundColor)
+                .height(56.dp)
+                .padding(horizontal = 4.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            // Column 1: Back button or empty space
+            Box(
+                modifier = Modifier.weight(0.2f),
+                contentAlignment = Alignment.CenterStart
             ) {
-                Text(
-                    text = title,
-                    color = Color.White,
-                    modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp, bottom = 16.dp),
-                    style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold)
-                )
-
-                ConfigButton(navigator, settingsIcon)
+                if (title != Literals.HOME_TITLE) {
+                    GoBackButton(navigator, arrowBackIcon)
+                }
             }
 
-        }
-        else {
-            Row(
-                modifier = Modifier.fillMaxWidth().background(backgroundColor).height(56.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                GoBackButton(navigator, arrowBackIcon)
+            // Column 2: Title
+            Text(
+                text = title,
+                color = Color.White,
+                style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold),
+                textAlign = TextAlign.Center,
+                modifier = Modifier.weight(0.6f)
+            )
 
-                Text(
-                    text = title,
-                    color = Color.White,
-                    modifier = Modifier.padding(bottom = 16.dp),
-                    style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold)
-                )
+            // Column 3: Action buttons
+            Box(
+                modifier = Modifier.weight(0.2f),
+                contentAlignment = Alignment.CenterEnd
+            ) {
+                if (title == Literals.HOME_TITLE) {
+                    ConfigButton(navigator, settingsIcon)
+                } else {
+                    headerContent?.invoke()
+                }
             }
         }
     }

@@ -4,6 +4,6 @@ import org.ivandev.acomprar.database.entities.CarritoEntity
 import org.ivandev.acomprar.database.entities.ProductoEntity
 
 class CarritoAndProductsData(
-    val carrito: CarritoEntity,
-    val productosAndCantidades: MutableList<Pair<ProductoEntity, Int>> = mutableListOf()
+    var carrito: CarritoEntity,
+    var productosAndCantidades: MutableList<Pair<ProductoEntity, Int>> = mutableListOf()
 )

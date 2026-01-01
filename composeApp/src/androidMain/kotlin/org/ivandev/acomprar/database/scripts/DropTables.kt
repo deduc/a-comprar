@@ -13,6 +13,7 @@ object DropTables {
     val tableProducto = Literals.Database.PRODUCTO_TABLE
     val tableCarritoProducto = Literals.Database.CARRITO_PRODUCTO_TABLE
     val tableMenuDaysOfWeek = Literals.Database.MENU_DAYS_OF_WEEK
+    val tableMainCarrito = Literals.Database.MAIN_CARRITO_TABLE
 
 
     // Sentencias DROP TABLE
@@ -25,4 +26,5 @@ object DropTables {
     val DROP_TABLE_PRODUCTO = "DROP TABLE IF EXISTS $tableProducto;"
     val DROP_TABLE_CARRITO_PRODUCTO = "DROP TABLE IF EXISTS $tableCarritoProducto;"
     val DROP_TABLE_MENU_DAYS_OF_WEEK = "DROP TABLE IF EXISTS $tableMenuDaysOfWeek;"
+    val DROP_TABLE_CARRITO_CONTENIDO = "DROP TABLE IF EXISTS $tableMainCarrito"
 }

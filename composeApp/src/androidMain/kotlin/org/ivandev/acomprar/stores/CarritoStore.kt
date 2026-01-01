@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -26,6 +27,9 @@ class CarritoStore: ViewModel() {
 
     private var _showAddCarritoPopup = mutableStateOf<Boolean>(false)
     val showAddCarritoPopup: State<Boolean> = _showAddCarritoPopup
+    private var _showEditCarritoPopup = mutableStateOf<Boolean>(false)
+    val showEditCarritoPopup: State<Boolean> = _showEditCarritoPopup
+
 
     private var _newCarritoToAdd = mutableStateOf<Carrito?>(null)
     val newCarritoToAdd: State<Carrito?> = _newCarritoToAdd
@@ -35,7 +39,6 @@ class CarritoStore: ViewModel() {
 
     private var _carritoAndProductos = mutableStateOf<CarritoAndProductsData?>(null)
     val carritoAndProductos: State<CarritoAndProductsData?> = _carritoAndProductos
-
 
     fun addCarrito() {
         _newCarritoToAdd.value = Carrito(null, _carritoName.value, _carritoDescription.value)
@@ -66,12 +69,6 @@ class CarritoStore: ViewModel() {
                     Database.addProductoToCurrentCarrito(currentCarritoAndProductos.carrito, producto)
                 }
 
-//                if (added && cantidad == 1) {
-//                    Tools.Notifier.showToast(Literals.ToastText.ADDED_PRODUCTO)
-//                }
-//                else if (added && cantidad == -1) {
-//                    Tools.Notifier.showToast(Literals.ToastText.ADDED_PRODUCTO)
-//                }
                 if (!added) Tools.Notifier.showToast(Literals.ToastText.ERROR_ADDING_PRODUCTO)
             }
         }
@@ -109,11 +106,6 @@ class CarritoStore: ViewModel() {
         }
     }
 
-
-    fun minus1ProductoToCurrentCarrito(producto: ProductoEntity) {
-
-    }
-
     fun doFixCantidadStr(str: String?, cantidad: Int): String {
         if (str == null)
             return ""
@@ -143,7 +135,11 @@ class CarritoStore: ViewModel() {
 
     fun getAllCarrito(): SnapshotStateList<CarritoEntity> {
         _carritos.clear()
-        _carritos.addAll(Database.getAllCarrito())
+
+        var carritosAux: List<CarritoEntity> = Database.getAllCarrito()
+        carritosAux = carritosAux.filter {it.id != 1}
+
+        _carritos.addAll(carritosAux)
 
         return carritos
     }
@@ -158,8 +154,18 @@ class CarritoStore: ViewModel() {
     fun setShowAddCarritoPopup(newValue: Boolean) {
         _showAddCarritoPopup.value = newValue
     }
-
+    fun setShowEditCarritoPopup(newValue: Boolean) {
+        _showEditCarritoPopup.value = newValue
+    }
     fun setEditingCarrito(carritoEntity: CarritoEntity) {
         _editingCarrito.value = carritoEntity
+    }
+    fun updateCarrito() {
+        val carrito = Carrito(editingCarrito.value!!.id, _carritoName.value, _carritoDescription.value)
+
+        viewModelScope.launch(Dispatchers.IO) {
+            Database.updateCarrito(carrito)
+            getCarritoAndProductosByCarritoId(editingCarrito.value!!.id)
+        }
     }
 }
