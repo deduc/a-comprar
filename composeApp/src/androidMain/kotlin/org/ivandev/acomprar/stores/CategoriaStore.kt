@@ -32,10 +32,9 @@ class CategoriaStore : ViewModel() {
     val showDeleteCategoriaPopup: State<Boolean> = _showDeleteCategoriaPopup
 
     init {
-        viewModelScope.launch(Dispatchers.IO) {
-            _categorias.value = Database.getAllCategoria()
-        }
+        getAllCategorias()
     }
+
 
     fun addCategoria(categoria: Categoria) {
         val added = Database.addCategoria(categoria)
@@ -47,8 +46,21 @@ class CategoriaStore : ViewModel() {
 
     }
 
+
+    private fun getAllCategorias() {
+        viewModelScope.launch(Dispatchers.IO) {
+            _categorias.value = Database.getAllCategoria()
+        }
+    }
+
     fun getCategoriaNameById(categoriaId: Int, categorias: List<CategoriaEntity>): String {
         return categorias.firstOrNull { it.id == categoriaId }?.nombre ?: "Sin categoría"
+    }
+
+
+    fun deleteCategoria(deleteCategoriaEntity: CategoriaEntity) {
+        Database.deleteCategoriaById(deleteCategoriaEntity.id)
+        _categorias.value = _categorias.value.filter { it.id != deleteCategoriaEntity.id }.toList()
     }
 
 
@@ -58,11 +70,6 @@ class CategoriaStore : ViewModel() {
         }.toList()
 
         Database.updateCategoriaById(updatedCategoriaEntity)
-    }
-
-    fun deleteCategoria(deleteCategoriaEntity: CategoriaEntity) {
-        Database.deleteCategoriaById(deleteCategoriaEntity.id)
-        _categorias.value = _categorias.value.filter { it.id != deleteCategoriaEntity.id }.toList()
     }
 
     fun updateCategoriaToDelete(categoriaEntity: CategoriaEntity?) {

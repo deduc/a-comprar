@@ -25,13 +25,13 @@ object ProductoHandler {
             return true
     }
 
-    fun initialize(database: SQLiteDatabase) {
+    fun initialize(db: SQLiteDatabase) {
         val productos = Literals.Database.Productos.doBuildProductoEntityList(
             Literals.Database.Productos.LISTA_PRODUCTOS_BRUTO
         )
 
         productos.forEach { producto ->
-            database.insert(
+            db.insert(
                 Literals.Database.PRODUCTO_TABLE, null, ContentValues().apply {
                 put(Literals.Database.ID_CATEGORIA_COLUMN, producto.idCategoria)
                 put(Literals.Database.NOMBRE_COLUMN, producto.nombre)

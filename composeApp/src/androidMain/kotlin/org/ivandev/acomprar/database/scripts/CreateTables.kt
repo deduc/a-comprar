@@ -13,6 +13,7 @@ object CreateTables {
     val tableComidaProducto = Literals.Database.COMIDA_PRODUCTO_TABLE
     val tableMenuComida = Literals.Database.MENU_COMIDA_TABLE
     val tableMenuDayOfWeek = Literals.Database.MENU_DAYS_OF_WEEK
+    val tableMainCarrito = Literals.Database.MAIN_CARRITO_TABLE
 
     // Columnas
     val cantidadColumn = Literals.Database.CANTIDAD_COLUMN
@@ -27,6 +28,9 @@ object CreateTables {
     val idCategoriaColumn = Literals.Database.ID_CATEGORIA_COLUMN
     val idCarritoColumn = Literals.Database.ID_CARRITO_COLUMN
     val tipoColumn = Literals.Database.TIPO_COLUMN
+
+    val isCompradoColumn = Literals.Database.IS_COMPRADO_COLUMN
+
 
     // Tablas
     val CREATE_TABLE_CARRITO = """
@@ -110,6 +114,18 @@ object CreateTables {
             PRIMARY KEY ($idCarritoColumn, $idProductoColumn),
             FOREIGN KEY ($idCarritoColumn) REFERENCES $tableCarrito($idColumn) ON DELETE CASCADE,
             FOREIGN KEY ($idProductoColumn) REFERENCES $tableProducto($idColumn) ON DELETE CASCADE
+        );
+    """.trimIndent()
+
+    val CREATE_TABLE_MAIN_CARRITO = """
+        CREATE TABLE IF NOT EXISTS $tableMainCarrito (
+            $idColumn INTEGER PRIMARY KEY AUTOINCREMENT,
+            $idCarritoColumn INTEGER NOT NULL,
+            $idProductoColumn INTEGER NOT NULL,
+            $cantidadColumn INTEGER DEFAULT 1,
+            $isCompradoColumn INTEGER DEFAULT 0, -- 0 no comprado, 1 comprado todos
+            FOREIGN KEY ($idCarritoColumn) REFERENCES $tableCarrito($idColumn) ON DELETE CASCADE,
+            FOREIGN KEY ($idProductoColumn) REFERENCES $tableProducto($idColumn) ON DELETE CASCADE -- CORREGIDO: Apuntar a $idColumn
         );
     """.trimIndent()
 }

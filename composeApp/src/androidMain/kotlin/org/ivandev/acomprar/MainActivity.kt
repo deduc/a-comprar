@@ -6,10 +6,10 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import cafe.adriel.voyager.navigator.Navigator
 import org.ivandev.acomprar.database.Database
 import org.ivandev.acomprar.screens.HomeScreen
+import org.ivandev.acomprar.screens.carrito.CarritosScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,16 +25,18 @@ class MainActivity : ComponentActivity() {
         Database.initializeDatabase(context)
         Tools.Notifier.init(context)
 
-//        Database.pruebas()
+//        Database.restartDatabase()
 
-        val screenToShow = remember { HomeScreen() }
-//        val screenToShow = remember { CarritosScreen() }
         MaterialTheme {
             // !!!!!!!! todo: Esto es para los estilos. Está comentado para optimizar rendimiento en desarrollo
 //            Navigator(screen = screenToShow) { navigator ->
 //                SlideTransition(navigator)
 //            }
-            Navigator(screenToShow)
+
+            if (true)
+                Navigator(HomeScreen())
+            else
+                Navigator(CarritosScreen())
         }
     }
 }

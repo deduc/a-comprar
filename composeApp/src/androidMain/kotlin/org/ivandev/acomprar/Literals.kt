@@ -8,6 +8,8 @@ object Literals {
     const val NO_DATA_TEXT: String = "Sin datos"
     const val SIN_CANTIDAD_TEXT: String = "Sin cantidad"
     const val SIN_MARCA_TEXT: String = "Sin marca"
+    const val SIN_DESCRIPCION_TEXT: String = "Descripción vacía"
+    const val SIN_NOMBRE_TEXT: String = "Nombre vacío"
 
     // Configuration texts
     const val CHANGE_TEXT: String = "Cambiar"
@@ -75,10 +77,7 @@ object Literals {
         const val MENU_COMIDA_TABLE: String = "menu_comida"
         const val MENU_DAYS_OF_WEEK: String = "menu_days_of_week"
         const val PRODUCTO_TABLE: String = "producto"
-
-        val USER_TABLES: List<String> = listOf(
-            CARRITO_TABLE, CARRITO_PRODUCTO_TABLE, CATEGORIA_TABLE, COMIDA_TABLE, COMIDA_PRODUCTO_TABLE, MENU_TABLE, MENU_COMIDA_TABLE, MENU_DAYS_OF_WEEK, PRODUCTO_TABLE
-        )
+        const val MAIN_CARRITO_TABLE: String = "main_carrito"
 
         // Database column names
         const val ID_COLUMN: String = "id"
@@ -95,6 +94,12 @@ object Literals {
         const val MARCA_COLUMN: String = "marca"
         const val NOMBRE_COLUMN: String = "nombre"
         const val TIPO_COLUMN: String = "tipo"
+        const val IS_COMPRADO_COLUMN: String = "is_comprado"
+
+        // Database hardcoded Data
+        const val MAIN_CARRITO_ID: Int = 1
+        const val CARRITO_BASTARDO_NAME: String = "carrito_bastardo"
+        const val CARRITO_BASTARDO_DESCRIPTION: String = "Carrito auxiliar que no deberían ver los usuarios."
 
         // special values to columns
         const val ID_SIN_CATEGORIA_VALUE: Int = 0
@@ -259,10 +264,6 @@ object Literals {
         }
     }
 
-    object Errors {
-        const val NO_NAME_PROVIDED: String = "ERROR: El campo Nombre no puede estar vacío."
-    }
-
     object ScreenTitles {
         fun editComidaTitle(nombreComida: String): String {
             return "Editar $nombreComida"
@@ -273,10 +274,10 @@ object Literals {
         const val ADDED_DATA_TEST = "Datos de prueba añadidos."
         const val ADDED_MENU = "Menú añadido."
         const val ADDED_PRODUCTO = "Producto añadido."
-
         const val REMOVED_PRODUCTO = "Producto restado."
-
         const val DELETED_ALL_PRODUCTOS = "Productos borrados."
+        const val ADDED_CARRITO_TO_MAIN_CARRITO = "Carrito añadido para comprar"
+
 
         const val ERROR_ADDING_DATA_TEST = "Error al añadir registros de prueba."
         const val ERROR_ADDING_PRODUCTO = "Error al manejar el producto."
@@ -285,8 +286,10 @@ object Literals {
         const val ERROR_MANAGING_PRODUCTO = "Error inesperado al sumar o restar producto."
         const val ERROR_VOID_DATA = "Error no has rellenado suficientes datos."
         const val ERROR_ADDING_PRODUCTO_TO_UNKNOWN_CARRITO = "Error añadiendo el producto a un carrito desconocido"
-
         const val ERROR_DELETING_ALL_PRODUCTOS = "Error al añadir registros de prueba."
+        const val ERROR_NO_NAME_PROVIDED: String = "ERROR: El campo Nombre no puede estar vacío."
+        const val ERROR_ADDING_CARRITO_TO_MAIN_CARRITO = "Carrito añadido para comprar"
+
     }
 
     // No SQL tables, just for UI "tables"

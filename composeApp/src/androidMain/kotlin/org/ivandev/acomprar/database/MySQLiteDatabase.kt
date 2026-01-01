@@ -13,6 +13,7 @@ import org.ivandev.acomprar.database.entities.ProductoEntity
 import org.ivandev.acomprar.database.handlers.CarritoHandler
 import org.ivandev.acomprar.database.handlers.CategoriaHandler
 import org.ivandev.acomprar.database.handlers.ComidaHandler
+import org.ivandev.acomprar.database.handlers.MainCarritoHandler
 import org.ivandev.acomprar.database.handlers.MenuHandler
 import org.ivandev.acomprar.database.handlers.ProductoHandler
 import org.ivandev.acomprar.database.scripts.CreateTables
@@ -59,6 +60,10 @@ class MySQLiteDatabase(context: Context, version: Int) : SQLiteOpenHelper(
 
         //db.close()
         return result
+    }
+
+    fun addCarritoToMainCarrito(id: Int): Boolean {
+        return MainCarritoHandler.addCarritoToMainCarrito(writableDatabase, id)
     }
 
     fun addProducto(producto: Producto): Boolean {
@@ -207,6 +212,10 @@ class MySQLiteDatabase(context: Context, version: Int) : SQLiteOpenHelper(
         //db.close()
         return result
     }
+    fun updateCarrito(carrito: Carrito): Boolean {
+        return CarritoHandler.updateCarrito(writableDatabase, carrito)
+    }
+
 
     fun updateComidaById(comida: ComidaEntity): Boolean {
         return ComidaHandler.updateById(writableDatabase, comida)
@@ -308,43 +317,71 @@ class MySQLiteDatabase(context: Context, version: Int) : SQLiteOpenHelper(
     // METODOS ESPECIALES
     // METODOS ESPECIALES
     private fun createTables(db: SQLiteDatabase) {
-        println("Creando tablas")
-        db.execSQL(CreateTables.CREATE_TABLE_CARRITO)
-        db.execSQL(CreateTables.CREATE_TABLE_CATEGORIA)
-        db.execSQL(CreateTables.CREATE_TABLE_COMIDA)
-        db.execSQL(CreateTables.CREATE_TABLE_COMIDA_PRODUCTO)
-        db.execSQL(CreateTables.CREATE_TABLE_MENU)
-        db.execSQL(CreateTables.CREATE_TABLE_MENU_COMIDA)
-        db.execSQL(CreateTables.CREATE_TABLE_PRODUCTO)
-        db.execSQL(CreateTables.CREATE_TABLE_CARRITO_PRODUCTO)
-        db.execSQL(CreateTables.CREATE_TABLE_MENU_DAY_OF_WEEK)
+        println("[DEBUG] Creando tablas")
+        val createStatements = listOf(
+            CreateTables.CREATE_TABLE_CARRITO,
+            CreateTables.CREATE_TABLE_CATEGORIA,
+            CreateTables.CREATE_TABLE_COMIDA,
+            CreateTables.CREATE_TABLE_PRODUCTO,
+            CreateTables.CREATE_TABLE_COMIDA_PRODUCTO,
+            CreateTables.CREATE_TABLE_MENU,
+            CreateTables.CREATE_TABLE_MENU_COMIDA,
+            CreateTables.CREATE_TABLE_MENU_DAY_OF_WEEK,
+            CreateTables.CREATE_TABLE_CARRITO_PRODUCTO,
+            CreateTables.CREATE_TABLE_MAIN_CARRITO,
+        )
+
+        // Ejecutar cada una de las sentencias
+        createStatements.forEach { statement ->
+            db.execSQL(statement)
+            println("[DEBUG] Tabla creada")
+        }
     }
 
     private fun initializeData(db: SQLiteDatabase) {
-        println("Inicializando base de datos")
+        println("[DEBUG] Inicializando base de datos")
         CategoriaHandler.initialize(db)
         ProductoHandler.initialize(db)
+        CarritoHandler.initialize(db)
     }
 
-    fun pruebas() {
+    fun restartDatabase() {
         dropTables(writableDatabase)
         setupDatabase(writableDatabase)
     }
 
-    private fun dropTables(db: SQLiteDatabase){
-        println("Borrando tablas")
-        db.execSQL(DropTables.DROP_TABLE_CARRITO)
-        db.execSQL(DropTables.DROP_TABLE_CATEGORIA)
-        db.execSQL(DropTables.DROP_TABLE_COMIDA)
-        db.execSQL(DropTables.DROP_TABLE_COMIDA_PRODUCTO)
-        db.execSQL(DropTables.DROP_TABLE_MENU)
-        db.execSQL(DropTables.DROP_TABLE_MENU_COMIDA)
-        db.execSQL(DropTables.DROP_TABLE_PRODUCTO)
-        db.execSQL(DropTables.DROP_TABLE_CARRITO_PRODUCTO)
-        db.execSQL(DropTables.DROP_TABLE_MENU_DAYS_OF_WEEK)
+    private fun dropTables(db: SQLiteDatabase) {
+        println("[DEBUG] Borrando tablas")
+
+        // El orden de borrado es importante. Se borran primero las tablas
+        // que dependen de otras (las que tienen FOREIGN KEY).
+        val dropStatements = listOf(
+            DropTables.DROP_TABLE_CARRITO_PRODUCTO,
+            DropTables.DROP_TABLE_MENU_DAYS_OF_WEEK,
+            DropTables.DROP_TABLE_MENU_COMIDA,
+            DropTables.DROP_TABLE_COMIDA_PRODUCTO,
+            DropTables.DROP_TABLE_PRODUCTO,
+            DropTables.DROP_TABLE_MENU,
+            DropTables.DROP_TABLE_COMIDA,
+            DropTables.DROP_TABLE_CATEGORIA,
+            DropTables.DROP_TABLE_CARRITO,
+            DropTables.DROP_TABLE_CARRITO_CONTENIDO
+        )
+
+        // Ejecutar cada una de las sentencias
+        dropStatements.forEach { statement ->
+            // Usamos try-catch por si la tabla no existiera, para evitar que la app crashee
+            try {
+                db.execSQL(statement)
+                println("[DEBUG] Tabla borrada")
+            } catch (e: Exception) {
+                // Opcional: registrar el error si es necesario
+                 println("[Error] Error al borrar tabla: ${e.message}")
+            }
+        }
     }
 
-    private fun setupDatabase(db: SQLiteDatabase) {
+    private fun  setupDatabase(db: SQLiteDatabase) {
         createTables(db)
         initializeData(db)
     }

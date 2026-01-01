@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -33,6 +35,7 @@ import org.ivandev.acomprar.components.MyScrollableColumn
 import org.ivandev.acomprar.components.TextWhite
 import org.ivandev.acomprar.database.entities.CarritoEntity
 import org.ivandev.acomprar.stores.CarritoStore
+import org.ivandev.acomprar.stores.MainCarritoStore
 
 class CarritosScreen(): Screen {
     @Composable
@@ -51,9 +54,9 @@ class CarritosScreen(): Screen {
 
         Column(Modifier.fillMaxHeight()) {
             Column(Modifier.weight(1f)) {
-                MyScrollableColumn {
-                    CarritosList(carritos)
-                }
+                CarritosList(carritos)
+//                MyScrollableColumn {
+//                }
             }
 
             Row {
@@ -67,30 +70,79 @@ class CarritosScreen(): Screen {
     @Composable
     fun CarritosList(carritos: SnapshotStateList<CarritoEntity>) {
         val navigator: Navigator = LocalNavigator.currentOrThrow
-        val carritoStore: CarritoStore = viewModel(LocalContext.current as ViewModelStoreOwner)
+        val carritoStore: CarritoStore = viewModel()
+        val mainCarritoStore: MainCarritoStore = viewModel()
 
-        if (carritos.isEmpty()) { Text("No hay carritos") }
-        else {
-            carritos.forEach { it: CarritoEntity ->
-                Row(Modifier.fillMaxWidth().then(Tools.styleBorderBlack), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
-                    Column(Modifier.padding(8.dp).weight(1f), verticalArrangement = Arrangement.Center) {
-                        Text(it.name, style = Tools.styleTitleBlack)
+        if (carritos.isEmpty()) {
+            Text("No hay carritos")
+        } else {
+            LazyColumn {
+                items(
+                    items = carritos,
+                    key = { it.id }
+                ) { carrito ->
+                    Row(
+                        Modifier
+                            .fillMaxWidth()
+                            .then(Tools.styleBorderBlack),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Column(
+                            Modifier
+                                .padding(8.dp)
+                                .weight(1f),
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            Text(
+                                carrito.getFixedName(),
+                                style = Tools.styleTitleBlack
+                            )
 
-                        Row(Modifier.padding(4.dp)) {
-                            Spacer(Modifier.width(8.dp))
-                            Text(it.description)
+                            Row(Modifier.padding(4.dp)) {
+                                Spacer(Modifier.width(8.dp))
+                                Text(carrito.getFixedDescription())
+                            }
                         }
+
+                        RightIcons(
+                            carrito,
+                            carritoStore,
+                            navigator,
+                            mainCarritoStore
+                        )
                     }
 
-                    Row(Modifier.padding(8.dp), verticalAlignment = Alignment.CenterVertically) {
-                        MyIcons.ViewIcon {
-                            carritoStore.setEditingCarrito(it)
-                            navigator.push(EditCarritoScreen(it.id))
-                        }
-                    }
+                    Spacer(Modifier.height(Tools.height16dp))
                 }
+            }
+        }
+    }
 
-                Spacer(Modifier.height(Tools.height16dp))
+    @Composable
+    fun RightIcons(
+        it: CarritoEntity,
+        carritoStore: CarritoStore,
+        navigator: Navigator,
+        mainCarritoStore: MainCarritoStore
+    ) {
+        Row(Modifier.padding(8.dp), verticalAlignment = Alignment.CenterVertically) {
+            MyIcons.ViewIcon {
+                carritoStore.setEditingCarrito(it)
+                navigator.push(EditCarritoScreen(it.id))
+            }
+
+            Spacer(Modifier.width(Tools.height16dp))
+
+            MyIcons.AddShoppingCartIcon {
+                mainCarritoStore.addCarritoToMainCarrito(it.id)
+//                Tools.Notifier.showToast(Literals.ToastText.ADDED_CARRITO_TO_MAIN_CARRITO)
+            }
+
+            Spacer(Modifier.width(Tools.height16dp))
+
+            MyIcons.RemoveShoppingCartIcon {
+                Tools.Notifier.showToast("ola")
             }
         }
     }
@@ -108,6 +160,9 @@ class CarritosScreen(): Screen {
     fun Popups(carritoStore: CarritoStore) {
         if (carritoStore.showAddCarritoPopup.value) {
             AddCarritoPopup()
+        }
+        else if (carritoStore.showEditCarritoPopup.value) {
+            EditCarritoPopup()
         }
     }
 }

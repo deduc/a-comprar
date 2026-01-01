@@ -67,7 +67,9 @@ class EditCarritoScreen(val idCarrito: Int): Screen {
         Row {
             MyIcons.EditIcon(tint = Color.White) {
                 // todo: asignar el nombre y descripcion de ESTE carrito a los datos iniciales del popup
-                carritoStore.setShowAddCarritoPopup(true)
+                carritoStore._carritoName.value = carritoStore.editingCarrito.value?.name.toString()
+                carritoStore._carritoDescription.value = carritoStore.editingCarrito.value?.description.toString()
+                carritoStore.setShowEditCarritoPopup(true)
             }
             Spacer(Tools.spacer8dpWidth)
 
@@ -189,6 +191,11 @@ class EditCarritoScreen(val idCarrito: Int): Screen {
         if (carritoStore.showAddCarritoPopup.value) {
             AddCarritoPopup()
         }
+
+        if (carritoStore.showEditCarritoPopup.value) {
+            EditCarritoPopup()
+        }
+
 
         if (showDeleteConfirmationDialog.value) {
             AlertDialog(

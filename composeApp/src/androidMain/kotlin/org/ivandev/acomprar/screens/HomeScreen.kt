@@ -21,6 +21,7 @@ import androidx.compose.material.icons.filled.MenuBook
 import androidx.compose.material.icons.filled.Science
 import androidx.compose.material.icons.filled.ShoppingBasket
 import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material.icons.filled.ShoppingCartCheckout
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -37,6 +38,7 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import org.ivandev.acomprar.Literals
 import org.ivandev.acomprar.components.CommonScreen
 import org.ivandev.acomprar.screens.Pruebas.PruebasScreen
+import org.ivandev.acomprar.screens.acomprar.MainCarrito
 import org.ivandev.acomprar.screens.carrito.CarritosScreen
 import org.ivandev.acomprar.screens.categoria.CategoriasScreen
 import org.ivandev.acomprar.screens.comida.ComidasScreen
@@ -66,7 +68,6 @@ class HomeScreen: Screen {
             AppTitle(title, false)
             Spacer(Modifier.height(8.dp))
             MyNavigationButtons()
-            AComprarCarrito()
         }
     }
 
@@ -93,24 +94,24 @@ class HomeScreen: Screen {
         val navigator: Navigator = LocalNavigator.currentOrThrow
 
         Column {
-            MyNavButton(title = Literals.CARRITOS_TITLE, icon = Icons.Default.ShoppingCart) { navigator.push(CarritosScreen()) }
+            MyNavButton(title = Literals.CARRITOS_TITLE, icon = Icons.Default.ShoppingCartCheckout) { navigator.push(CarritosScreen()) }
             MyNavButton(title = Literals.MENU_TITLE, icon = Icons.Default.MenuBook) { navigator.push(MenuScreen()) }
             MyNavButton(title = Literals.COMIDAS_Y_CENAS_TITLE, icon = Icons.Default.Fastfood) { navigator.push(ComidasScreen()) }
             MyNavButton(title = Literals.CATEGORIAS_TITLE, icon = Icons.Default.Category) { navigator.push(CategoriasScreen()) }
             MyNavButton(title = Literals.PRODUCTOS_TITLE, icon = Icons.Default.ShoppingBasket) { navigator.push(ProductosScreen()) }
 
             MyNavButton(title = "Pantalla de pruebas", icon = Icons.Default.Science) { navigator.push(PruebasScreen()) }
+
+            AComprarCarrito(navigator)
         }
     }
     
     @Composable
-    fun AComprarCarrito() {
-        val navigator: Navigator = LocalNavigator.currentOrThrow
-
+    fun AComprarCarrito(navigator: Navigator) {
         Spacer(Modifier.height(32.dp))
 
         Button(
-            onClick = { navigator.push(CarritosScreen()) },
+            onClick = { navigator.push(MainCarrito()) },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp)

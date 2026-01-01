@@ -11,6 +11,26 @@ import org.ivandev.acomprar.database.special_classes.CarritoAndProductsData
 import org.ivandev.acomprar.models.Carrito
 
 object CarritoHandler {
+    fun initialize(db: SQLiteDatabase) {
+        val values = ContentValues().apply {
+            put(Literals.Database.ID_COLUMN, Literals.Database.MAIN_CARRITO_ID)
+            put(Literals.Database.NOMBRE_COLUMN, Literals.Database.CARRITO_BASTARDO_NAME)
+            put(Literals.Database.DESCRIPTION_COLUMN, Literals.Database.CARRITO_BASTARDO_DESCRIPTION)
+        }
+        val inserted: Long = db.insert(
+            Literals.Database.CARRITO_TABLE,
+            null,
+            values,
+        )
+
+        if (inserted.toInt() == 1) {
+            println("Carrito bastardo añadido con éxito")
+        }
+        else {
+            println("ERROR AÑADIENDO CARRITO BASTARDO")
+        }
+    }
+
     fun add(db: SQLiteDatabase, carrito: Carrito): Boolean {
         val values = ContentValues()
 
@@ -236,5 +256,19 @@ object CarritoHandler {
         row.put(Literals.Database.CANTIDAD_COLUMN, cantidad)
 
         return row
+    }
+
+    fun updateCarrito(db: SQLiteDatabase, newCarrito: Carrito): Boolean {
+        val values = ContentValues().apply {
+            put(Literals.Database.NOMBRE_COLUMN, newCarrito.name)
+            put(Literals.Database.DESCRIPTION_COLUMN, newCarrito.description)
+        }
+
+        return db.update(
+            Literals.Database.CARRITO_TABLE,
+            values,
+            "${Literals.Database.ID_COLUMN} = ?",
+            arrayOf(newCarrito.id.toString())
+        ) == 1
     }
 }

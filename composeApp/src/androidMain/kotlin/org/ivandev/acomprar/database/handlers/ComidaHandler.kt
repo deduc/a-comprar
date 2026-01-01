@@ -14,7 +14,7 @@ object ComidaHandler {
         val result: MutableList<ComidaEntity> = mutableListOf()
 
         db.rawQuery(
-            "SELECT * FROM $Literals.Database.COMIDA_TABLE",
+            "SELECT * FROM ${Literals.Database.COMIDA_TABLE}",
             null
         ).use { cursor ->
             if (cursor.moveToFirst()) {

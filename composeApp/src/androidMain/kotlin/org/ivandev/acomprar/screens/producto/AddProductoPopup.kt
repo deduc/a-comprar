@@ -68,7 +68,7 @@ fun AddProductoPopup(idCategoria: Int) {
                         )
 
                         if (newProducto.nombre!!.isEmpty()) {
-                            Tools.Notifier.showToast(Literals.Errors.NO_NAME_PROVIDED)
+                            Tools.Notifier.showToast(Literals.ToastText.ERROR_NO_NAME_PROVIDED)
                         }
                         else {
                             productoStore.addProducto(newProducto)
