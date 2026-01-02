@@ -9,6 +9,7 @@ import kotlinx.coroutines.withContext
 import org.ivandev.acomprar.Literals
 import org.ivandev.acomprar.Tools
 import org.ivandev.acomprar.database.Database
+import org.ivandev.acomprar.database.entities.CarritoEntity
 
 class MainCarritoStore: ViewModel() {
     fun addCarritoToMainCarrito(id: Int) {

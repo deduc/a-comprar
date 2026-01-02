@@ -25,11 +25,12 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import org.ivandev.acomprar.Literals
 import org.ivandev.acomprar.components.CommonScreen
 import org.ivandev.acomprar.components.MyScrollableColumn
+import org.ivandev.acomprar.database.entities.CarritoEntity
 import org.ivandev.acomprar.database.entities.CategoriaEntity
 import org.ivandev.acomprar.stores.CarritoStore
 import org.ivandev.acomprar.stores.CategoriaStore
 
-class SeeCategoriasScreen: Screen {
+class SeeCategoriasScreen(): Screen {
     @Composable
     override fun Content() {
         val carritoStore: CarritoStore = viewModel(LocalContext.current as ViewModelStoreOwner)
@@ -61,7 +62,11 @@ class SeeCategoriasScreen: Screen {
                             Text(
                                 text = categoria.nombre,
                                 modifier = Modifier.border(1.dp, Color.Black).padding(16.dp).weight(1f)
-                                    .clickable { navigator.push(SeeProductosToAddByCategoria(categoria.id)) },
+                                    .clickable {
+                                        navigator.push(
+                                            SeeProductosToAddByCategoria(categoria.id, false)
+                                        )
+                                   },
                                 style = TextStyle(textAlign = TextAlign.Center),
                             )
                         }

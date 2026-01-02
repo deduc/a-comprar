@@ -271,4 +271,27 @@ object CarritoHandler {
             arrayOf(newCarrito.id.toString())
         ) == 1
     }
+
+    fun checkIfCarritosWasAddedToMainCarrito(db: SQLiteDatabase, idCarritos: List<Int>): List<Int> {
+        val addedCarritos: MutableList<Int> = mutableListOf()
+
+        db.query(
+            Literals.Database.MAIN_CARRITO_TABLE,
+            null,
+            "${Literals.Database.ID_COLUMN} IN (${idCarritos.joinToString(",")})",
+            null,
+            null,
+            null,
+            null
+        ).use {
+            while (it.moveToNext()) {
+                addedCarritos.add(
+                    it.getInt(it.getColumnIndexOrThrow(Literals.Database.ID_COLUMN))
+                )
+            }
+        }
+
+        return addedCarritos
+    }
+
 }

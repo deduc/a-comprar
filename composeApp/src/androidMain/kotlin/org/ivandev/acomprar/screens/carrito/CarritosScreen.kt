@@ -54,9 +54,7 @@ class CarritosScreen(): Screen {
 
         Column(Modifier.fillMaxHeight()) {
             Column(Modifier.weight(1f)) {
-                CarritosList(carritos)
-//                MyScrollableColumn {
-//                }
+                CarritosList(carritos, carritoStore)
             }
 
             Row {
@@ -68,9 +66,8 @@ class CarritosScreen(): Screen {
     }
 
     @Composable
-    fun CarritosList(carritos: SnapshotStateList<CarritoEntity>) {
+    fun CarritosList(carritos: SnapshotStateList<CarritoEntity>, carritoStore: CarritoStore) {
         val navigator: Navigator = LocalNavigator.currentOrThrow
-        val carritoStore: CarritoStore = viewModel()
         val mainCarritoStore: MainCarritoStore = viewModel()
 
         if (carritos.isEmpty()) {
@@ -105,12 +102,7 @@ class CarritosScreen(): Screen {
                             }
                         }
 
-                        RightIcons(
-                            carrito,
-                            carritoStore,
-                            navigator,
-                            mainCarritoStore
-                        )
+                        RightIcons(carrito, carritoStore, navigator, mainCarritoStore)
                     }
 
                     Spacer(Modifier.height(Tools.height16dp))
@@ -121,29 +113,34 @@ class CarritosScreen(): Screen {
 
     @Composable
     fun RightIcons(
-        it: CarritoEntity,
+        carrito: CarritoEntity,
         carritoStore: CarritoStore,
         navigator: Navigator,
         mainCarritoStore: MainCarritoStore
     ) {
         Row(Modifier.padding(8.dp), verticalAlignment = Alignment.CenterVertically) {
             MyIcons.ViewIcon {
-                carritoStore.setEditingCarrito(it)
-                navigator.push(EditCarritoScreen(it.id))
+                carritoStore.setEditingCarrito(carrito)
+                carrito.printData()
+                navigator.push(EditCarritoScreen(carrito, carritoStore))
             }
 
             Spacer(Modifier.width(Tools.height16dp))
 
-            MyIcons.AddShoppingCartIcon {
-                mainCarritoStore.addCarritoToMainCarrito(it.id)
+            val provisionalAdded = true
+
+            if (provisionalAdded) {
+                MyIcons.AddShoppingCartIcon {
+                    mainCarritoStore.addCarritoToMainCarrito(carrito.id)
 //                Tools.Notifier.showToast(Literals.ToastText.ADDED_CARRITO_TO_MAIN_CARRITO)
+                }
+            }
+            else {
+                MyIcons.RemoveShoppingCartIcon {
+                    Tools.Notifier.showToast("ola")
+                }
             }
 
-            Spacer(Modifier.width(Tools.height16dp))
-
-            MyIcons.RemoveShoppingCartIcon {
-                Tools.Notifier.showToast("ola")
-            }
         }
     }
 

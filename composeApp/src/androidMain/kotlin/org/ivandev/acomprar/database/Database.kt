@@ -81,6 +81,10 @@ object Database {
         return mySQLiteDatabase.addComida(comida)
     }
 
+    fun checkIfCarritosWasAddedToMainCarrito(idCarritos: List<Int>): List<Int> {
+        return mySQLiteDatabase.checkIfCarritosWasAddedToMainCarrito(idCarritos)
+    }
+
 
     fun getCarritoAndProductosByCarritoId(id: Int): CarritoAndProductsData {
         return mySQLiteDatabase.getCarritoAndProductosByCarritoId(id)

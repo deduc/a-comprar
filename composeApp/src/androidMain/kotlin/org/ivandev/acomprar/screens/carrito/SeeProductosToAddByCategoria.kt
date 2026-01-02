@@ -54,17 +54,17 @@ class SeeProductosToAddByCategoria(val idCategoria: Int, order_products: Boolean
         val carritoStore: CarritoStore = viewModel(LocalContext.current as ViewModelStoreOwner)
         val productos: List<ProductoEntity> = productoStore.productosByCategoria
 
-        val currentCarrito: CarritoEntity = carritoStore.editingCarrito.value!!
+        val currentCarrito: CarritoEntity? = carritoStore.editingCarrito.value
         val carritoAndProductos: State<CarritoAndProductsData?> = carritoStore.carritoAndProductos
 
         LaunchedEffect(categoria.id) {
             productoStore.getProductosByCategoriaId(categoria.id)
-            carritoStore.getCarritoAndProductosByCarritoId(currentCarrito.id)
+            carritoStore.getCarritoAndProductosByCarritoId(currentCarrito!!.id)
         }
 
         Column {
             MyScrollableColumn(Modifier.weight(1f)) {
-                ProductosAndAmounts(productos, carritoAndProductos, carritoStore, currentCarrito)
+                ProductosAndAmounts(productos, carritoAndProductos, carritoStore, currentCarrito!!)
             }
 
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {

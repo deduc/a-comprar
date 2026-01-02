@@ -15,4 +15,7 @@ class CarritoEntity(
         if (name.isNullOrEmpty()) return Literals.SIN_NOMBRE_TEXT
         else return name
     }
+    fun printData() {
+        println("DEBUG\n$id - $name - $description")
+    }
 }

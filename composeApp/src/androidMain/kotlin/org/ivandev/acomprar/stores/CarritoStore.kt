@@ -6,7 +6,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -39,6 +38,10 @@ class CarritoStore: ViewModel() {
 
     private var _carritoAndProductos = mutableStateOf<CarritoAndProductsData?>(null)
     val carritoAndProductos: State<CarritoAndProductsData?> = _carritoAndProductos
+
+    private var _carritosAddedToMainCarrito = mutableStateListOf<Int>()
+    val carritosAddedToMainCarrito: SnapshotStateList<Int> = _carritosAddedToMainCarrito
+
 
     fun addCarrito() {
         _newCarritoToAdd.value = Carrito(null, _carritoName.value, _carritoDescription.value)
@@ -148,6 +151,7 @@ class CarritoStore: ViewModel() {
     suspend fun getCarritoAndProductosByCarritoId(id: Int) {
         withContext(Dispatchers.IO) {
             _carritoAndProductos.value = Database.getCarritoAndProductosByCarritoId(id)
+            val a = 1
         }
     }
 
@@ -166,6 +170,21 @@ class CarritoStore: ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             Database.updateCarrito(carrito)
             getCarritoAndProductosByCarritoId(editingCarrito.value!!.id)
+        }
+    }
+
+    fun updateCarritosAddedToMainCarrito(idCarritos: List<Int>) {
+        _carritosAddedToMainCarrito.clear()
+        _carritosAddedToMainCarrito.addAll(idCarritos)
+    }
+
+    fun checkIfCarritosWasAddedToMainCarrito(carritos: List<CarritoEntity>) {
+        val idCarritos: List<Int> = carritos.map { it.id }
+
+        viewModelScope.launch(Dispatchers.IO) {
+            updateCarritosAddedToMainCarrito(
+                Database.checkIfCarritosWasAddedToMainCarrito(idCarritos)
+            )
         }
     }
 }

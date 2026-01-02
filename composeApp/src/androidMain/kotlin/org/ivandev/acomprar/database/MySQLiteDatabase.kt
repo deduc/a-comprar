@@ -117,6 +117,9 @@ class MySQLiteDatabase(context: Context, version: Int) : SQLiteOpenHelper(
         return result
     }
 
+    fun checkIfCarritosWasAddedToMainCarrito(idCarritos: List<Int>): List<Int> {
+        return CarritoHandler.checkIfCarritosWasAddedToMainCarrito(readableDatabase, idCarritos)
+    }
 
 
     fun getAllCategoria(): List<CategoriaEntity> {

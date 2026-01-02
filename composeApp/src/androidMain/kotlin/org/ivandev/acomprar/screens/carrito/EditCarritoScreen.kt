@@ -45,17 +45,21 @@ import org.ivandev.acomprar.database.special_classes.CarritoAndProductsData
 import org.ivandev.acomprar.stores.CarritoStore
 import org.ivandev.acomprar.stores.CategoriaStore
 
-class EditCarritoScreen(val idCarrito: Int): Screen {
+class EditCarritoScreen(
+    // con la inclusion de val, estos 2 objetos son atributos de clase
+    // sin val, es solo parametro del constructor
+    val currentCarrito: CarritoEntity,
+    val carritoStore: CarritoStore
+): Screen {
     @Composable
     override fun Content() {
-        val carritoStore: CarritoStore = viewModel(LocalContext.current as ViewModelStoreOwner)
         val carritoName = carritoStore.carritoAndProductos.value?.carrito?.name ?: Literals.CARRITOS_TITLE
         val showDeleteConfirmationDialog = remember { mutableStateOf(false) }
 
         CommonScreen(
             title = carritoName,
             headerContent = { HeaderButtons { showDeleteConfirmationDialog.value = true } }
-        ) { MainContent(carritoStore) }.Render()
+        ) { MainContent(carritoStore, currentCarrito) }.Render()
 
         Popups(carritoStore, showDeleteConfirmationDialog)
     }
@@ -78,11 +82,11 @@ class EditCarritoScreen(val idCarrito: Int): Screen {
     }
 
     @Composable
-    fun MainContent(carritoStore: CarritoStore) {
+    fun MainContent(carritoStore: CarritoStore, currentCarrito: CarritoEntity) {
         val carritoAndProductos: State<CarritoAndProductsData?> = carritoStore.carritoAndProductos
 
-        LaunchedEffect(idCarrito) {
-            carritoStore.getCarritoAndProductosByCarritoId(idCarrito)
+        LaunchedEffect(currentCarrito.id) {
+            carritoStore.getCarritoAndProductosByCarritoId(currentCarrito.id)
         }
 
         Column {
@@ -204,7 +208,7 @@ class EditCarritoScreen(val idCarrito: Int): Screen {
                 text = { Text("¿Estás seguro de que quieres borrar el carrito?") },
                 confirmButton = {
                     Button(onClick = {
-                        carritoStore.deleteCarritoById(idCarrito)
+                        carritoStore.deleteCarritoById(currentCarrito.id)
                         showDeleteConfirmationDialog.value = false
                         navigator.pop()
                     }) {

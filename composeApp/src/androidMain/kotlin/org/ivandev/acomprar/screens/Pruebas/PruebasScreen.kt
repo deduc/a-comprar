@@ -31,6 +31,9 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.traversalIndex
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.Navigator
+import cafe.adriel.voyager.navigator.currentOrThrow
 import org.ivandev.acomprar.components.MyScrollableColumn
 import org.ivandev.acomprar.database.Database
 import org.ivandev.acomprar.database.entities.MenuDaysOfWeekEntity
@@ -39,7 +42,14 @@ import org.ivandev.acomprar.models.MenuDaysOfWeek
 class PruebasScreen: Screen {
     @Composable
     override fun Content() {
+        val navigator: Navigator = LocalNavigator.currentOrThrow
+
+
         MyScrollableColumn(Modifier.padding(8.dp)) {
+            Button(onClick = { navigator.push(TablasDatos()) }) {
+                Text("Pantalla de Tablas")
+            }
+
             Text("Hola")
             BarraBusqueda()
             TablaMenuDaysOfWeek()
