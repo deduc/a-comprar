@@ -26,7 +26,7 @@ class ConfigurationScreen: Screen {
     @Composable
     override fun Content() {
         val screen = CommonScreen(
-            title = Literals.CONFIGURATION_TITLE
+            title = Literals.TextHomeNavigationButtons.CONFIGURATION_TITLE
         ) {
             MainContent()
         }

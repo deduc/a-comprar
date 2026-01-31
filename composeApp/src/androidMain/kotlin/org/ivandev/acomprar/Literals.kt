@@ -18,17 +18,21 @@ object Literals {
     const val SIZE_TEXT: String = "Tamaño del texto"
 
     // Home navigation buttons
-    const val CATEGORIAS_TITLE: String = "Categorías"
-    const val CARRITOS_TITLE: String = "Carritos de la compra"
-    const val CONFIGURATION_TITLE: String = "Configuración"
-    const val USER_TABLES_TITLE: String = "Tablas de datos"
-    const val COMIDAS_Y_CENAS_TITLE: String = "Comidas y cenas"
-    const val EDIT_PRODUCTO_TITLE: String = "Editar producto"
-    const val ESTADISTICAS_TITLE: String = "Estadísticas"
-    const val PRODUCTOS_ELABORADOS_TITLE: String = "Productos elaborados"
-    const val HOME_TITLE: String = "Home"
-    const val MENU_TITLE: String = "Menús"
-    const val PRODUCTOS_TITLE: String = "Productos"
+    object TextHomeNavigationButtons {
+        const val CATEGORIAS_TITLE: String = "Categorías"
+        const val CARRITOS_TITLE: String = "Carritos de la compra"
+        const val CONFIGURATION_TITLE: String = "Configuración"
+        const val COMIDAS_Y_CENAS_TITLE: String = "Comidas y cenas"
+        const val HOME_TITLE: String = "Home"
+        const val MENU_TITLE: String = "Menús"
+        const val PRODUCTOS_TITLE: String = "Productos"
+        const val MI_CARRITO: String = "Mi carrito actual"
+
+        const val USER_TABLES_TITLE: String = "Tablas de datos"
+        const val EDIT_PRODUCTO_TITLE: String = "Editar producto"
+        const val ESTADISTICAS_TITLE: String = "Estadísticas"
+        const val PRODUCTOS_ELABORADOS_TITLE: String = "Productos elaborados"
+    }
 
     object ButtonsText {
         const val ADD_CATEGORIA: String = "Añadir categoría"
@@ -67,43 +71,56 @@ object Literals {
         // Base directory for app A Comprar
         const val DATABASE_NAME: String = "acomprar.db"
 
-        // Database table names
-        const val CARRITO_TABLE: String = "carrito"
-        const val CARRITO_PRODUCTO_TABLE: String = "carrito_producto"
-        const val CATEGORIA_TABLE: String = "categoria"
-        const val COMIDA_TABLE: String = "comida"
-        const val COMIDA_PRODUCTO_TABLE: String = "comida_producto"
-        const val MENU_TABLE: String = "menu"
-        const val MENU_COMIDA_TABLE: String = "menu_comida"
-        const val MENU_DAYS_OF_WEEK: String = "menu_days_of_week"
-        const val PRODUCTO_TABLE: String = "producto"
-        const val MAIN_CARRITO_TABLE: String = "main_carrito"
+        object Tables {
+            const val CARRITO_TABLE: String = "carrito"
+            const val CARRITO_PRODUCTO_TABLE: String = "carrito_producto"
+            const val CATEGORIA_TABLE: String = "categoria"
+            const val COMIDA_TABLE: String = "comida"
+            const val COMIDA_PRODUCTO_TABLE: String = "comida_producto"
+            const val MENU_TABLE: String = "menu"
+            const val MENU_COMIDA_TABLE: String = "menu_comida"
+            const val MENU_DAYS_OF_WEEK: String = "menu_days_of_week"
+            const val PRODUCTO_TABLE: String = "producto"
+            const val MAIN_CARRITO_TABLE: String = "main_carrito"
+            const val MAIN_CARRITO_WITH_PRODUCTS: String = "main_carrito_with_products"
+            const val USER_ACTIONS_TABLE: String = "user_actions"
+        }
 
-        // Database column names
-        const val ID_COLUMN: String = "id"
-        const val ID_COMIDA_COLUMN: String = "id_comida"
-        const val ID_CENA_COLUMN: String = "id_cena"
-        const val ID_CATEGORIA_COLUMN: String = "id_categoria"
-        const val ID_CARRITO_COLUMN: String = "id_carrito"
-        const val ID_PRODUCTO_COLUMN: String = "id_producto"
-        const val ID_MENU_COLUMN: String = "id_menu"
-        const val CANTIDAD_COLUMN: String = "cantidad"
-        const val DESCRIPTION_COLUMN: String = "description"
-        const val DIA_COLUMN: String = "dia"
-        const val UNIDAD_CANTIDAD_COLUMN: String = "unidad_cantidad"
-        const val MARCA_COLUMN: String = "marca"
-        const val NOMBRE_COLUMN: String = "nombre"
-        const val TIPO_COLUMN: String = "tipo"
-        const val IS_COMPRADO_COLUMN: String = "is_comprado"
+        object ColumnNames {
+            const val ACTION_TYPE_COLUMN: String = "action_type"
+            const val ACTION_VALUE_COLUMN: String = "action_value"
+            const val CANTIDAD_COLUMN: String = "cantidad"
+            const val DESCRIPTION_COLUMN: String = "description"
+            const val DIA_COLUMN: String = "dia"
+            const val MARCA_COLUMN: String = "marca"
+            const val NOMBRE_COLUMN: String = "nombre"
+            const val TIPO_COLUMN: String = "tipo"
+            const val UNIDAD_CANTIDAD_COLUMN: String = "unidad_cantidad"
+            const val ID_COLUMN: String = "id"
+            const val ID_COMIDA_COLUMN: String = "id_comida"
+            const val ID_CENA_COLUMN: String = "id_cena"
+            const val ID_CATEGORIA_COLUMN: String = "id_categoria"
+            const val ID_CARRITO_COLUMN: String = "id_carrito"
+            const val ID_PRODUCTO_COLUMN: String = "id_producto"
+            const val ID_MENU_COLUMN: String = "id_menu"
+            const val IS_COMPRADO_COLUMN: String = "is_comprado"
+            const val TIMESTAMP_COLUMN: String = "timestamp"
+        }
 
-        // Database hardcoded Data
-        const val MAIN_CARRITO_ID: Int = 1
-        const val CARRITO_BASTARDO_NAME: String = "carrito_bastardo"
-        const val CARRITO_BASTARDO_DESCRIPTION: String = "Carrito auxiliar que no deberían ver los usuarios."
+        object HardcodedValues {
+            // special values to columns
+            const val ID_SIN_CATEGORIA_VALUE: Int = 0
+            const val VOID_STR: String = ""
+            const val NO_CANTIDAD_PROVIDED: String = "1 ud"
+            const val NO_MARCA_PROVIDED: String = ""
 
-        // special values to columns
-        const val ID_SIN_CATEGORIA_VALUE: Int = 0
-        const val VOID_STR: String = ""
+            // Database hardcoded Data
+            const val MAIN_CARRITO_ID: Int = 1
+            const val CARRITO_BASTARDO_ID: Int = 1
+            const val CARRITO_BASTARDO_NAME: String = "carrito_bastardo"
+            const val CARRITO_BASTARDO_DESCRIPTION: String = "Carrito auxiliar que no deberían ver los usuarios."
+
+        }
 
         object Categorias {
             const val SIN_CATEGORIA: String = "Sin categoría"
@@ -274,10 +291,12 @@ object Literals {
         const val ADDED_DATA_TEST = "Datos de prueba añadidos."
         const val ADDED_MENU = "Menú añadido."
         const val ADDED_PRODUCTO = "Producto añadido."
-        const val REMOVED_PRODUCTO = "Producto restado."
-        const val DELETED_ALL_PRODUCTOS = "Productos borrados."
-        const val ADDED_CARRITO_TO_MAIN_CARRITO = "Carrito añadido para comprar"
+        const val ADDED_CARRITO_TO_MAIN_CARRITO = "Carrito añadido para comprar."
+        const val ADDED_CATEGORIA = "Categoría añadida."
 
+        const val DELETED_ALL_PRODUCTOS = "Productos borrados."
+        const val DELETED_CARRITO_FROM_MAIN_CARRITO = "Carrito borrado de la lista"
+        const val DELETING_CARRITO_FROM_MAIN_CARRITO = "¿Seguro que quieres quitar este carrito?"
 
         const val ERROR_ADDING_DATA_TEST = "Error al añadir registros de prueba."
         const val ERROR_ADDING_PRODUCTO = "Error al manejar el producto."
@@ -287,9 +306,11 @@ object Literals {
         const val ERROR_VOID_DATA = "Error no has rellenado suficientes datos."
         const val ERROR_ADDING_PRODUCTO_TO_UNKNOWN_CARRITO = "Error añadiendo el producto a un carrito desconocido"
         const val ERROR_DELETING_ALL_PRODUCTOS = "Error al añadir registros de prueba."
-        const val ERROR_NO_NAME_PROVIDED: String = "ERROR: El campo Nombre no puede estar vacío."
+        const val ERROR_DELETING_CARRITO_FROM_MAIN_CARRITO = "Error al borrar el carrito de la lista"
+        const val ERROR_NO_NAME_PROVIDED = "ERROR: El campo Nombre no puede estar vacío."
         const val ERROR_ADDING_CARRITO_TO_MAIN_CARRITO = "Carrito añadido para comprar"
-
+        const val ERROR_NULL_ID_CATEGORIA = "ERROR INTERNO: No hay id categoria"
+        const val ERROR_PRODUCTO_NAME = "ERROR: No hay nombre de producto"
     }
 
     // No SQL tables, just for UI "tables"
@@ -305,5 +326,14 @@ object Literals {
         fun getComidasYCenasTableHeaders(): List<String> {
             return listOf(DIA_COLUMN, COMIDA_COLUMN, CENA_COLUMN)
         }
+    }
+
+    object TextDialog {
+        const val A_COMPRAR_CONFIRMATION: String = "¿Seguro que quieres comenzar a comprar?"
+        const val STOP_BUYING_CONFIRMATION: String = "¿Seguro que quieres parar de comprar?"
+    }
+
+    object UserActions {
+        const val USER_BUYING: String = "user_buying"
     }
 }

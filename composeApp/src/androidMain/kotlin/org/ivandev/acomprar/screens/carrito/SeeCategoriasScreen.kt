@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -25,8 +26,8 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import org.ivandev.acomprar.Literals
 import org.ivandev.acomprar.components.CommonScreen
 import org.ivandev.acomprar.components.MyScrollableColumn
-import org.ivandev.acomprar.database.entities.CarritoEntity
 import org.ivandev.acomprar.database.entities.CategoriaEntity
+import org.ivandev.acomprar.screens.categoria.AddCategoriaPopup
 import org.ivandev.acomprar.stores.CarritoStore
 import org.ivandev.acomprar.stores.CategoriaStore
 
@@ -34,7 +35,7 @@ class SeeCategoriasScreen(): Screen {
     @Composable
     override fun Content() {
         val carritoStore: CarritoStore = viewModel(LocalContext.current as ViewModelStoreOwner)
-        val carritoName = carritoStore.carritoAndProductos.value?.carrito?.name ?: Literals.CARRITOS_TITLE
+        val carritoName = carritoStore.carritoAndProductos.value?.carrito?.name ?: Literals.TextHomeNavigationButtons.CARRITOS_TITLE
 
         CommonScreen(title = carritoName) { MainContent() }.Render()
     }
@@ -47,37 +48,62 @@ class SeeCategoriasScreen(): Screen {
         val categoriasGrouped: List<List<CategoriaEntity>> = categorias.chunked(2)
         val navigator: Navigator = LocalNavigator.currentOrThrow
 
-        MyScrollableColumn(
-        ) {
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+        Column() {
+            MyScrollableColumn(
             ) {
-                categoriasGrouped.forEach { categorias ->
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        categorias.forEach { categoria ->
-                            Text(
-                                text = categoria.nombre,
-                                modifier = Modifier.border(1.dp, Color.Black).padding(16.dp).weight(1f)
-                                    .clickable {
-                                        navigator.push(
-                                            SeeProductosToAddByCategoria(categoria.id, false)
-                                        )
-                                   },
-                                style = TextStyle(textAlign = TextAlign.Center),
-                            )
-                        }
+                Column(
+                    modifier = Modifier.fillMaxWidth().weight(1f),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    categoriasGrouped.forEach { categorias ->
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            categorias.forEach { categoria ->
+                                Text(
+                                    text = categoria.nombre,
+                                    modifier = Modifier.border(1.dp, Color.Black).padding(16.dp).weight(1f)
+                                        .clickable {
+                                            navigator.push(
+                                                SeeProductosToAddByCategoriaScreen(categoria.id, false)
+                                            )
+                                        },
+                                    style = TextStyle(textAlign = TextAlign.Center),
+                                )
+                            }
 
-                        // Si hay solo una categoría en la fila (cuando el número es impar), añadimos un Spacer
-                        if (categorias.size == 1) {
-                            Spacer(modifier = Modifier.weight(1f)) // Ocupa el hueco del segundo texto
+                            // Si hay solo una categoría en la fila (cuando el número es impar), añadimos un Spacer
+                            if (categorias.size == 1) {
+                                Spacer(modifier = Modifier.weight(1f)) // Ocupa el hueco del segundo texto
+                            }
                         }
                     }
                 }
+
+                Column(Modifier.weight(0.1f)) {
+                    ButtonsPanel(categoriaStore)
+                }
+            }
+        }
+
+        Popups(categoriaStore)
+    }
+
+    @Composable
+    fun ButtonsPanel(categoriaStore: CategoriaStore) {
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+            Button(onClick = { categoriaStore.setShowAddPopup(true) }) {
+                Text(Literals.ButtonsText.ADD_CATEGORIA)
             }
         }
     }
+
+    @Composable
+    fun Popups(categoriaStore: CategoriaStore) {
+        if (categoriaStore.showAddPopup.value) {
+            AddCategoriaPopup()
+        }
+    }
+
 }

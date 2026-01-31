@@ -6,7 +6,9 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import cafe.adriel.voyager.navigator.Navigator
+import kotlinx.coroutines.Dispatchers
 import org.ivandev.acomprar.database.Database
 import org.ivandev.acomprar.screens.HomeScreen
 import org.ivandev.acomprar.screens.carrito.CarritosScreen
@@ -25,7 +27,9 @@ class MainActivity : ComponentActivity() {
         Database.initializeDatabase(context)
         Tools.Notifier.init(context)
 
-//        Database.restartDatabase()
+        LaunchedEffect(Dispatchers.IO) {
+//            Database.restartDatabase()
+        }
 
         MaterialTheme {
             // !!!!!!!! Esto es para los estilos. Está comentado para optimizar rendimiento en desarrollo

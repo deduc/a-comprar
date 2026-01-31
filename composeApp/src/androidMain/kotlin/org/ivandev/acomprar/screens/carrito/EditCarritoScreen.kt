@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -39,6 +38,7 @@ import org.ivandev.acomprar.Tools
 import org.ivandev.acomprar.components.CommonScreen
 import org.ivandev.acomprar.components.MyIcons
 import org.ivandev.acomprar.components.MyScrollableColumn
+import org.ivandev.acomprar.components.PopupDelete
 import org.ivandev.acomprar.database.entities.CarritoEntity
 import org.ivandev.acomprar.database.entities.ProductoEntity
 import org.ivandev.acomprar.database.special_classes.CarritoAndProductsData
@@ -53,7 +53,7 @@ class EditCarritoScreen(
 ): Screen {
     @Composable
     override fun Content() {
-        val carritoName = carritoStore.carritoAndProductos.value?.carrito?.name ?: Literals.CARRITOS_TITLE
+        val carritoName = carritoStore.carritoAndProductos.value?.carrito?.name ?: Literals.TextHomeNavigationButtons.CARRITOS_TITLE
         val showDeleteConfirmationDialog = remember { mutableStateOf(false) }
 
         CommonScreen(
@@ -158,7 +158,7 @@ class EditCarritoScreen(
                             Spacer(Tools.spacer8dpWidth)
 
                             Button(
-                                onClick = { navigator.push(SeeProductosToAddByCategoria(categoriaId, order_products=true)) },
+                                onClick = { navigator.push(SeeProductosToAddByCategoriaScreen(categoriaId, order_products=true)) },
                                 modifier = Modifier.height(32.dp).defaultMinSize(minWidth = 80.dp).padding(horizontal = 4.dp, vertical = 0.dp),
                                 contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp),
                                 shape = RoundedCornerShape(16.dp)
@@ -193,34 +193,21 @@ class EditCarritoScreen(
         val navigator = LocalNavigator.currentOrThrow
 
         if (carritoStore.showAddCarritoPopup.value) {
-            AddCarritoPopup()
+            PopupAddCarrito()
         }
-
-        if (carritoStore.showEditCarritoPopup.value) {
-            EditCarritoPopup()
+        else if (carritoStore.showEditCarritoPopup.value) {
+            PopupEditCarrito()
         }
-
-
-        if (showDeleteConfirmationDialog.value) {
-            AlertDialog(
-                onDismissRequest = { showDeleteConfirmationDialog.value = false },
-                title = { Text("Confirmar borrado") },
-                text = { Text("¿Estás seguro de que quieres borrar el carrito?") },
-                confirmButton = {
-                    Button(onClick = {
-                        carritoStore.deleteCarritoById(currentCarrito.id)
-                        showDeleteConfirmationDialog.value = false
-                        navigator.pop()
-                    }) {
-                        Text("Borrar")
-                    }
-                },
-                dismissButton = {
-                    Button(onClick = { showDeleteConfirmationDialog.value = false }) {
-                        Text("Cancelar")
-                    }
-                }
-            )
+        else if (showDeleteConfirmationDialog.value) {
+            PopupDelete(
+                "Confirmar borrado",
+                "¿Estás seguro de que quieres borrar el carrito?",
+                showDeleteConfirmationDialog,
+            ) {
+                carritoStore.deleteCarritoById(currentCarrito.id)
+                showDeleteConfirmationDialog.value = false
+                navigator.pop()
+            }
         }
     }
 }

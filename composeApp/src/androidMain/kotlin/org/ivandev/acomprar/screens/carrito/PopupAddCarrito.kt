@@ -9,9 +9,6 @@ import androidx.compose.material.TextButton
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -22,41 +19,33 @@ import org.ivandev.acomprar.Tools
 import org.ivandev.acomprar.stores.CarritoStore
 
 @Composable
-fun EditCarritoPopup() {
+fun PopupAddCarrito() {
     val carritoStore: CarritoStore = viewModel(LocalContext.current as ViewModelStoreOwner)
 
-    if (carritoStore.showEditCarritoPopup.value) {
-        val carritoName = remember { mutableStateOf(carritoStore._carritoName.value) }
-        val carritoDescription = remember { mutableStateOf(carritoStore._carritoDescription.value) }
-
+    if (carritoStore.showAddCarritoPopup.value) {
         AlertDialog(
-            onDismissRequest = { carritoStore.setShowEditCarritoPopup(false) },
+            onDismissRequest = { carritoStore.setShowAddCarritoPopup(false) },
             confirmButton = {
-                TextButton(onClick = {
-                    carritoStore._carritoName.value = carritoName.value
-                    carritoStore._carritoDescription.value = carritoDescription.value
-                    carritoStore.updateCarrito()
-                    carritoStore.setShowEditCarritoPopup(false)
-                }) {
+                TextButton(onClick = { carritoStore.addCarrito() }) {
                     Text("Aceptar")
                 }
             },
             dismissButton = {
-                TextButton(onClick = { carritoStore.setShowEditCarritoPopup(false) }) {
+                TextButton(onClick = { carritoStore.setShowAddCarritoPopup(false) }) {
                     Text("Cancelar")
                 }
             },
             title = { Text(Literals.ButtonsText.ADD_CARRITO) },
-            text = { EditCarritoContent(carritoName, carritoDescription) },
+            text = { AddCarritoContent(carritoStore) },
         )
     }
 }
 
 @Composable
-fun EditCarritoContent(
-    carritoName: MutableState<String>,
-    carritoDescription: MutableState<String>
-) {
+fun AddCarritoContent(carritoStore: CarritoStore) {
+    val carritoName = carritoStore._carritoName
+    val carritoDescription = carritoStore._carritoDescription
+
     Column {
         TextField(
             value = carritoName.value,
@@ -70,9 +59,7 @@ fun EditCarritoContent(
             value = carritoDescription.value,
             onValueChange = { carritoDescription.value = it },
             label = { Text("Descripción del carrito") },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(180.dp),
+            modifier = Modifier.fillMaxWidth().height(180.dp),
             singleLine = false,
         )
     }

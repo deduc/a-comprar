@@ -40,7 +40,7 @@ class MenuScreen: Screen {
     @Composable
     override fun Content() {
         val screen = CommonScreen(
-            title = Literals.MENU_TITLE
+            title = Literals.TextHomeNavigationButtons.MENU_TITLE
         ) {
             MainContent()
         }

@@ -13,6 +13,7 @@ import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material.icons.filled.RemoveShoppingCart
 import androidx.compose.material.icons.filled.Save
+import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -91,6 +92,20 @@ object MyIcons {
     }
 
     /**
+     * Icono de carrito
+     */
+    @Composable
+    fun ShoppingCartIcon(onClick: () -> Unit = {}, tint: Color = Color.Black) {
+        val icon: VectorPainter = rememberVectorPainter(Icons.Default.ShoppingCart)
+        Icon(
+            painter = icon,
+            contentDescription = "A comprar",
+            modifier = Modifier.size(32.dp).clickable { onClick() },
+            tint = tint
+        )
+    }
+
+    /**
      * Icono de carrito con un + encima
      */
     @Composable
@@ -104,9 +119,8 @@ object MyIcons {
         )
     }
     /**
-     * Icono de carrito con un + encima
+     * Icono de carrito con un - encima
      */
-
     @Composable
     fun RemoveShoppingCartIcon(onClick: () -> Unit) {
         val icon: VectorPainter = rememberVectorPainter(Icons.Default.RemoveShoppingCart)

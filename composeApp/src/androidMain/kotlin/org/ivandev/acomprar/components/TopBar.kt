@@ -54,7 +54,7 @@ class TopBar(
                 modifier = Modifier.weight(0.2f),
                 contentAlignment = Alignment.CenterStart
             ) {
-                if (title != Literals.HOME_TITLE) {
+                if (title != Literals.TextHomeNavigationButtons.HOME_TITLE) {
                     GoBackButton(navigator, arrowBackIcon)
                 }
             }
@@ -73,7 +73,7 @@ class TopBar(
                 modifier = Modifier.weight(0.2f),
                 contentAlignment = Alignment.CenterEnd
             ) {
-                if (title == Literals.HOME_TITLE) {
+                if (title == Literals.TextHomeNavigationButtons.HOME_TITLE) {
                     ConfigButton(navigator, settingsIcon)
                 } else {
                     headerContent?.invoke()

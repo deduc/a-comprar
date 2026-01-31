@@ -14,7 +14,7 @@ object ComidaHandler {
         val result: MutableList<ComidaEntity> = mutableListOf()
 
         db.rawQuery(
-            "SELECT * FROM ${Literals.Database.COMIDA_TABLE}",
+            "SELECT * FROM ${Literals.Database.Tables.COMIDA_TABLE}",
             null
         ).use { cursor ->
             if (cursor.moveToFirst()) {
@@ -37,7 +37,7 @@ object ComidaHandler {
         val result = mutableListOf<ComidaEntity>()
 
         db.rawQuery(
-            "SELECT * FROM ${Literals.Database.COMIDA_TABLE} where ${Literals.Database.TIPO_COLUMN} = $tipoId",
+            "SELECT * FROM ${Literals.Database.Tables.COMIDA_TABLE} where ${Literals.Database.ColumnNames.TIPO_COLUMN} = $tipoId",
             null
         ).use { cursor ->
             if (cursor.moveToFirst()) {
@@ -60,20 +60,20 @@ object ComidaHandler {
         var result: ComidaEntity? = null
 
         var comidaInsert = ContentValues().apply {
-            put(Literals.Database.ID_COLUMN, comida.id)
-            put(Literals.Database.NOMBRE_COLUMN, comida.nombre)
-            put(Literals.Database.TIPO_COLUMN, comida.tipo)
+            put(Literals.Database.ColumnNames.ID_COLUMN, comida.id)
+            put(Literals.Database.ColumnNames.NOMBRE_COLUMN, comida.nombre)
+            put(Literals.Database.ColumnNames.TIPO_COLUMN, comida.tipo)
         }
 
         val insertedId = db.insert(
-            Literals.Database.COMIDA_TABLE,
+            Literals.Database.Tables.COMIDA_TABLE,
             null,
             comidaInsert
         )
 
         if (insertedId != -1L) {
             db.rawQuery(
-                "SELECT * FROM ${Literals.Database.COMIDA_TABLE} WHERE ${Literals.Database.ID_COLUMN} = ${insertedId}",
+                "SELECT * FROM ${Literals.Database.Tables.COMIDA_TABLE} WHERE ${Literals.Database.ColumnNames.ID_COLUMN} = ${insertedId}",
                 null
             ).use { cursor: Cursor ->
                 if (cursor.moveToFirst()) {
@@ -91,13 +91,13 @@ object ComidaHandler {
 
     fun updateById(db: SQLiteDatabase, comida: ComidaEntity): Boolean {
         val row = ContentValues()
-        row.put(Literals.Database.NOMBRE_COLUMN, comida.nombre)
-        row.put(Literals.Database.TIPO_COLUMN, comida.tipo)
+        row.put(Literals.Database.ColumnNames.NOMBRE_COLUMN, comida.nombre)
+        row.put(Literals.Database.ColumnNames.TIPO_COLUMN, comida.tipo)
 
         return db.update(
-            Literals.Database.COMIDA_TABLE,
+            Literals.Database.Tables.COMIDA_TABLE,
             row,
-            "${Literals.Database.ID_COLUMN} = ?",
+            "${Literals.Database.ColumnNames.ID_COLUMN} = ?",
             arrayOf(comida.id.toString())
         ) == 1
     }
@@ -115,22 +115,22 @@ object ComidaHandler {
                 // Insertar comida
                 values.apply {
                     clear()
-                    put(Literals.Database.ID_MENU_COLUMN, menuId)
-                    put(Literals.Database.NOMBRE_COLUMN, Literals.Database.VOID_STR)
-                    put(Literals.Database.DIA_COLUMN, dia)
-                    put(Literals.Database.TIPO_COLUMN, TipoComidaEnum.COMIDA)
+                    put(Literals.Database.ColumnNames.ID_MENU_COLUMN, menuId)
+                    put(Literals.Database.ColumnNames.NOMBRE_COLUMN, Literals.Database.HardcodedValues.VOID_STR)
+                    put(Literals.Database.ColumnNames.DIA_COLUMN, dia)
+                    put(Literals.Database.ColumnNames.TIPO_COLUMN, TipoComidaEnum.COMIDA)
                 }
-                db.insert(Literals.Database.COMIDA_TABLE, null, values)
+                db.insert(Literals.Database.Tables.COMIDA_TABLE, null, values)
 
                 // Insertar cena
                 values.apply {
                     clear()
-                    put(Literals.Database.ID_MENU_COLUMN, menuId)
-                    put(Literals.Database.NOMBRE_COLUMN, Literals.Database.VOID_STR)
-                    put(Literals.Database.DIA_COLUMN, dia)
-                    put(Literals.Database.TIPO_COLUMN, TipoComidaEnum.CENA)
+                    put(Literals.Database.ColumnNames.ID_MENU_COLUMN, menuId)
+                    put(Literals.Database.ColumnNames.NOMBRE_COLUMN, Literals.Database.HardcodedValues.VOID_STR)
+                    put(Literals.Database.ColumnNames.DIA_COLUMN, dia)
+                    put(Literals.Database.ColumnNames.TIPO_COLUMN, TipoComidaEnum.CENA)
                 }
-                db.insert(Literals.Database.COMIDA_TABLE, null, values)
+                db.insert(Literals.Database.Tables.COMIDA_TABLE, null, values)
             }
 
             db.setTransactionSuccessful() // Confirmar la transacción
@@ -146,16 +146,16 @@ object ComidaHandler {
 
     fun deleteAllComidasByMenuId(db: SQLiteDatabase, menuId: Int): Boolean {
         return db.delete(
-            Literals.Database.MENU_COMIDA_TABLE,
-            "${Literals.Database.ID_MENU_COLUMN} = ?",
+            Literals.Database.Tables.MENU_COMIDA_TABLE,
+            "${Literals.Database.ColumnNames.ID_MENU_COLUMN} = ?",
             arrayOf(menuId.toString())
         ) >= 0
     }
 
     fun deleteById(db: SQLiteDatabase, id: Int): Boolean {
         return db.delete(
-            Literals.Database.COMIDA_TABLE,
-            "${Literals.Database.ID_COLUMN} = ?",
+            Literals.Database.Tables.COMIDA_TABLE,
+            "${Literals.Database.ColumnNames.ID_COLUMN} = ?",
             arrayOf(id.toString())
         ) == 1
     }

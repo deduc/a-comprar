@@ -29,9 +29,9 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import kotlinx.coroutines.Dispatchers
 import org.ivandev.acomprar.Literals
 import org.ivandev.acomprar.Tools
+import org.ivandev.acomprar.components.CarritoContainer
 import org.ivandev.acomprar.components.CommonScreen
 import org.ivandev.acomprar.components.MyIcons
-import org.ivandev.acomprar.components.MyScrollableColumn
 import org.ivandev.acomprar.components.TextWhite
 import org.ivandev.acomprar.database.entities.CarritoEntity
 import org.ivandev.acomprar.stores.CarritoStore
@@ -40,13 +40,12 @@ import org.ivandev.acomprar.stores.MainCarritoStore
 class CarritosScreen(): Screen {
     @Composable
     override fun Content() {
-        CommonScreen(title = Literals.CARRITOS_TITLE) { MainContent() }.Render()
+        CommonScreen(title = Literals.TextHomeNavigationButtons.CARRITOS_TITLE) { MainContent() }.Render()
     }
 
     @Composable
     fun MainContent() {
         val carritoStore: CarritoStore = viewModel(LocalContext.current as ViewModelStoreOwner)
-        val carritos: SnapshotStateList<CarritoEntity> = carritoStore.carritos
 
         LaunchedEffect(Dispatchers.IO) {
             carritoStore.getAllCarrito()
@@ -54,7 +53,7 @@ class CarritosScreen(): Screen {
 
         Column(Modifier.fillMaxHeight()) {
             Column(Modifier.weight(1f)) {
-                CarritosList(carritos, carritoStore)
+                CarritosList(carritoStore)
             }
 
             Row {
@@ -66,46 +65,23 @@ class CarritosScreen(): Screen {
     }
 
     @Composable
-    fun CarritosList(carritos: SnapshotStateList<CarritoEntity>, carritoStore: CarritoStore) {
+    fun CarritosList(carritoStore: CarritoStore) {
         val navigator: Navigator = LocalNavigator.currentOrThrow
         val mainCarritoStore: MainCarritoStore = viewModel()
+        val carritos: SnapshotStateList<CarritoEntity> = carritoStore.carritos
 
         if (carritos.isEmpty()) {
             Text("No hay carritos")
-        } else {
+        }
+        else {
             LazyColumn {
                 items(
                     items = carritos,
                     key = { it.id }
-                ) { carrito ->
-                    Row(
-                        Modifier
-                            .fillMaxWidth()
-                            .then(Tools.styleBorderBlack),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Column(
-                            Modifier
-                                .padding(8.dp)
-                                .weight(1f),
-                            verticalArrangement = Arrangement.Center
-                        ) {
-                            Text(
-                                carrito.getFixedName(),
-                                style = Tools.styleTitleBlack
-                            )
-
-                            Row(Modifier.padding(4.dp)) {
-                                Spacer(Modifier.width(8.dp))
-                                Text(carrito.getFixedDescription())
-                            }
-                        }
-
+                ) { carrito: CarritoEntity ->
+                    CarritoContainer(carrito) {
                         RightIcons(carrito, carritoStore, navigator, mainCarritoStore)
                     }
-
-                    Spacer(Modifier.height(Tools.height16dp))
                 }
             }
         }
@@ -127,12 +103,9 @@ class CarritosScreen(): Screen {
 
             Spacer(Modifier.width(Tools.height16dp))
 
-            val provisionalAdded = true
-
-            if (provisionalAdded) {
+            if (true) {
                 MyIcons.AddShoppingCartIcon {
                     mainCarritoStore.addCarritoToMainCarrito(carrito.id)
-//                Tools.Notifier.showToast(Literals.ToastText.ADDED_CARRITO_TO_MAIN_CARRITO)
                 }
             }
             else {
@@ -140,7 +113,6 @@ class CarritosScreen(): Screen {
                     Tools.Notifier.showToast("ola")
                 }
             }
-
         }
     }
 
@@ -156,10 +128,10 @@ class CarritosScreen(): Screen {
     @Composable
     fun Popups(carritoStore: CarritoStore) {
         if (carritoStore.showAddCarritoPopup.value) {
-            AddCarritoPopup()
+            PopupAddCarrito()
         }
         else if (carritoStore.showEditCarritoPopup.value) {
-            EditCarritoPopup()
+            PopupEditCarrito()
         }
     }
 }

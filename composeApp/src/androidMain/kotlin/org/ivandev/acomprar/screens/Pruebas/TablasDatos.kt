@@ -15,6 +15,7 @@ import org.ivandev.acomprar.Literals
 import org.ivandev.acomprar.components.CommonScreen
 import org.ivandev.acomprar.database.entities.CarritoEntity
 import org.ivandev.acomprar.stores.CarritoStore
+import org.ivandev.acomprar.stores.MainCarritoStore
 
 class TablasDatos: Screen {
     @Composable
@@ -31,12 +32,14 @@ class TablasDatos: Screen {
     @Composable
     fun MainContent() {
         val carritoStore: CarritoStore = viewModel()
+        val mainCarritoStore: MainCarritoStore = viewModel()
 
         val carritos: List<CarritoEntity> = carritoStore.carritos
         var carritosAddedToMainCarrito: List<Int> = carritoStore.carritosAddedToMainCarrito
 
         LaunchedEffect(Dispatchers.IO) {
             carritoStore.getAllCarrito()
+            mainCarritoStore.getAllCarrito()
         }
 
         CarritosDeLaCompra(carritos, carritosAddedToMainCarrito)
@@ -44,6 +47,7 @@ class TablasDatos: Screen {
 
     @Composable
     fun CarritosDeLaCompra(carritos: List<CarritoEntity>, carritosAddedToMainCarrito: List<Int>) {
+        Text("Tabla carritos")
         LazyColumn {
             items(
                 items = carritos,
@@ -54,6 +58,8 @@ class TablasDatos: Screen {
                 }
             }
         }
+
+        Text("Carritos añadidos al maincarrito")
         Column() {
             carritosAddedToMainCarrito.forEach {
                 Text(it.toString())

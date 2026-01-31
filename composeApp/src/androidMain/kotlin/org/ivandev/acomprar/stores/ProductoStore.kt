@@ -10,6 +10,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.ivandev.acomprar.Literals
+import org.ivandev.acomprar.Tools
 import org.ivandev.acomprar.database.Database
 import org.ivandev.acomprar.database.entities.ProductoEntity
 import org.ivandev.acomprar.database.special_classes.CategoriaWithProductos
@@ -46,6 +48,34 @@ class ProductoStore : ViewModel() {
     init {
         viewModelScope.launch(Dispatchers.IO) {
             loadProductosPorCategoria()
+        }
+    }
+
+    private fun isProductoOk(idCategoria: Int?, nombre: String): Boolean {
+        var message = ""
+
+        if (idCategoria == null) message += Literals.ToastText.ERROR_NULL_ID_CATEGORIA
+        if (nombre.isEmpty()) message += Literals.ToastText.ERROR_PRODUCTO_NAME
+
+        if (message.isNotEmpty()) {
+            Tools.Notifier.showToast(message)
+            return false
+        }
+        else return true
+    }
+
+    fun addNewProducto(idCategoria: Int?, nombre: String, cantidad: String, marca: String) {
+        if (isProductoOk(idCategoria, nombre)) {
+            val newProducto = Producto(
+                id = null,
+                idCategoria = idCategoria,
+                nombre = nombre,
+                cantidad = cantidad,
+                marca = marca
+            )
+            addProducto(newProducto)
+            setAddProductoPopup(false)
+            setShowAddProductoPopup(false)
         }
     }
 

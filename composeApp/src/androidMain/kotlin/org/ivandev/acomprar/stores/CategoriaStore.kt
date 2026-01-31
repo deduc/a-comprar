@@ -6,6 +6,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.ivandev.acomprar.Literals
+import org.ivandev.acomprar.Tools
 import org.ivandev.acomprar.database.Database
 import org.ivandev.acomprar.database.entities.CategoriaEntity
 import org.ivandev.acomprar.models.Categoria
@@ -43,7 +45,7 @@ class CategoriaStore : ViewModel() {
             val newId = _categorias.value.last().id + 1
             _categorias.value += CategoriaEntity(newId, categoria.nombre)
         }
-
+        Tools.Notifier.showToast(Literals.ToastText.ADDED_CATEGORIA)
     }
 
 

@@ -39,7 +39,7 @@ import org.ivandev.acomprar.stores.CarritoStore
 import org.ivandev.acomprar.stores.CategoriaStore
 import org.ivandev.acomprar.stores.ProductoStore
 
-class SeeProductosToAddByCategoria(val idCategoria: Int, order_products: Boolean = false): Screen {
+class SeeProductosToAddByCategoriaScreen(val idCategoria: Int, order_products: Boolean = false): Screen {
     @Composable
     override fun Content() {
         val categoriaStore: CategoriaStore = viewModel(LocalContext.current as ViewModelStoreOwner)
@@ -60,6 +60,8 @@ class SeeProductosToAddByCategoria(val idCategoria: Int, order_products: Boolean
         LaunchedEffect(categoria.id) {
             productoStore.getProductosByCategoriaId(categoria.id)
             carritoStore.getCarritoAndProductosByCarritoId(currentCarrito!!.id)
+
+            carritoStore.getEditingCarritoValue()
         }
 
         Column {

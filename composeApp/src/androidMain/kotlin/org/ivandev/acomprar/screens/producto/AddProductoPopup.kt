@@ -1,7 +1,9 @@
 package org.ivandev.acomprar.screens.producto
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ExposedDropdownMenuBox
@@ -19,6 +21,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import org.ivandev.acomprar.Literals
@@ -59,22 +62,12 @@ fun AddProductoPopup(idCategoria: Int) {
             confirmButton = {
                 TextButton(
                     onClick = {
-                        val newProducto = Producto(
-                            id = null,
-                            idCategoria = categoriaEntitySeleccionada.value?.id,
-                            nombre = nombre.value,
-                            cantidad = cantidad.value,
-                            marca = marca.value
+                        productoStore.addNewProducto(
+                            categoriaEntitySeleccionada.value?.id,
+                            nombre.value,
+                            cantidad.value,
+                            marca.value
                         )
-
-                        if (newProducto.nombre!!.isEmpty()) {
-                            Tools.Notifier.showToast(Literals.ToastText.ERROR_NO_NAME_PROVIDED)
-                        }
-                        else {
-                            productoStore.addProducto(newProducto)
-                            productoStore.setAddProductoPopup(false)
-                            productoStore.setShowAddProductoPopup(false)
-                        }
                     }
                 ) {
                     Text("Aceptar")
@@ -87,52 +80,54 @@ fun AddProductoPopup(idCategoria: Int) {
                     }
                 ) { Text("Cancelar") }
             },
-            title = { Text("Añadir producto") },
+            title = { Text("Añadir producto\n") },
             text = {
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    androidx.compose.material3.TextField(
-                        value = nombre.value,
-                        onValueChange = { nombre.value = it },
-                        label = { androidx.compose.material3.Text("Nombre del producto") }
-                    )
-                    androidx.compose.material3.TextField(
-                        value = cantidad.value,
-                        onValueChange = { cantidad.value = it },
-                        label = { androidx.compose.material3.Text("Cantidad") },
-                    )
-                    androidx.compose.material3.TextField(
-                        value = marca.value!!,
-                        onValueChange = { marca.value = it },
-                        label = { androidx.compose.material3.Text("Marca") }
-                    )
-
-                    // Desplegable para seleccionar una categoría
-                    ExposedDropdownMenuBox(expanded = expanded.value, onExpandedChange = { expanded.value = !expanded.value }) {
+                Column() {
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
                         androidx.compose.material3.TextField(
-                            value = categoriaEntitySeleccionada.value?.nombre ?: "Seleccionar categoría",
-                            onValueChange = {},
-                            label = { androidx.compose.material3.Text("Categoría") },
-                            readOnly = true,
-                            trailingIcon = {
-                                Icon(Icons.Default.ArrowDropDown, contentDescription = null)
-                            }
+                            value = nombre.value,
+                            onValueChange = { nombre.value = it },
+                            label = { androidx.compose.material3.Text("Nombre del producto") }
+                        )
+                        androidx.compose.material3.TextField(
+                            value = cantidad.value,
+                            onValueChange = { cantidad.value = it },
+                            label = { androidx.compose.material3.Text("Cantidad") },
+                        )
+                        androidx.compose.material3.TextField(
+                            value = marca.value!!,
+                            onValueChange = { marca.value = it },
+                            label = { androidx.compose.material3.Text("Marca") }
                         )
 
-                        ExposedDropdownMenu(
-                            expanded = expanded.value,
-                            onDismissRequest = { expanded.value = false }
-                        ) {
-                            categorias.value.forEach { categoriaEntity: CategoriaEntity ->
-                                DropdownMenuItem(
-                                    onClick = {
-                                        categoriaEntitySeleccionada.value = categoriaEntity
-                                        expanded.value = false
-                                    },
-                                    text = { Text(categoriaEntity.nombre) }
-                                )
+                        // Desplegable para seleccionar una categoría
+                        ExposedDropdownMenuBox(expanded = expanded.value, onExpandedChange = { expanded.value = !expanded.value }) {
+                            androidx.compose.material3.TextField(
+                                value = categoriaEntitySeleccionada.value?.nombre ?: "Seleccionar categoría",
+                                onValueChange = {},
+                                label = { androidx.compose.material3.Text("Categoría") },
+                                readOnly = true,
+                                trailingIcon = {
+                                    Icon(Icons.Default.ArrowDropDown, contentDescription = null)
+                                }
+                            )
+
+                            ExposedDropdownMenu(
+                                expanded = expanded.value,
+                                onDismissRequest = { expanded.value = false }
+                            ) {
+                                categorias.value.forEach { categoriaEntity: CategoriaEntity ->
+                                    DropdownMenuItem(
+                                        onClick = {
+                                            categoriaEntitySeleccionada.value = categoriaEntity
+                                            expanded.value = false
+                                        },
+                                        text = { Text(categoriaEntity.nombre) }
+                                    )
+                                }
                             }
                         }
                     }

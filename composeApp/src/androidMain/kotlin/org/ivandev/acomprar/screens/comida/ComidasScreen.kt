@@ -34,7 +34,7 @@ import org.ivandev.acomprar.stores.ComidaStore
 class ComidasScreen: Screen {
     @Composable
     override fun Content() {
-        CommonScreen(title = Literals.COMIDAS_Y_CENAS_TITLE) { MainContent() }.Render()
+        CommonScreen(title = Literals.TextHomeNavigationButtons.COMIDAS_Y_CENAS_TITLE) { MainContent() }.Render()
     }
 
     @Composable

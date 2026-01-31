@@ -10,7 +10,7 @@ object CategoriaHandler {
     fun insert(db: SQLiteDatabase, categoria: Categoria): Boolean {
         val datos = ContentValues()
         datos.put("nombre", categoria.nombre)
-        db.insert(Literals.Database.CATEGORIA_TABLE, null, datos)
+        db.insert(Literals.Database.Tables.CATEGORIA_TABLE, null, datos)
 
         return checkIfCategoriaWasInserted(db, categoria)
     }
@@ -19,7 +19,7 @@ object CategoriaHandler {
         val result = mutableListOf<CategoriaEntity>()
 
         db.rawQuery(
-            "SELECT * FROM ${Literals.Database.CATEGORIA_TABLE}",
+            "SELECT * FROM ${Literals.Database.Tables.CATEGORIA_TABLE}",
             null
         )
             .use { cursor ->
@@ -39,8 +39,8 @@ object CategoriaHandler {
 
     fun deleteById(db: SQLiteDatabase, id: Int): Boolean {
         return db.delete(
-            Literals.Database.CATEGORIA_TABLE,
-            "${Literals.Database.ID_COLUMN} = ?",
+            Literals.Database.Tables.CATEGORIA_TABLE,
+            "${Literals.Database.ColumnNames.ID_COLUMN} = ?",
             arrayOf("${id}")
         ) == 1
     }
@@ -51,13 +51,13 @@ object CategoriaHandler {
         categoriasList.forEach { categoria: String ->
             val categoriaAux = ContentValues().apply {
                 if (categoria == Literals.Database.Categorias.SIN_CATEGORIA) {
-                    put(Literals.Database.ID_COLUMN, 0)
+                    put(Literals.Database.ColumnNames.ID_COLUMN, 0)
                 }
-                put(Literals.Database.NOMBRE_COLUMN, categoria)
+                put(Literals.Database.ColumnNames.NOMBRE_COLUMN, categoria)
             }
 
             db.insert(
-                Literals.Database.CATEGORIA_TABLE,
+                Literals.Database.Tables.CATEGORIA_TABLE,
                 null,
                 categoriaAux
             )
@@ -67,20 +67,20 @@ object CategoriaHandler {
 
     fun updateCategoriaById(db: SQLiteDatabase, categoriaEntity: CategoriaEntity): Boolean {
         var categoriaNameColumn = ContentValues()
-        categoriaNameColumn.put(Literals.Database.NOMBRE_COLUMN, categoriaEntity.nombre)
+        categoriaNameColumn.put(Literals.Database.ColumnNames.NOMBRE_COLUMN, categoriaEntity.nombre)
 
         return db.update(
-            Literals.Database.CATEGORIA_TABLE,
+            Literals.Database.Tables.CATEGORIA_TABLE,
             categoriaNameColumn,
-            "${Literals.Database.ID_COLUMN} = ?",
+            "${Literals.Database.ColumnNames.ID_COLUMN} = ?",
             arrayOf("${categoriaEntity.id}"),
         ) == 1
     }
 
     private fun checkIfCategoriaWasInserted(db: SQLiteDatabase, categoria: Categoria): Boolean {
         db.query(
-            Literals.Database.CATEGORIA_TABLE, // Nombre tabla
-            arrayOf(Literals.Database.NOMBRE_COLUMN), // Columnas output
+            Literals.Database.Tables.CATEGORIA_TABLE, // Nombre tabla
+            arrayOf(Literals.Database.ColumnNames.NOMBRE_COLUMN), // Columnas output
             null, // condicion where
             null, // placeholder para evitar SQL inyection
             null, // group by columnas

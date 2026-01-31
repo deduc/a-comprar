@@ -32,7 +32,7 @@ import org.ivandev.acomprar.stores.CategoriaStore
 class CategoriasScreen : Screen {
     @Composable
     override fun Content() {
-        CommonScreen(title = Literals.CATEGORIAS_TITLE) { MainContent() }.Render()
+        CommonScreen(title = Literals.TextHomeNavigationButtons.CATEGORIAS_TITLE) { MainContent() }.Render()
     }
 
     @Composable
@@ -86,7 +86,7 @@ class CategoriasScreen : Screen {
                         Row(Modifier.fillMaxWidth().padding(Tools.padding8dp), horizontalArrangement = Arrangement.SpaceBetween) {
                             MyIcons.ViewIcon { seeCategoriaById(categoriaEntity, navigator) }
 
-                            if(categoriaEntity.id != Literals.Database.ID_SIN_CATEGORIA_VALUE) {
+                            if(categoriaEntity.id != Literals.Database.HardcodedValues.ID_SIN_CATEGORIA_VALUE) {
                                 MyIcons.EditIcon {
                                     categoriaStore.updateCategoriaToEdit(categoriaEntity)
                                     categoriaStore.setShowEditCategoriaPopup(true)

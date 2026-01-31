@@ -13,33 +13,31 @@ import org.ivandev.acomprar.models.Carrito
 object CarritoHandler {
     fun initialize(db: SQLiteDatabase) {
         val values = ContentValues().apply {
-            put(Literals.Database.ID_COLUMN, Literals.Database.MAIN_CARRITO_ID)
-            put(Literals.Database.NOMBRE_COLUMN, Literals.Database.CARRITO_BASTARDO_NAME)
-            put(Literals.Database.DESCRIPTION_COLUMN, Literals.Database.CARRITO_BASTARDO_DESCRIPTION)
+            put(Literals.Database.ColumnNames.ID_COLUMN, Literals.Database.HardcodedValues.MAIN_CARRITO_ID)
+            put(Literals.Database.ColumnNames.NOMBRE_COLUMN, Literals.Database.HardcodedValues.CARRITO_BASTARDO_NAME)
+            put(Literals.Database.ColumnNames.DESCRIPTION_COLUMN, Literals.Database.HardcodedValues.CARRITO_BASTARDO_DESCRIPTION)
         }
         val inserted: Long = db.insert(
-            Literals.Database.CARRITO_TABLE,
+            Literals.Database.Tables.CARRITO_TABLE,
             null,
             values,
         )
 
-        if (inserted.toInt() == 1) {
-            println("Carrito bastardo añadido con éxito")
-        }
-        else {
+        if (inserted.toInt() == 1)
+            println("[DEBUG] Carrito bastardo añadido con éxito")
+        else
             println("ERROR AÑADIENDO CARRITO BASTARDO")
-        }
     }
 
     fun add(db: SQLiteDatabase, carrito: Carrito): Boolean {
         val values = ContentValues()
 
-        values.put(Literals.Database.ID_COLUMN, carrito.id)
-        values.put(Literals.Database.NOMBRE_COLUMN, carrito.name)
-        values.put(Literals.Database.DESCRIPTION_COLUMN, carrito.description)
+        values.put(Literals.Database.ColumnNames.ID_COLUMN, carrito.id)
+        values.put(Literals.Database.ColumnNames.NOMBRE_COLUMN, carrito.name)
+        values.put(Literals.Database.ColumnNames.DESCRIPTION_COLUMN, carrito.description)
 
         return db.insert(
-            Literals.Database.CARRITO_TABLE, null, values
+            Literals.Database.Tables.CARRITO_TABLE, null, values
         ) != -1L
     }
 
@@ -48,22 +46,47 @@ object CarritoHandler {
         val newCantidad = if (carritoProductoFiltered != null) carritoProductoFiltered.cantidad + 1 else 1
 
         val row = ContentValues().apply {
-            put(Literals.Database.ID_CARRITO_COLUMN, carrito.id)
-            put(Literals.Database.ID_PRODUCTO_COLUMN, producto.id)
-            put(Literals.Database.CANTIDAD_COLUMN, newCantidad)
+            put(Literals.Database.ColumnNames.ID_CARRITO_COLUMN, carrito.id)
+            put(Literals.Database.ColumnNames.ID_PRODUCTO_COLUMN, producto.id)
+            put(Literals.Database.ColumnNames.CANTIDAD_COLUMN, newCantidad)
         }
 
         return if (carritoProductoFiltered != null) {
             // Actualizar registro existente
-            val whereClause = "${Literals.Database.ID_CARRITO_COLUMN} = ? AND ${Literals.Database.ID_PRODUCTO_COLUMN} = ?"
+            val whereClause = "${Literals.Database.ColumnNames.ID_CARRITO_COLUMN} = ? AND ${Literals.Database.ColumnNames.ID_PRODUCTO_COLUMN} = ?"
             val whereArgs = arrayOf(carrito.id.toString(), producto.id.toString())
 
-            db.update(Literals.Database.CARRITO_PRODUCTO_TABLE, row, whereClause, whereArgs) > 0
+            db.update(Literals.Database.Tables.CARRITO_PRODUCTO_TABLE, row, whereClause, whereArgs) > 0
         } else {
             // Insertar nuevo registro
-            db.insert(Literals.Database.CARRITO_PRODUCTO_TABLE, null, row) != -1L
+            db.insert(Literals.Database.Tables.CARRITO_PRODUCTO_TABLE, null, row) != -1L
         }
     }
+
+    fun checkIfCarritoExists(db: SQLiteDatabase, carrito: Carrito): Boolean {
+        val values = ContentValues().apply {
+            put(Literals.Database.ColumnNames.NOMBRE_COLUMN, carrito.name)
+            put(Literals.Database.ColumnNames.DESCRIPTION_COLUMN, carrito.description)
+        }
+
+        var result = false
+
+        db.query(
+            Literals.Database.Tables.CARRITO_TABLE,
+            null,
+            "${Literals.Database.ColumnNames.NOMBRE_COLUMN} = ? AND ${Literals.Database.ColumnNames.DESCRIPTION_COLUMN} = ?",
+            arrayOf(carrito.name, carrito.description),
+            null,
+            null,
+            null
+        ).use {
+            if (it.moveToFirst()) result = true
+            else result = false
+        }
+
+        return result
+    }
+
 
     fun substractProductoToCurrentCarrito(db: SQLiteDatabase, carrito: CarritoEntity, producto: ProductoEntity): Boolean {
         val carritoProductoFiltered: CarritoProductoEntity? = getCarritoProductoFiltered(db, carrito.id, producto.id)
@@ -72,30 +95,30 @@ object CarritoHandler {
         if (newCantidad <= 0) return deleteProductFromCarritoById(db, carrito.id, producto.id)
 
         val row = ContentValues().apply {
-            put(Literals.Database.ID_CARRITO_COLUMN, carrito.id)
-            put(Literals.Database.ID_PRODUCTO_COLUMN, producto.id)
-            put(Literals.Database.CANTIDAD_COLUMN, newCantidad)
+            put(Literals.Database.ColumnNames.ID_CARRITO_COLUMN, carrito.id)
+            put(Literals.Database.ColumnNames.ID_PRODUCTO_COLUMN, producto.id)
+            put(Literals.Database.ColumnNames.CANTIDAD_COLUMN, newCantidad)
         }
 
         return if (carritoProductoFiltered != null) {
             // Actualizar registro existente
             db.update(
-                Literals.Database.CARRITO_PRODUCTO_TABLE,
+                Literals.Database.Tables.CARRITO_PRODUCTO_TABLE,
                 row,
-                "${Literals.Database.ID_CARRITO_COLUMN} = ? AND ${Literals.Database.ID_PRODUCTO_COLUMN} = ?",
+                "${Literals.Database.ColumnNames.ID_CARRITO_COLUMN} = ? AND ${Literals.Database.ColumnNames.ID_PRODUCTO_COLUMN} = ?",
                 arrayOf(carrito.id.toString(), producto.id.toString())
             ) > 0
         } else {
             // Insertar nuevo registro
-            db.insert(Literals.Database.CARRITO_PRODUCTO_TABLE, null, row) != -1L
+            db.insert(Literals.Database.Tables.CARRITO_PRODUCTO_TABLE, null, row) != -1L
         }
     }
 
 
     fun deleteById(db: SQLiteDatabase, id: Int): Boolean {
         return db.delete(
-            Literals.Database.CARRITO_TABLE,
-            "${Literals.Database.ID_COLUMN} = ?",
+            Literals.Database.Tables.CARRITO_TABLE,
+            "${Literals.Database.ColumnNames.ID_COLUMN} = ?",
             arrayOf(id.toString())
         ) == 1
     }
@@ -104,18 +127,16 @@ object CarritoHandler {
     fun getAll(db: SQLiteDatabase): List<CarritoEntity> {
         val carritos: MutableList<CarritoEntity> = mutableListOf()
 
-        db.query(Literals.Database.CARRITO_TABLE, null, null, null, null, null, null)
+        db.query(Literals.Database.Tables.CARRITO_TABLE, null, null, null, null, null, null)
             .use { it: Cursor ->
-                if (it.moveToFirst()) {
-                    do {
-                        carritos.add(
-                            CarritoEntity(
-                                it.getInt(0),
-                                it.getString(1),
-                                it.getString(2)
-                            )
+                while (it.moveToNext()) {
+                    carritos.add(
+                        CarritoEntity(
+                            it.getInt(0),
+                            it.getString(1),
+                            it.getString(2)
                         )
-                    } while (it.moveToNext())
+                    )
                 }
             }
 
@@ -124,9 +145,9 @@ object CarritoHandler {
 
     fun getById(db: SQLiteDatabase, id: Int): CarritoEntity? {
         return db.query(
-            Literals.Database.CARRITO_TABLE,
+            Literals.Database.Tables.CARRITO_TABLE,
             null,
-            "${Literals.Database.ID_COLUMN} = ?",
+            "${Literals.Database.ColumnNames.ID_COLUMN} = ?",
             arrayOf(id.toString()),
             null,
             null,
@@ -134,13 +155,44 @@ object CarritoHandler {
         ).use {
             if (it.moveToFirst()) {
                 CarritoEntity(
-                    id = it.getInt(it.getColumnIndexOrThrow(Literals.Database.ID_COLUMN)),
-                    name = it.getString(it.getColumnIndexOrThrow(Literals.Database.NOMBRE_COLUMN)),
-                    description = it.getString(it.getColumnIndexOrThrow(Literals.Database.DESCRIPTION_COLUMN))
+                    id = it.getInt(it.getColumnIndexOrThrow(Literals.Database.ColumnNames.ID_COLUMN)),
+                    name = it.getString(it.getColumnIndexOrThrow(Literals.Database.ColumnNames.NOMBRE_COLUMN)),
+                    description = it.getString(it.getColumnIndexOrThrow(Literals.Database.ColumnNames.DESCRIPTION_COLUMN))
                 )
             }
             else null
         }
+    }
+
+    fun getCarritoById(db: SQLiteDatabase, id: Int): CarritoEntity {
+        val result: CarritoEntity
+
+        db.query(
+            Literals.Database.Tables.CARRITO_TABLE,
+            null,
+            "${Literals.Database.ColumnNames.ID_COLUMN} = ?",
+            arrayOf(id.toString()),
+            null,
+            null,
+            null
+        ).use {
+            if (it.moveToFirst()) {
+                result = CarritoEntity(
+                    id = it.getInt(it.getColumnIndexOrThrow(Literals.Database.ColumnNames.ID_COLUMN)),
+                    name = it.getString(it.getColumnIndexOrThrow(Literals.Database.ColumnNames.NOMBRE_COLUMN)),
+                    description = it.getString(it.getColumnIndexOrThrow(Literals.Database.ColumnNames.DESCRIPTION_COLUMN)),
+                )
+            }
+            else {
+                result = CarritoEntity(
+                    id = 0,
+                    name = "",
+                    description = ""
+                )
+            }
+        }
+
+        return result
     }
 
     fun getCarritoAndProductosByCarritoId(db: SQLiteDatabase, id: Int): CarritoAndProductsData {
@@ -161,8 +213,8 @@ object CarritoHandler {
 
     fun deleteProductFromCarritoById(db: SQLiteDatabase, idCarrito: Int, idProducto: Int): Boolean {
         return db.delete(
-            Literals.Database.CARRITO_PRODUCTO_TABLE,
-            "${Literals.Database.ID_CARRITO_COLUMN} = ? AND ${Literals.Database.ID_PRODUCTO_COLUMN} = ?",
+            Literals.Database.Tables.CARRITO_PRODUCTO_TABLE,
+            "${Literals.Database.ColumnNames.ID_CARRITO_COLUMN} = ? AND ${Literals.Database.ColumnNames.ID_PRODUCTO_COLUMN} = ?",
             arrayOf(idCarrito.toString(), idProducto.toString())
         ) == 1
     }
@@ -179,7 +231,7 @@ object CarritoHandler {
 
     private fun getProductosIdByCarritoId(db: SQLiteDatabase, carrito: CarritoEntity): List<Int> {
         return db.rawQuery(
-            "SELECT * FROM ${Literals.Database.CARRITO_PRODUCTO_TABLE} where ${Literals.Database.ID_CARRITO_COLUMN} == ${carrito.id}",
+            "SELECT * FROM ${Literals.Database.Tables.CARRITO_PRODUCTO_TABLE} where ${Literals.Database.ColumnNames.ID_CARRITO_COLUMN} == ${carrito.id}",
             null
         )
             .use {
@@ -197,9 +249,9 @@ object CarritoHandler {
 
     private fun getCarritoProductoFiltered(db: SQLiteDatabase, carritoId: Int, productoId: Int): CarritoProductoEntity? {
         return db.query(
-            Literals.Database.CARRITO_PRODUCTO_TABLE,
+            Literals.Database.Tables.CARRITO_PRODUCTO_TABLE,
             null,
-            "${Literals.Database.ID_CARRITO_COLUMN} = ? AND ${Literals.Database.ID_PRODUCTO_COLUMN} = ?",
+            "${Literals.Database.ColumnNames.ID_CARRITO_COLUMN} = ? AND ${Literals.Database.ColumnNames.ID_PRODUCTO_COLUMN} = ?",
             arrayOf(carritoId.toString(), productoId.toString()),
             null,
             null,
@@ -207,9 +259,9 @@ object CarritoHandler {
         ).use {
             if (it.moveToFirst()) {
                 CarritoProductoEntity(
-                    it.getInt(it.getColumnIndexOrThrow(Literals.Database.ID_CARRITO_COLUMN)),
-                    it.getInt(it.getColumnIndexOrThrow(Literals.Database.ID_PRODUCTO_COLUMN)),
-                    it.getInt(it.getColumnIndexOrThrow(Literals.Database.CANTIDAD_COLUMN)),
+                    it.getInt(it.getColumnIndexOrThrow(Literals.Database.ColumnNames.ID_CARRITO_COLUMN)),
+                    it.getInt(it.getColumnIndexOrThrow(Literals.Database.ColumnNames.ID_PRODUCTO_COLUMN)),
+                    it.getInt(it.getColumnIndexOrThrow(Literals.Database.ColumnNames.CANTIDAD_COLUMN)),
                 )
             }
             else null
@@ -218,9 +270,9 @@ object CarritoHandler {
 
     private fun getCarritoProductoListByCarritoId(db: SQLiteDatabase, id: Int): List<CarritoProductoEntity> {
         val carritoProducto: List<CarritoProductoEntity> = db.query(
-            Literals.Database.CARRITO_PRODUCTO_TABLE,
+            Literals.Database.Tables.CARRITO_PRODUCTO_TABLE,
             null,
-            "${Literals.Database.ID_CARRITO_COLUMN} = ?",
+            "${Literals.Database.ColumnNames.ID_CARRITO_COLUMN} = ?",
             arrayOf(id.toString()),
             null,
             null,
@@ -251,23 +303,23 @@ object CarritoHandler {
         if (carritoProductoFiltered != null) cantidad = carritoProductoFiltered.cantidad + 1
         else cantidad = 1
 
-        row.put(Literals.Database.ID_CARRITO_COLUMN, carritoId)
-        row.put(Literals.Database.ID_PRODUCTO_COLUMN, productoId)
-        row.put(Literals.Database.CANTIDAD_COLUMN, cantidad)
+        row.put(Literals.Database.ColumnNames.ID_CARRITO_COLUMN, carritoId)
+        row.put(Literals.Database.ColumnNames.ID_PRODUCTO_COLUMN, productoId)
+        row.put(Literals.Database.ColumnNames.CANTIDAD_COLUMN, cantidad)
 
         return row
     }
 
     fun updateCarrito(db: SQLiteDatabase, newCarrito: Carrito): Boolean {
         val values = ContentValues().apply {
-            put(Literals.Database.NOMBRE_COLUMN, newCarrito.name)
-            put(Literals.Database.DESCRIPTION_COLUMN, newCarrito.description)
+            put(Literals.Database.ColumnNames.NOMBRE_COLUMN, newCarrito.name)
+            put(Literals.Database.ColumnNames.DESCRIPTION_COLUMN, newCarrito.description)
         }
 
         return db.update(
-            Literals.Database.CARRITO_TABLE,
+            Literals.Database.Tables.CARRITO_TABLE,
             values,
-            "${Literals.Database.ID_COLUMN} = ?",
+            "${Literals.Database.ColumnNames.ID_COLUMN} = ?",
             arrayOf(newCarrito.id.toString())
         ) == 1
     }
@@ -276,9 +328,9 @@ object CarritoHandler {
         val addedCarritos: MutableList<Int> = mutableListOf()
 
         db.query(
-            Literals.Database.MAIN_CARRITO_TABLE,
+            Literals.Database.Tables.MAIN_CARRITO_TABLE,
             null,
-            "${Literals.Database.ID_COLUMN} IN (${idCarritos.joinToString(",")})",
+            "${Literals.Database.ColumnNames.ID_COLUMN} IN (${idCarritos.joinToString(",")})",
             null,
             null,
             null,
@@ -286,7 +338,7 @@ object CarritoHandler {
         ).use {
             while (it.moveToNext()) {
                 addedCarritos.add(
-                    it.getInt(it.getColumnIndexOrThrow(Literals.Database.ID_COLUMN))
+                    it.getInt(it.getColumnIndexOrThrow(Literals.Database.ColumnNames.ID_COLUMN))
                 )
             }
         }

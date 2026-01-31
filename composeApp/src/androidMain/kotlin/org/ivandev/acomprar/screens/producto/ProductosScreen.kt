@@ -42,7 +42,7 @@ class ProductosScreen: Screen {
     @Composable
     override fun Content() {
         val screen = CommonScreen(
-            title = Literals.PRODUCTOS_TITLE
+            title = Literals.TextHomeNavigationButtons.PRODUCTOS_TITLE
         ) {
             MainContent()
         }
