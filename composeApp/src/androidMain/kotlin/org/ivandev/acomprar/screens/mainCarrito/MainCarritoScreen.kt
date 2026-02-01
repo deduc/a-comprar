@@ -48,7 +48,7 @@ import org.ivandev.acomprar.stores.MainCarritoStore
 class MainCarritoScreen(): Screen {
     @Composable
     override fun Content() {
-        CommonScreen(title = Literals.APP_NAME) { MainContent() }.Render()
+        CommonScreen(title = Literals.TextHomeNavigationButtons.MI_CARRITO) { MainContent() }.Render()
     }
 
     @Composable
@@ -75,9 +75,6 @@ class MainCarritoScreen(): Screen {
                 if (userIsBuying.actionValue == UserBuyingEnum.USER_IS_NOT_BUYING) {
                     MyAcomprarButton(mainCarritoStore)
                 }
-                else {
-                    StopBuyingButton(mainCarritoStore)
-                }
 
                 Spacer(Tools.spacer8dpHeight)
                 ButtonsRow(mainCarritoStore, carritoStore)
@@ -90,7 +87,7 @@ class MainCarritoScreen(): Screen {
     @Composable
     fun StopBuyingButton(mainCarritoStore: MainCarritoStore) {
         Button(onClick = { mainCarritoStore.setShowStopBuyingPopup(true) }) {
-            Text("Parar de comprar!!")
+            Text("Parar de comprar")
         }
     }
 
@@ -103,6 +100,12 @@ class MainCarritoScreen(): Screen {
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(4.dp)
         ) {
+            item{
+                if (mainCarritoStore.mainCarritoState.value.userBuying.actionValue == UserBuyingEnum.USER_IS_BUYING) {
+                    StopBuyingButton(mainCarritoStore)
+                }
+            }
+
             item {
                 Button(onClick = {
                     carritoStore.setEditingCarritoUsingId(Literals.Database.HardcodedValues.CARRITO_BASTARDO_ID)
@@ -111,27 +114,17 @@ class MainCarritoScreen(): Screen {
                     Text(Literals.ButtonsText.ADD_PRODUCTO)
                 }
             }
-
-//            item {
-//                Button(onClick = {
-//                    Tools.Notifier.showToast("Comienzas a comprar = ${mainCarritoStore.mainCarritoState.value.userBuying.actionValue}")
-//                }) {
-//                    Text("Mas botones")
-//                }
-//            }
         }
     }
 
     @Composable
     fun MyAcomprarButton(mainCarritoStore: MainCarritoStore) {
-        Column(Modifier.fillMaxWidth(0.8f)) {
-            BigButtonIconText(
-                onClick = { mainCarritoStore.setShowAComprarPopup(true) },
-                buttonPaddingDp = 0,
-                containerVerticalPaddingDp = 8,
-                textSizeDp = 16
-            )
-        }
+        BigButtonIconText(
+            onClick = { mainCarritoStore.setShowAComprarPopup(true) },
+            buttonPaddingDp = 0,
+            containerVerticalPaddingDp = 8,
+            textSizeDp = 16
+        )
     }
 
     @Composable
@@ -179,46 +172,73 @@ class MainCarritoScreen(): Screen {
 
     @Composable
     fun Popups(carritoStore: CarritoStore, mainCarritoStore: MainCarritoStore) {
-        if (carritoStore.showEditCarritoPopup.value) {
-            PopupEditCarrito()
+        when {
+            carritoStore.showEditCarritoPopup.value -> {
+                PopupEditCarrito()
+            }
+
+            carritoStore.showDeleteCarritoPopup.value -> {
+                DeleteCarritoPopup(carritoStore, mainCarritoStore)
+            }
+
+            mainCarritoStore.mainCarritoState.value.showAComprarPopup -> {
+                AComprarPopup(mainCarritoStore)
+            }
+
+            mainCarritoStore.mainCarritoState.value.showStopBuyingPopup -> {
+                StopBuyingPopup(mainCarritoStore)
+            }
         }
-        else if (carritoStore.showDeleteCarritoPopup.value) {
-            ConfirmationPopup(
-                text = Literals.ToastText.DELETING_CARRITO_FROM_MAIN_CARRITO,
-                onAcceptMethod = {
-                    mainCarritoStore.deleteCarritoFromMainCarrito(carritoStore.deletingCarrito.value!!.id, carritoStore)
-                    carritoStore.setShowDeleteCarritoPopup(false)
-                    carritoStore.setDeletingCarrito(null)
-                },
-                onDismiss = {
-                    carritoStore.setShowDeleteCarritoPopup(false)
-                    carritoStore.setDeletingCarrito(null)
-                }
-            )
-        }
-        else if (mainCarritoStore.mainCarritoState.value.showAComprarPopup) {
-            ConfirmationPopup(
-                text = Literals.TextDialog.A_COMPRAR_CONFIRMATION,
-                onAcceptMethod = {
-                    mainCarritoStore.setShowAComprarPopup(false)
-                    mainCarritoStore.setUserIsBuying(UserBuyingEnum.USER_IS_BUYING)
-                },
-                onDismiss = {
-                    mainCarritoStore.setShowAComprarPopup(false)
-                }
-            )
-        }
-        else if (mainCarritoStore.mainCarritoState.value.showStopBuyingPopup) {
-            ConfirmationPopup(
-                text = Literals.TextDialog.STOP_BUYING_CONFIRMATION,
-                onAcceptMethod = {
-                    mainCarritoStore.setShowStopBuyingPopup(false)
-                    mainCarritoStore.setUserIsBuying(UserBuyingEnum.USER_IS_NOT_BUYING)
-                },
-                onDismiss = {
-                    mainCarritoStore.setShowStopBuyingPopup(false)
-                }
-            )
-        }
+    }
+
+    @Composable
+    private fun DeleteCarritoPopup(carritoStore: CarritoStore, mainCarritoStore: MainCarritoStore) {
+        ConfirmationPopup(
+            text = Literals.ToastText.DELETING_CARRITO_FROM_MAIN_CARRITO,
+            onAcceptMethod = {
+                mainCarritoStore.deleteCarritoFromMainCarrito(
+                    carritoStore.deletingCarrito.value!!.id,
+                    carritoStore
+                )
+                carritoStore.setShowDeleteCarritoPopup(false)
+                carritoStore.setDeletingCarrito(null)
+            },
+            onDismiss = {
+                carritoStore.setShowDeleteCarritoPopup(false)
+                carritoStore.setDeletingCarrito(null)
+            }
+        )
+    }
+
+    @Composable
+    private fun AComprarPopup(mainCarritoStore: MainCarritoStore) {
+        val navigator: Navigator = LocalNavigator.currentOrThrow
+
+        ConfirmationPopup(
+            text = Literals.TextDialog.A_COMPRAR_CONFIRMATION,
+            onAcceptMethod = {
+                mainCarritoStore.setShowAComprarPopup(false)
+                mainCarritoStore.setUserIsBuying(UserBuyingEnum.USER_IS_BUYING)
+                mainCarritoStore.loadCarritosToBuyList()
+                navigator.push(UserBuyingScreen())
+            },
+            onDismiss = {
+                mainCarritoStore.setShowAComprarPopup(false)
+            }
+        )
+    }
+
+    @Composable
+    private fun StopBuyingPopup(mainCarritoStore: MainCarritoStore) {
+        ConfirmationPopup(
+            text = Literals.TextDialog.STOP_BUYING_CONFIRMATION,
+            onAcceptMethod = {
+                mainCarritoStore.setShowStopBuyingPopup(false)
+                mainCarritoStore.setUserIsBuying(UserBuyingEnum.USER_IS_NOT_BUYING)
+            },
+            onDismiss = {
+                mainCarritoStore.setShowStopBuyingPopup(false)
+            }
+        )
     }
 }

@@ -69,15 +69,19 @@ class MainCarritoStore: ViewModel() {
     }
 
     fun setUserIsBuying(value: String) {
-        Database.setUserIsBuying(value)
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                Database.setUserIsBuying(value)
+            }
 
-        var userBuyingAux: UserActionsEntity = _mainCarritoState.value.userBuying
-        userBuyingAux.actionValue = value
+            var userBuyingAux: UserActionsEntity = _mainCarritoState.value.userBuying
+            userBuyingAux.actionValue = value
 
-        _mainCarritoState.value = _mainCarritoState.value.copy(
-            userBuying = userBuyingAux
-        )
-        Tools.Notifier.showToast("Comienzas a comprar = $value")
+            _mainCarritoState.value = _mainCarritoState.value.copy(
+                userBuying = userBuyingAux
+            )
+            Tools.Notifier.showToast("Comienzas a comprar = $value")
+        }
     }
 
     fun setShowAComprarPopup(value: Boolean) {
@@ -94,6 +98,12 @@ class MainCarritoStore: ViewModel() {
     fun checkUserBuying(): Boolean {
         return mainCarritoState.value.userBuying.actionType == Literals.UserActions.USER_BUYING &&
                 mainCarritoState.value.userBuying.actionValue == UserBuyingEnum.USER_IS_BUYING
+    }
+
+    fun loadCarritosToBuyList() {
+        viewModelScope.launch {
+
+        }
     }
 
     private fun inmutableUpdateCarritos(newValue: List<CarritoEntity>) {

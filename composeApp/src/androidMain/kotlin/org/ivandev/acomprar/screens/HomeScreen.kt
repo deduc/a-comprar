@@ -45,6 +45,7 @@ import org.ivandev.acomprar.screens.mainCarrito.MainCarritoScreen
 import org.ivandev.acomprar.screens.carrito.CarritosScreen
 import org.ivandev.acomprar.screens.categoria.CategoriasScreen
 import org.ivandev.acomprar.screens.comida.ComidasScreen
+import org.ivandev.acomprar.screens.mainCarrito.UserBuyingScreen
 import org.ivandev.acomprar.screens.menu.MenuScreen
 import org.ivandev.acomprar.screens.producto.ProductosScreen
 import org.ivandev.acomprar.stores.MainCarritoStore
@@ -121,12 +122,10 @@ class HomeScreen: Screen {
 
         Spacer(Modifier.height(32.dp))
 
+        MiCarrito(navigator)
         if (mainCarritoStore.checkUserBuying()) {
+            Spacer(Tools.spacer8dpHeight)
             AComprarCarrito(navigator)
-        }
-        else {
-            MiCarrito(navigator)
-
         }
     }
 
@@ -142,7 +141,7 @@ class HomeScreen: Screen {
     fun AComprarCarrito(navigator: Navigator) {
         BigButtonIconText(
             text = Literals.APP_NAME,
-            onClick = { navigator.push(MainCarritoScreen()) }
+            onClick = { navigator.push(UserBuyingScreen()) }
         )
     }
 
