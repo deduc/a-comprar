@@ -119,6 +119,8 @@ object Literals {
             const val CARRITO_BASTARDO_ID: Int = 1
             const val CARRITO_BASTARDO_NAME: String = "carrito_bastardo"
             const val CARRITO_BASTARDO_DESCRIPTION: String = "Carrito auxiliar que no deberían ver los usuarios."
+            const val CARRITO_ESPECIAL_NAME: String = "Falta por comprar"
+            const val CARRITO_ESPECIAL_DESCRIPTION: String = "Productos que no llegaste a comprar en la fecha"
 
         }
 
@@ -293,6 +295,9 @@ object Literals {
         const val ADDED_PRODUCTO = "Producto añadido."
         const val ADDED_CARRITO_TO_MAIN_CARRITO = "Carrito añadido para comprar."
         const val ADDED_CATEGORIA = "Categoría añadida."
+
+        const val STOPPED_BUYING_OK_TITLE = "Compra detenida con éxito."
+        const val STOPPED_BUYING_OK_TEXT = "Los productos que no hubieras comprado se han añadido a un nuevo carrito."
 
         const val DELETED_ALL_PRODUCTOS = "Productos borrados."
         const val DELETED_CARRITO_FROM_MAIN_CARRITO = "Carrito borrado de la lista"

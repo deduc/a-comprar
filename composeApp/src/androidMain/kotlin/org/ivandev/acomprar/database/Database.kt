@@ -78,6 +78,10 @@ object Database {
         return mySQLiteDatabase.addComida(comida)
     }
 
+    fun addNotBoughtProductsIntoSpecialCarrito(notBoughtProducts: List<ProductoEntity>): Boolean {
+        return mySQLiteDatabase.addNotBoughtProductsIntoSpecialCarrito(notBoughtProducts)
+    }
+
     fun checkIfCarritosWasAddedToMainCarrito(idCarritos: List<Int>): List<Int> {
         return mySQLiteDatabase.checkIfCarritosWasAddedToMainCarrito(idCarritos)
     }
@@ -175,6 +179,9 @@ object Database {
 
         return result
     }
+    fun deleteBoughtProductsFromMainCarrito(boughtProducts: List<ProductoEntity>): Boolean {
+        return mySQLiteDatabase.deleteBoughtProductsFromMainCarrito(boughtProducts)
+    }
     fun deleteCarritoById(id: Int): Boolean {
         return mySQLiteDatabase.deleteCarritoById(id)
     }
@@ -195,5 +202,15 @@ object Database {
     }
     fun deleteCarritoFromMainCarrito(id: Int): Boolean {
         return mySQLiteDatabase.deleteCarritoFromMainCarrito(id)
+    }
+    fun deleteFromCarritoBastardo(): Boolean {
+        return mySQLiteDatabase.deleteFromCarritoBastardo()
+    }
+
+    fun loadAndInsertCarritosToBuyList(): List<CategoriaWithProductos> {
+        return mySQLiteDatabase.loadAndInsertCarritosToBuyList()
+    }
+    fun loadCarritosToBuyList(): List<CategoriaWithProductos> {
+        return mySQLiteDatabase.loadCarritosToBuyList()
     }
 }

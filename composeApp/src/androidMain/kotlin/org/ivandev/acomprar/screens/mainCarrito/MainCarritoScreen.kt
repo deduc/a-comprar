@@ -2,8 +2,6 @@ package org.ivandev.acomprar.screens.mainCarrito
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -34,7 +32,7 @@ import org.ivandev.acomprar.Tools
 import org.ivandev.acomprar.components.BigButtonIconText
 import org.ivandev.acomprar.components.CarritoContainer
 import org.ivandev.acomprar.components.CommonScreen
-import org.ivandev.acomprar.components.ConfirmationPopup
+import org.ivandev.acomprar.components.popups.ConfirmationPopup
 import org.ivandev.acomprar.components.MyIcons
 import org.ivandev.acomprar.database.entities.CarritoEntity
 import org.ivandev.acomprar.database.entities.UserActionsEntity
@@ -100,12 +98,6 @@ class MainCarritoScreen(): Screen {
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(4.dp)
         ) {
-            item{
-                if (mainCarritoStore.mainCarritoState.value.userBuying.actionValue == UserBuyingEnum.USER_IS_BUYING) {
-                    StopBuyingButton(mainCarritoStore)
-                }
-            }
-
             item {
                 Button(onClick = {
                     carritoStore.setEditingCarritoUsingId(Literals.Database.HardcodedValues.CARRITO_BASTARDO_ID)
@@ -114,6 +106,12 @@ class MainCarritoScreen(): Screen {
                     Text(Literals.ButtonsText.ADD_PRODUCTO)
                 }
             }
+
+//            item {
+//                Button(onClick = {}) {
+//                    Text("escribir compra rapida")
+//                }
+//            }
         }
     }
 
@@ -184,10 +182,6 @@ class MainCarritoScreen(): Screen {
             mainCarritoStore.mainCarritoState.value.showAComprarPopup -> {
                 AComprarPopup(mainCarritoStore)
             }
-
-            mainCarritoStore.mainCarritoState.value.showStopBuyingPopup -> {
-                StopBuyingPopup(mainCarritoStore)
-            }
         }
     }
 
@@ -219,25 +213,11 @@ class MainCarritoScreen(): Screen {
             onAcceptMethod = {
                 mainCarritoStore.setShowAComprarPopup(false)
                 mainCarritoStore.setUserIsBuying(UserBuyingEnum.USER_IS_BUYING)
-                mainCarritoStore.loadCarritosToBuyList()
+                mainCarritoStore.loadAndInsertCarritosToBuyList()
                 navigator.push(UserBuyingScreen())
             },
             onDismiss = {
                 mainCarritoStore.setShowAComprarPopup(false)
-            }
-        )
-    }
-
-    @Composable
-    private fun StopBuyingPopup(mainCarritoStore: MainCarritoStore) {
-        ConfirmationPopup(
-            text = Literals.TextDialog.STOP_BUYING_CONFIRMATION,
-            onAcceptMethod = {
-                mainCarritoStore.setShowStopBuyingPopup(false)
-                mainCarritoStore.setUserIsBuying(UserBuyingEnum.USER_IS_NOT_BUYING)
-            },
-            onDismiss = {
-                mainCarritoStore.setShowStopBuyingPopup(false)
             }
         )
     }

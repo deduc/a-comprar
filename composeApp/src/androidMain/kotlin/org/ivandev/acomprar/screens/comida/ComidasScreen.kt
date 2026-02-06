@@ -24,7 +24,7 @@ import kotlinx.coroutines.Dispatchers
 import org.ivandev.acomprar.Literals
 import org.ivandev.acomprar.Tools
 import org.ivandev.acomprar.components.CommonScreen
-import org.ivandev.acomprar.components.ConfirmationPopup
+import org.ivandev.acomprar.components.popups.ConfirmationPopup
 import org.ivandev.acomprar.components.MyIcons
 import org.ivandev.acomprar.components.MyScrollableColumn
 import org.ivandev.acomprar.database.entities.ComidaEntity

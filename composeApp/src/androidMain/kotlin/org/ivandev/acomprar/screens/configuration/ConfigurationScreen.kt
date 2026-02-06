@@ -6,6 +6,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -17,7 +20,7 @@ import kotlinx.coroutines.withContext
 import org.ivandev.acomprar.Literals
 import org.ivandev.acomprar.Tools
 import org.ivandev.acomprar.components.CommonScreen
-import org.ivandev.acomprar.components.ConfirmationPopup
+import org.ivandev.acomprar.components.popups.ConfirmationPopup
 import org.ivandev.acomprar.database.Database
 import org.ivandev.acomprar.models.Producto
 import org.ivandev.acomprar.stores.ConfigurationStore
@@ -42,6 +45,7 @@ class ConfigurationScreen: Screen {
             DeleteAllData()
             AddTestData()
             DeleteAllProducts()
+            RestartDatabase()
         }
     }
 
@@ -153,6 +157,33 @@ class ConfigurationScreen: Screen {
                         }
                     },
                     onDismiss = { configurationStore.setShowDeleteDataPopup(false) }
+                )
+            }
+        }
+    }
+
+    @Composable
+    fun RestartDatabase() {
+        val butonclick: MutableState<Boolean> = remember { mutableStateOf(false) }
+
+        Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+            Text("Reiniciar base de datos", modifier = Modifier.weight(1f))
+
+            Button(onClick = {butonclick.value = true}) {
+                Text("Reiniciar")
+            }
+
+            if (butonclick.value) {
+                ConfirmationPopup(
+                    text = "¿Borrar toda la base de datos?",
+                    onAcceptMethod = {
+                        Database.restartDatabase()
+                        butonclick.value = false
+                        Tools.Notifier.showToast("Base de datos reiniciada")
+                    },
+                    onDismiss = {
+                        butonclick.value = false
+                    }
                 )
             }
         }

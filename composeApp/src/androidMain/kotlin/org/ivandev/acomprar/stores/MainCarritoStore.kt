@@ -2,6 +2,7 @@ package org.ivandev.acomprar.stores
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
@@ -11,9 +12,12 @@ import org.ivandev.acomprar.Literals
 import org.ivandev.acomprar.Tools
 import org.ivandev.acomprar.database.Database
 import org.ivandev.acomprar.database.entities.CarritoEntity
+import org.ivandev.acomprar.database.entities.ProductoEntity
 import org.ivandev.acomprar.database.entities.UserActionsEntity
+import org.ivandev.acomprar.database.special_classes.CategoriaWithProductos
 import org.ivandev.acomprar.enumeration.user_actions.UserBuyingEnum
 import org.ivandev.acomprar.stores.special_classes.MainCarritoState
+import org.ivandev.acomprar.stores.special_classes.TextDecorationState
 
 class MainCarritoStore: ViewModel() {
     private val _mainCarritoState = mutableStateOf(MainCarritoState())
@@ -68,6 +72,32 @@ class MainCarritoStore: ViewModel() {
         }
     }
 
+    fun stopBuying(boughtProducts: List<ProductoEntity>, notBoughtProducts: List<ProductoEntity>) {
+        setShowStopBuyingPopup(false)
+        setUserIsBuying(UserBuyingEnum.USER_IS_NOT_BUYING)
+
+        viewModelScope.launch {
+            val result1 = withContext(Dispatchers.IO) {
+                Database.deleteBoughtProductsFromMainCarrito(boughtProducts)
+            }
+            val result2 = withContext(Dispatchers.IO) {
+                Database.addNotBoughtProductsIntoSpecialCarrito(notBoughtProducts)
+            }
+            val result3 = withContext(Dispatchers.IO) {
+                Database.deleteFromCarritoBastardo()
+            }
+
+            if (result1 && result2 && result3) {
+                _mainCarritoState.value = mainCarritoState.value.copy(
+                    stoppedBuying = true
+                )
+            }
+            else {
+                Tools.Notifier.showToast("Error desconocido borrando mierda $result1 - $result2 - $result3")
+            }
+        }
+    }
+
     fun setUserIsBuying(value: String) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
@@ -80,8 +110,13 @@ class MainCarritoStore: ViewModel() {
             _mainCarritoState.value = _mainCarritoState.value.copy(
                 userBuying = userBuyingAux
             )
-            Tools.Notifier.showToast("Comienzas a comprar = $value")
         }
+    }
+
+    fun setStoppedBuying(value: Boolean) {
+        _mainCarritoState.value = _mainCarritoState.value.copy(
+            stoppedBuying = value
+        )
     }
 
     fun setShowAComprarPopup(value: Boolean) {
@@ -100,9 +135,31 @@ class MainCarritoStore: ViewModel() {
                 mainCarritoState.value.userBuying.actionValue == UserBuyingEnum.USER_IS_BUYING
     }
 
+    fun loadAndInsertCarritosToBuyList() {
+        viewModelScope.launch {
+            var carritosToBuy = withContext(Dispatchers.IO) {
+                Database.loadAndInsertCarritosToBuyList()
+            }
+
+            carritosToBuy = carritosToBuy.filter { it.productoEntities.isNotEmpty() }
+
+            _mainCarritoState.value = mainCarritoState.value.copy(
+                carritosToBuy = carritosToBuy
+            )
+        }
+    }
+
     fun loadCarritosToBuyList() {
         viewModelScope.launch {
+            var carritosToBuy = withContext(Dispatchers.IO) {
+                Database.loadCarritosToBuyList()
+            }
 
+            carritosToBuy = carritosToBuy.filter { it.productoEntities.isNotEmpty() }
+
+            _mainCarritoState.value = mainCarritoState.value.copy(
+                carritosToBuy = carritosToBuy
+            )
         }
     }
 

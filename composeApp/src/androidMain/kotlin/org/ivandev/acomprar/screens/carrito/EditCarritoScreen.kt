@@ -38,7 +38,7 @@ import org.ivandev.acomprar.Tools
 import org.ivandev.acomprar.components.CommonScreen
 import org.ivandev.acomprar.components.MyIcons
 import org.ivandev.acomprar.components.MyScrollableColumn
-import org.ivandev.acomprar.components.PopupDelete
+import org.ivandev.acomprar.components.popups.PopupDelete
 import org.ivandev.acomprar.database.entities.CarritoEntity
 import org.ivandev.acomprar.database.entities.ProductoEntity
 import org.ivandev.acomprar.database.special_classes.CarritoAndProductsData

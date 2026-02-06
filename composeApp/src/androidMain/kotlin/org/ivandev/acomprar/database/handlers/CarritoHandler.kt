@@ -2,6 +2,7 @@ package org.ivandev.acomprar.database.handlers
 
 import android.content.ContentValues
 import android.database.Cursor
+import android.database.SQLException
 import android.database.sqlite.SQLiteDatabase
 import org.ivandev.acomprar.Literals
 import org.ivandev.acomprar.database.entities.CarritoEntity
@@ -60,6 +61,38 @@ object CarritoHandler {
         } else {
             // Insertar nuevo registro
             db.insert(Literals.Database.Tables.CARRITO_PRODUCTO_TABLE, null, row) != -1L
+        }
+    }
+
+    fun addLotProductos(db: SQLiteDatabase, carrito: CarritoEntity, items: List<ProductoEntity>): Boolean {
+        if (items.isEmpty()) return true
+
+        return try {
+            db.beginTransaction()
+
+            items.forEach { producto ->
+                val values = ContentValues().apply {
+                    put(Literals.Database.ColumnNames.ID_CARRITO_COLUMN, carrito.id)
+                    put(Literals.Database.ColumnNames.ID_PRODUCTO_COLUMN, producto.id)
+                    put(Literals.Database.ColumnNames.CANTIDAD_COLUMN, producto.cantidad)
+                }
+
+                val rowId = db.insert(
+                    Literals.Database.Tables.CARRITO_PRODUCTO_TABLE,
+                    null,
+                    values
+                )
+
+                if (rowId == -1L) throw SQLException("Error insertando producto ${producto.id}")
+            }
+
+            db.setTransactionSuccessful()
+            true
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
+        } finally {
+            db.endTransaction()
         }
     }
 
@@ -141,6 +174,35 @@ object CarritoHandler {
             }
 
         return carritos.toList()
+    }
+
+    fun getCarritoByNameDescription(db: SQLiteDatabase, name: String, description: String): CarritoEntity? {
+        var carrito: CarritoEntity? = null
+
+        val values = ContentValues().apply {
+            put(Literals.Database.ColumnNames.NOMBRE_COLUMN, name)
+            put(Literals.Database.ColumnNames.DESCRIPTION_COLUMN, description)
+        }
+
+        db.query(
+            Literals.Database.Tables.CARRITO_TABLE,
+            null,
+            "${Literals.Database.ColumnNames.NOMBRE_COLUMN} = ? AND ${Literals.Database.ColumnNames.DESCRIPTION_COLUMN} = ?",
+            arrayOf(name, description),
+            null,
+            null,
+            null
+        ).use {
+            if (it.moveToFirst()) {
+                carrito = CarritoEntity(
+                    id = it.getInt(it.getColumnIndexOrThrow(Literals.Database.ColumnNames.ID_COLUMN)),
+                    name = it.getString(it.getColumnIndexOrThrow(Literals.Database.ColumnNames.NOMBRE_COLUMN)),
+                    description = it.getString(it.getColumnIndexOrThrow(Literals.Database.ColumnNames.DESCRIPTION_COLUMN))
+                )
+            }
+        }
+
+        return carrito
     }
 
     fun getById(db: SQLiteDatabase, id: Int): CarritoEntity? {

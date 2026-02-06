@@ -167,7 +167,7 @@ class ProductosScreen: Screen {
             CategoriaWithProductos(
                 categoriaName = categoria.categoriaName,
                 categoriaId = categoria.categoriaId,
-                productoEntities = categoria.productoEntities?.filter { it.id != removingId }
+                productoEntities = categoria.productoEntities.filter { it.id != removingId }
             )
         }
 

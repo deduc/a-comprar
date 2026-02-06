@@ -106,6 +106,11 @@ class MySQLiteDatabase(context: Context, version: Int) : SQLiteOpenHelper(
         return result
     }
 
+    fun addNotBoughtProductsIntoSpecialCarrito(notBoughtProducts: List<ProductoEntity>): Boolean {
+        return MainCarritoHandler.addNotBoughtProductsIntoSpecialCarrito(writableDatabase, notBoughtProducts)
+    }
+
+
     fun checkIfCarritosWasAddedToMainCarrito(idCarritos: List<Int>): List<Int> {
         return CarritoHandler.checkIfCarritosWasAddedToMainCarrito(readableDatabase, idCarritos)
     }
@@ -276,12 +281,18 @@ class MySQLiteDatabase(context: Context, version: Int) : SQLiteOpenHelper(
     fun deleteCarritoFromMainCarrito(id: Int): Boolean {
         return MainCarritoHandler.deleteCarritoFromMainCarrito(writableDatabase, id)
     }
+    fun deleteFromCarritoBastardo(): Boolean {
+        return MainCarritoHandler.deleteFromCarritoBastardo(writableDatabase)
+    }
 
     fun deleteCategoriaById(id: Int): Boolean {
         val db = writableDatabase
         val result = CategoriaHandler.deleteById(db, id)
         //db.close()
         return result
+    }
+    fun deleteBoughtProductsFromMainCarrito(boughtProducts: List<ProductoEntity>): Boolean {
+        return MainCarritoHandler.deleteItemsByIds(writableDatabase, boughtProducts)
     }
 
     fun deleteCarritoById(id: Int): Boolean {
@@ -325,6 +336,15 @@ class MySQLiteDatabase(context: Context, version: Int) : SQLiteOpenHelper(
         //db.close()
         return result
     }
+
+    fun loadAndInsertCarritosToBuyList(): List<CategoriaWithProductos> {
+        return MainCarritoHandler.loadAndInsertCarritosToBuyList(writableDatabase)
+    }
+
+    fun loadCarritosToBuyList(): List<CategoriaWithProductos> {
+        return MainCarritoHandler.loadCarritosToBuyList(readableDatabase)
+    }
+
 
     // METODOS ESPECIALES
     // METODOS ESPECIALES

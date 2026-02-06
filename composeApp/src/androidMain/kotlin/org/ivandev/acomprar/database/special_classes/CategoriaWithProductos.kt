@@ -5,5 +5,5 @@ import org.ivandev.acomprar.database.entities.ProductoEntity
 class CategoriaWithProductos(
     val categoriaName: String,
     val categoriaId: Int,
-    val productoEntities: List<ProductoEntity>?
+    val productoEntities: List<ProductoEntity>
 )

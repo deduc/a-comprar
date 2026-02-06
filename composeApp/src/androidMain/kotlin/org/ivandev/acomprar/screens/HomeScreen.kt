@@ -122,10 +122,12 @@ class HomeScreen: Screen {
 
         Spacer(Modifier.height(32.dp))
 
-        MiCarrito(navigator)
         if (mainCarritoStore.checkUserBuying()) {
             Spacer(Tools.spacer8dpHeight)
             AComprarCarrito(navigator)
+        }
+        else {
+            MiCarrito(navigator)
         }
     }
 

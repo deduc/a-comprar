@@ -12,6 +12,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 object Tools {
     var height4dp = 4.dp
@@ -52,5 +54,18 @@ object Tools {
                 Toast.makeText(it, message, duration).show()
             }
         }
+    }
+
+    object Colors {
+        val GREEN: Long = 0xFF4CAF50
+        val RED: Long = 0xFFF44336
+    }
+
+    fun getCurrentDateDDMMYYYY(): String {
+        val currentDate = LocalDate.now()
+
+        val formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
+        val currentDateTime: String = currentDate.format(formatter)
+        return currentDateTime
     }
 }

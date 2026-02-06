@@ -1,4 +1,4 @@
-package org.ivandev.acomprar.components
+package org.ivandev.acomprar.components.popups
 
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
