@@ -46,9 +46,12 @@ class CarritosScreen(): Screen {
     @Composable
     fun MainContent() {
         val carritoStore: CarritoStore = viewModel(LocalContext.current as ViewModelStoreOwner)
+        val maincarritoStore: MainCarritoStore = viewModel(LocalContext.current as ViewModelStoreOwner)
 
         LaunchedEffect(Dispatchers.IO) {
             carritoStore.getAllCarrito()
+            maincarritoStore.getCarritosAddedToMainCarrito()
+            maincarritoStore.getAllCarrito()
         }
 
         Column(Modifier.fillMaxHeight()) {
@@ -67,7 +70,7 @@ class CarritosScreen(): Screen {
     @Composable
     fun CarritosList(carritoStore: CarritoStore) {
         val navigator: Navigator = LocalNavigator.currentOrThrow
-        val mainCarritoStore: MainCarritoStore = viewModel()
+        val mainCarritoStore: MainCarritoStore = viewModel(LocalContext.current as ViewModelStoreOwner)
         val carritos: SnapshotStateList<CarritoEntity> = carritoStore.carritos
 
         if (carritos.isEmpty()) {
@@ -103,14 +106,14 @@ class CarritosScreen(): Screen {
 
             Spacer(Modifier.width(Tools.height16dp))
 
-            if (true) {
+            if (mainCarritoStore.mainCarritoState.value.idCarritosAddedToMainCarrito.find { it == carrito.id } == null) {
                 MyIcons.AddShoppingCartIcon {
                     mainCarritoStore.addCarritoToMainCarrito(carrito.id)
                 }
             }
             else {
                 MyIcons.RemoveShoppingCartIcon {
-                    Tools.Notifier.showToast("ola")
+                    mainCarritoStore.removeCarritoToMainCarrito(carrito.id)
                 }
             }
         }

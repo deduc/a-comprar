@@ -300,6 +300,7 @@ object Literals {
         const val STOPPED_BUYING_OK_TEXT = "Los productos que no hubieras comprado se han añadido a un nuevo carrito."
 
         const val DELETED_ALL_PRODUCTOS = "Productos borrados."
+
         const val DELETED_CARRITO_FROM_MAIN_CARRITO = "Carrito borrado de la lista"
         const val DELETING_CARRITO_FROM_MAIN_CARRITO = "¿Seguro que quieres quitar este carrito?"
 
@@ -313,7 +314,7 @@ object Literals {
         const val ERROR_DELETING_ALL_PRODUCTOS = "Error al añadir registros de prueba."
         const val ERROR_DELETING_CARRITO_FROM_MAIN_CARRITO = "Error al borrar el carrito de la lista"
         const val ERROR_NO_NAME_PROVIDED = "ERROR: El campo Nombre no puede estar vacío."
-        const val ERROR_ADDING_CARRITO_TO_MAIN_CARRITO = "Carrito añadido para comprar"
+        const val ERROR_ADDING_CARRITO_TO_MAIN_CARRITO = "ERROR añadiendo carrito para comprar"
         const val ERROR_NULL_ID_CATEGORIA = "ERROR INTERNO: No hay id categoria"
         const val ERROR_PRODUCTO_NAME = "ERROR: No hay nombre de producto"
     }

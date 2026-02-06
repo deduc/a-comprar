@@ -7,18 +7,16 @@ import org.ivandev.acomprar.Literals
 import org.ivandev.acomprar.Tools
 import org.ivandev.acomprar.database.entities.CarritoEntity
 import org.ivandev.acomprar.database.entities.CategoriaEntity
-import org.ivandev.acomprar.database.entities.MainCarritoEntity
 import org.ivandev.acomprar.database.entities.ProductoEntity
-import org.ivandev.acomprar.database.entities.UserActionsEntity
 import org.ivandev.acomprar.database.special_classes.CarritoAndProductsData
 import org.ivandev.acomprar.database.special_classes.CategoriaWithProductos
-import org.ivandev.acomprar.enumeration.user_actions.UserBuyingEnum
 import org.ivandev.acomprar.models.Carrito
-import org.ivandev.acomprar.models.Categoria
-import java.time.LocalDate
 
 object MainCarritoHandler {
     fun initialize(db: SQLiteDatabase) {
+        createMainCarrito(db)
+    }
+    private fun createMainCarrito(db: SQLiteDatabase) {
         val values = ContentValues().apply {
             put(Literals.Database.ColumnNames.ID_COLUMN, Literals.Database.HardcodedValues.MAIN_CARRITO_ID)
             put(Literals.Database.ColumnNames.ID_CARRITO_COLUMN, Literals.Database.HardcodedValues.MAIN_CARRITO_ID)
@@ -28,7 +26,7 @@ object MainCarritoHandler {
             null,
             values
         )
-        val b = inserted != -1L
+        return
     }
 
     fun addNotBoughtProductsIntoSpecialCarrito(db: SQLiteDatabase, items: List<ProductoEntity>): Boolean {
@@ -39,13 +37,31 @@ object MainCarritoHandler {
             "${Literals.Database.HardcodedValues.CARRITO_ESPECIAL_DESCRIPTION} $currentDateTime",
         )
 
-        CarritoHandler.add(db, specialCarrito)
-        deleteItemsByIds(db, items)
+        var carrito: CarritoEntity? = CarritoHandler.getCarritoByNameDescription(db, specialCarrito.name, specialCarrito.description)
+        if (carrito == null) {
+            CarritoHandler.add(db, specialCarrito)
+        }
+        carrito = CarritoHandler.getCarritoByNameDescription(db, specialCarrito.name, specialCarrito.description)
 
-        val carrito: CarritoEntity? = CarritoHandler.getCarritoByNameDescription(db, specialCarrito.name, specialCarrito.description)
-        if (carrito != null)
-            return CarritoHandler.addLotProductos(db, carrito, items)
-        else return false
+        deleteItemsByIds(db, items)
+        return CarritoHandler.addLotProductos(db, carrito!!, items)
+    }
+    private fun checkIfTodaysCarritoExists(db: SQLiteDatabase, specialCarrito: Carrito): Boolean {
+        var exists = false
+
+        db.query(
+            Literals.Database.Tables.CARRITO_TABLE,
+            null,
+            "${Literals.Database.ColumnNames.NOMBRE_COLUMN} = ? AND ${Literals.Database.ColumnNames.DESCRIPTION_COLUMN} = ?",
+            arrayOf(specialCarrito.name, specialCarrito.description),
+            null,
+            null,
+            null
+        ).use {
+            if (it.moveToFirst()) exists = true
+        }
+
+        return exists
     }
 
     fun getIdCarritosFromMainCarrito(db: SQLiteDatabase): List<Int> {
@@ -97,7 +113,7 @@ object MainCarritoHandler {
                 "${Literals.Database.ColumnNames.ID_PRODUCTO_COLUMN} IN ($placeholders)",
                 args
             )
-            rows > 0
+            rows >= 0
         } catch (e: Exception) {
             e.printStackTrace()
             false
@@ -140,15 +156,15 @@ object MainCarritoHandler {
             Literals.Database.Tables.MAIN_CARRITO_TABLE,
             "${Literals.Database.ColumnNames.ID_CARRITO_COLUMN} = ?",
             arrayOf(id.toString())
-        ) > 0
+        ) >= 0
 
-        val result2 = db.delete(
-            Literals.Database.Tables.MAIN_CARRITO_WITH_PRODUCTS,
-            "${Literals.Database.ColumnNames.ID_COLUMN} = ?",
-            arrayOf(id.toString())
-        ) > 0
+//        val result2 = db.delete(
+//            Literals.Database.Tables.MAIN_CARRITO_WITH_PRODUCTS,
+//            "${Literals.Database.ColumnNames.ID_COLUMN} = ?",
+//            arrayOf(id.toString())
+//        ) >= 0
 
-        return result1 == result2
+        return result1
     }
 
     fun deleteFromCarritoBastardo(db: SQLiteDatabase): Boolean {
@@ -164,6 +180,22 @@ object MainCarritoHandler {
             // Log o manejo de error según tu necesidad
             false
         }
+    }
+
+    fun deleteCarritosFromMainCarrito(db: SQLiteDatabase): Boolean {
+        val result: Boolean = try {
+            db.delete(
+                Literals.Database.Tables.MAIN_CARRITO_TABLE,
+                null,
+                null
+            ) >= 0
+        } catch (e: Exception) {
+            println("[DEBUG ERROR] Error al borrar los productos del carrito bastardo $e")
+            false
+        }
+
+        createMainCarrito(db)
+        return result
     }
 
     fun getAllCarritoFromMainCarrito(db: SQLiteDatabase): List<CarritoEntity> {

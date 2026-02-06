@@ -190,10 +190,7 @@ class MainCarritoScreen(): Screen {
         ConfirmationPopup(
             text = Literals.ToastText.DELETING_CARRITO_FROM_MAIN_CARRITO,
             onAcceptMethod = {
-                mainCarritoStore.deleteCarritoFromMainCarrito(
-                    carritoStore.deletingCarrito.value!!.id,
-                    carritoStore
-                )
+                mainCarritoStore.deleteCarritoFromMainCarrito(carritoStore.deletingCarrito.value!!.id)
                 carritoStore.setShowDeleteCarritoPopup(false)
                 carritoStore.setDeletingCarrito(null)
             },

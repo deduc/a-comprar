@@ -2,7 +2,6 @@ package org.ivandev.acomprar.stores
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
@@ -14,10 +13,8 @@ import org.ivandev.acomprar.database.Database
 import org.ivandev.acomprar.database.entities.CarritoEntity
 import org.ivandev.acomprar.database.entities.ProductoEntity
 import org.ivandev.acomprar.database.entities.UserActionsEntity
-import org.ivandev.acomprar.database.special_classes.CategoriaWithProductos
 import org.ivandev.acomprar.enumeration.user_actions.UserBuyingEnum
 import org.ivandev.acomprar.stores.special_classes.MainCarritoState
-import org.ivandev.acomprar.stores.special_classes.TextDecorationState
 
 class MainCarritoStore: ViewModel() {
     private val _mainCarritoState = mutableStateOf(MainCarritoState())
@@ -29,11 +26,17 @@ class MainCarritoStore: ViewModel() {
                 Database.addCarritoToMainCarrito(id)
             }
 
-            if (added)
+            if (added) {
                 Tools.Notifier.showToast(Literals.ToastText.ADDED_CARRITO_TO_MAIN_CARRITO)
+                inmutableAddIdCarritoToMainCarrito(id)
+            }
             else
                 Tools.Notifier.showToast(Literals.ToastText.ERROR_ADDING_CARRITO_TO_MAIN_CARRITO)
         }
+    }
+    fun removeCarritoToMainCarrito(id: Int) {
+        deleteCarritoFromMainCarrito(id)
+        inmutableRemoveIdCarritoToMainCarrito(id)
     }
 
     fun getAllCarrito() {
@@ -45,8 +48,21 @@ class MainCarritoStore: ViewModel() {
             inmutableUpdateCarritos(carritosAux)
         }
     }
+    fun getCarritosAddedToMainCarrito() {
+        viewModelScope.launch {
+            val carritosAux: List<CarritoEntity> = withContext(Dispatchers.IO) {
+                Database.getCarritosAddedToMainCarrito()
+            }
 
-    fun deleteCarritoFromMainCarrito(id: Int, carritoStore: CarritoStore) {
+            inmutableUpdateCarritos(carritosAux)
+
+            carritosAux.forEach {
+                inmutableAddIdCarritoToMainCarrito(it.id)
+            }
+        }
+    }
+
+    fun deleteCarritoFromMainCarrito(id: Int) {
         viewModelScope.launch {
             val deleted = withContext(Dispatchers.IO) {
                 Database.deleteCarritoFromMainCarrito(id)
@@ -80,14 +96,29 @@ class MainCarritoStore: ViewModel() {
             val result1 = withContext(Dispatchers.IO) {
                 Database.deleteBoughtProductsFromMainCarrito(boughtProducts)
             }
-            val result2 = withContext(Dispatchers.IO) {
-                Database.addNotBoughtProductsIntoSpecialCarrito(notBoughtProducts)
-            }
             val result3 = withContext(Dispatchers.IO) {
                 Database.deleteFromCarritoBastardo()
             }
+            val result4 = withContext(Dispatchers.IO) {
+                try {
+                    Database.deleteCarritosFromMainCarrito()
+                    val carritosAux: List<CarritoEntity> = _mainCarritoState.value.carritos.filter {
+                        it.id != Literals.Database.HardcodedValues.CARRITO_BASTARDO_ID
+                    }
+                    carritosAux.forEach { deleteCarritoById(it.id) }
+                    true
+                } catch (e: Exception) {
+                    println("[DEBUG] Error al borrar los carritos del carrito bastardo $e")
+                    false
+                }
+            }
+            val result2 = withContext(Dispatchers.IO) {
+                if (notBoughtProducts.isNotEmpty())
+                    Database.addNotBoughtProductsIntoSpecialCarrito(notBoughtProducts)
+                else true
+            }
 
-            if (result1 && result2 && result3) {
+            if (result1 && result2 && result3 && result4) {
                 _mainCarritoState.value = mainCarritoState.value.copy(
                     stoppedBuying = true
                 )
@@ -104,7 +135,7 @@ class MainCarritoStore: ViewModel() {
                 Database.setUserIsBuying(value)
             }
 
-            var userBuyingAux: UserActionsEntity = _mainCarritoState.value.userBuying
+            val userBuyingAux: UserActionsEntity = _mainCarritoState.value.userBuying
             userBuyingAux.actionValue = value
 
             _mainCarritoState.value = _mainCarritoState.value.copy(
@@ -162,6 +193,24 @@ class MainCarritoStore: ViewModel() {
             )
         }
     }
+
+    private fun inmutableAddIdCarritoToMainCarrito(id: Int) {
+        val newList: MutableList<Int> = _mainCarritoState.value.idCarritosAddedToMainCarrito.toMutableList()
+        newList.add(id)
+
+        _mainCarritoState.value = _mainCarritoState.value.copy(
+            idCarritosAddedToMainCarrito = newList.toList()
+        )
+    }
+
+    private fun inmutableRemoveIdCarritoToMainCarrito(id: Int) {
+        val newList: List<Int> = _mainCarritoState.value.idCarritosAddedToMainCarrito.filter { it != id }
+
+        _mainCarritoState.value = _mainCarritoState.value.copy(
+            idCarritosAddedToMainCarrito = newList
+        )
+    }
+
 
     private fun inmutableUpdateCarritos(newValue: List<CarritoEntity>) {
         // Actualización inmutable

@@ -284,6 +284,10 @@ class MySQLiteDatabase(context: Context, version: Int) : SQLiteOpenHelper(
     fun deleteFromCarritoBastardo(): Boolean {
         return MainCarritoHandler.deleteFromCarritoBastardo(writableDatabase)
     }
+    fun deleteCarritosFromMainCarrito(): Boolean {
+        return MainCarritoHandler.deleteCarritosFromMainCarrito(writableDatabase)
+    }
+
 
     fun deleteCategoriaById(id: Int): Boolean {
         val db = writableDatabase

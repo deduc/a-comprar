@@ -206,7 +206,8 @@ class EditCarritoScreen(
             ) {
                 carritoStore.deleteCarritoById(currentCarrito.id)
                 showDeleteConfirmationDialog.value = false
-                navigator.pop()
+                navigator.popAll()
+                navigator.push(CarritosScreen())
             }
         }
     }

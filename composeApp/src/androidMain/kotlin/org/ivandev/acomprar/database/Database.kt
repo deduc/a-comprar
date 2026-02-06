@@ -206,6 +206,9 @@ object Database {
     fun deleteFromCarritoBastardo(): Boolean {
         return mySQLiteDatabase.deleteFromCarritoBastardo()
     }
+    fun deleteCarritosFromMainCarrito(): Boolean {
+        return mySQLiteDatabase.deleteCarritosFromMainCarrito()
+    }
 
     fun loadAndInsertCarritosToBuyList(): List<CategoriaWithProductos> {
         return mySQLiteDatabase.loadAndInsertCarritosToBuyList()

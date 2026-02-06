@@ -77,13 +77,18 @@ object CarritoHandler {
                     put(Literals.Database.ColumnNames.CANTIDAD_COLUMN, producto.cantidad)
                 }
 
-                val rowId = db.insert(
+                // reemplaza si existe el producto
+                val rowId = db.insertWithOnConflict(
                     Literals.Database.Tables.CARRITO_PRODUCTO_TABLE,
                     null,
-                    values
+                    values,
+                    SQLiteDatabase.CONFLICT_REPLACE
                 )
 
-                if (rowId == -1L) throw SQLException("Error insertando producto ${producto.id}")
+                if (rowId == -1L) {
+                    // Solo lanzar error si no es CONFLICT_IGNORE
+                    throw SQLException("Error insertando producto ${producto.id}")
+                }
             }
 
             db.setTransactionSuccessful()
@@ -95,7 +100,6 @@ object CarritoHandler {
             db.endTransaction()
         }
     }
-
     fun checkIfCarritoExists(db: SQLiteDatabase, carrito: Carrito): Boolean {
         val values = ContentValues().apply {
             put(Literals.Database.ColumnNames.NOMBRE_COLUMN, carrito.name)
@@ -178,11 +182,6 @@ object CarritoHandler {
 
     fun getCarritoByNameDescription(db: SQLiteDatabase, name: String, description: String): CarritoEntity? {
         var carrito: CarritoEntity? = null
-
-        val values = ContentValues().apply {
-            put(Literals.Database.ColumnNames.NOMBRE_COLUMN, name)
-            put(Literals.Database.ColumnNames.DESCRIPTION_COLUMN, description)
-        }
 
         db.query(
             Literals.Database.Tables.CARRITO_TABLE,

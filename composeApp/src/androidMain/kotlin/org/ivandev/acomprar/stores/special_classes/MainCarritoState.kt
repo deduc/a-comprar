@@ -11,4 +11,5 @@ data class MainCarritoState(
     val userBuying: UserActionsEntity = UserActionsEntity(),
     val carritosToBuy: List<CategoriaWithProductos> = emptyList(),
     val stoppedBuying: Boolean = false,
+    val idCarritosAddedToMainCarrito: List<Int> = emptyList()
 )
